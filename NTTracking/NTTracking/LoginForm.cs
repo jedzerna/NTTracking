@@ -11,41 +11,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using System.Threading;
 
 namespace NTTracking
 {
     public partial class LoginForm : Form
     {
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                CreateParams handleparam = base.CreateParams;
-                handleparam.ExStyle |= 0x02000000;
-                return handleparam;
-            }
-
-        }
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            this.DoubleBuffered = true;
-        }
-        public static void SetDoubleBuffered(System.Windows.Forms.Control c)
-        {
-            //Taxes: Remote Desktop Connection and painting
-            //http://blogs.msdn.com/oldnewthing/archive/2006/01/03/508694.aspx
-            if (System.Windows.Forms.SystemInformation.TerminalServerSession)
-                return;
-
-            System.Reflection.PropertyInfo aProp =
-                  typeof(System.Windows.Forms.Control).GetProperty(
-                        "DoubleBuffered",
-                        System.Reflection.BindingFlags.NonPublic |
-                        System.Reflection.BindingFlags.Instance);
-
-            aProp.SetValue(c, true, null);
-        }
         public LoginForm()
         {
             InitializeComponent();
@@ -55,17 +26,25 @@ namespace NTTracking
         {
 
         }
-
+        Thread loginThread;
         private void guna2Button1_Click(object sender, EventArgs e)
         {
-            login();
+            loginThread = new Thread(login);
+            loginThread.Start();
         }
         private void login()
         {
+            guna2ProgressIndicator1.BeginInvoke((Action)delegate ()
+            {
+                guna2ProgressIndicator1.Visible = true;
+                guna2ProgressIndicator1.Start();
+                guna2Button1.Enabled = false;
+            });
             try
             {
 
-                using (MySqlConnection con = new MySqlConnection("Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password="))
+                using (MySqlConnection con = new MySqlConnection("Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;"))
+                //using (MySqlConnection con = new MySqlConnection("Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password="))
                 {
                     con.Open();
                     con.Close();
@@ -108,13 +87,27 @@ namespace NTTracking
 
                             f.ShowDialog();
                             this.Close();
+
+                            loginThread.Abort();
                         }
                         catch (Exception ex)
                         {
+                            guna2ProgressIndicator1.BeginInvoke((Action)delegate ()
+                            {
+                                guna2ProgressIndicator1.Visible = false;
+                                guna2ProgressIndicator1.Stop();
+                                guna2Button1.Enabled = true;
+                            });
                             MessageBox.Show(ex.Message);
                         }
                         finally
                         {
+                            guna2ProgressIndicator1.BeginInvoke((Action)delegate ()
+                            {
+                                guna2ProgressIndicator1.Visible = false;
+                                guna2ProgressIndicator1.Stop();
+                                guna2Button1.Enabled = true;
+                            });
                             if (con != null)
                             {
                                 con.Dispose();
@@ -123,11 +116,18 @@ namespace NTTracking
                             {
                                 cmd.Dispose();
                             }
+                            loginThread.Abort();
                         }
                     }
                     else
                     {
                         con.Close();
+                        guna2ProgressIndicator1.BeginInvoke((Action)delegate ()
+                        {
+                            guna2ProgressIndicator1.Visible = false;
+                            guna2ProgressIndicator1.Stop();
+                            guna2Button1.Enabled = true;
+                        });
                         MessageBox.Show("Invalid Login please check username and password");
                     } 
 
@@ -135,8 +135,19 @@ namespace NTTracking
             }
             catch (Exception ex)
             {
+                guna2ProgressIndicator1.BeginInvoke((Action)delegate ()
+                {
+                    guna2ProgressIndicator1.Visible = false;
+                    guna2ProgressIndicator1.Stop();
+                    guna2Button1.Enabled = true;
+                });
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void guna2ProgressIndicator1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

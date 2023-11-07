@@ -106,23 +106,18 @@ namespace NTTracking
         }
         private void loaddata()
         {
-
             DBData dbs = new DBData();
             List<DBData.MyData> dataList = dbs.RetrieveData(highestId.ToString());
             if (dataList.Count > 0)
             {
                 DateTime elapsedTime = DateTime.Parse(dataList[0].YourProperty1);
                 startTime = elapsedTime;
-                // Assuming the property you want to display is named "name"
-                label6.Text = dataList[0].YourProperty1;
-            }
-            else
-            {
-                label6.Text = "No data found"; // Display a message if no data is found
             }
         }
         private void startTracking()
         {
+            timer1.Enabled = true;
+            timer1.Start();
             startTime = DateTime.Now;
             string data1 = id;
             string data3 = startTime.ToString("dd-MM-yyyy");
@@ -132,16 +127,17 @@ namespace NTTracking
             KeyboardHook.KeyDown += KeyDownEventHandler;
             KeyboardHook.KeyUp += KeyUpEventHandler;
             m_GlobalHook = Hook.GlobalEvents();
-            showappsThread = new Thread(LoadProcessesOnUIThread);
-            showappsThread.Start();
+            if (showappsThread == null && timer1.Enabled == true)
+            {
+                showappsThread = new Thread(LoadProcessesOnUIThread);
+                showappsThread.Start();
+            }
             eventThread = new Thread(EventHandlingThread);
             eventThread.Start();
 
             loaddata();
             guna2Button6.Visible = true;
             guna2Button4.Visible = false;
-            timer1.Enabled = true;
-            timer1.Start();
 
         }
         private IKeyboardMouseEvents m_GlobalHook;
@@ -234,9 +230,12 @@ namespace NTTracking
                     {*/
                         dataGridView1.BeginInvoke((Action)delegate ()
                         {
-                            int a = dataGridView1.Rows.Add();
-                            dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
-                            dataGridView1.Rows[a].Cells["Software"].Value = dtrow["Software"].ToString().Trim();
+                            if (timer1.Enabled == true)
+                            {
+                                int a = dataGridView1.Rows.Add();
+                                dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
+                                dataGridView1.Rows[a].Cells["Software"].Value = dtrow["Software"].ToString().Trim();
+                            }
                         });
                     //}
                 }
@@ -259,7 +258,10 @@ namespace NTTracking
                 {
                     dataGridView1.BeginInvoke((Action)delegate ()
                     {
-                        dataGridView1.Rows.Remove(row);
+                        if (timer1.Enabled == true)
+                        {
+                            dataGridView1.Rows.Remove(row);
+                        }
                     });
                 }
             }
@@ -281,9 +283,12 @@ namespace NTTracking
                 {
                     dataGridView1.BeginInvoke((Action)delegate ()
                     {
-                        int a = dataGridView1.Rows.Add();
-                        dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString();
-                        dataGridView1.Rows[a].Cells["Software"].Value = dtrow["Software"].ToString();
+                        if (timer1.Enabled == true)
+                        {
+                            int a = dataGridView1.Rows.Add();
+                            dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString();
+                            dataGridView1.Rows[a].Cells["Software"].Value = dtrow["Software"].ToString();
+                        }
                     });
                 }
             }
@@ -331,11 +336,6 @@ namespace NTTracking
             int x = e.X;
             int y = e.Y;
 
-            if (showappsThread == null)
-            {
-                showappsThread = new Thread(LoadProcessesOnUIThread);
-                showappsThread.Start();
-            }
         }
 
         private void guna2Panel1_Paint(object sender, PaintEventArgs e)
@@ -391,7 +391,7 @@ namespace NTTracking
                 if (db.TimeIn(data1, data2, data3))
                 {
 
-                    //refreshdata();
+                    refreshdata();
                     startTracking();
                 }
                 db.CloseConnection();
@@ -405,7 +405,12 @@ namespace NTTracking
                 label3.Text = elapsedTime.Hours.ToString("00") + "\n" +
                              elapsedTime.Minutes.ToString("00") + "\n" +
                             elapsedTime.Seconds.ToString("00");
-            
+
+            if (showappsThread == null && timer1.Enabled == true)
+            {
+                showappsThread = new Thread(LoadProcessesOnUIThread);
+                showappsThread.Start();
+            }
         }
 
         private void guna2Button6_Click(object sender, EventArgs e)
@@ -426,17 +431,17 @@ namespace NTTracking
                     m_GlobalHook.MouseMove -= GlobalHookOnMouseMove;
                     m_GlobalHook.MouseClick -= GlobalHookOnMouseClick;
 
-                    // Stop and join the event thread to exit cleanly
-                    eventThread.Abort();
-                    eventThread.Join();
-                    dataGridView1.Rows.Clear();
+                    timer1.Stop();
+                    timer1.Enabled = false;
+                    eventThread = null;
+                    showappsThread = null;
                     label3.Text = "0:00";
                     guna2Button6.Visible = false;
                     guna2Button4.Visible = true;
-                    timer1.Stop();
                 }
                 db.CloseConnection();
             }
+            dataGridView1.Rows.Clear();
         }
     }
 }

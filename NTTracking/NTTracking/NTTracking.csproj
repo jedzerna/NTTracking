@@ -184,6 +184,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".nuget\mouse-keyboard-hook-logo.png" />
+    <None Include="Resources\loading2.gif" />
+    <None Include="Resources\loading3.gif" />
+    <None Include="Resources\loading.gif" />
     <None Include="Resources\circlegreen2.ico" />
     <None Include="Resources\circlewaiting.ico" />
     <None Include="Resources\circlered2.ico" />

@@ -21,11 +21,12 @@ namespace NTTracking
         public DBData()
         {
             // Initialize the connection string
-            connectionString = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=;";
+            connectionString = $"Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
+            //connectionString = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=";
 
-           // using (MySqlConnection con = new MySqlConnection("Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password="))
-                // Create a new MySqlConnection using the connection string
-                connection = new MySqlConnection(connectionString);
+            // using (MySqlConnection con = new MySqlConnection("Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password="))
+            // Create a new MySqlConnection using the connection string
+            connection = new MySqlConnection(connectionString);
         }
 
         public bool OpenConnection()
