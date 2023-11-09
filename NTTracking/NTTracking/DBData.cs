@@ -21,8 +21,8 @@ namespace NTTracking
         public DBData()
         {
             // Initialize the connection string
-            connectionString = $"Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
-            //connectionString = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=";
+            //connectionString = $"Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
+            connectionString = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=";
 
             // using (MySqlConnection con = new MySqlConnection("Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password="))
             // Create a new MySqlConnection using the connection string
@@ -326,6 +326,42 @@ namespace NTTracking
                 }
             }
             return fdt;
+        }
+        public bool AddTaskRunning(string userid, string description)
+        {
+            if (this.OpenConnection())
+            {
+                try
+                {
+                    // Use parameterized query to avoid SQL injection
+                    string query = "INSERT INTO tbltaskrunning (userid, description,datetime,status) VALUES (@userid, @timein, @datein, @status)";
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@userid", userid);
+                    cmd.Parameters.AddWithValue("@description", description);
+                    cmd.Parameters.AddWithValue("@datetime", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@status", "Opening");
+
+                    cmd.ExecuteNonQuery();
+
+
+                    this.CloseConnection();
+                    return true;
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("MySQL Exception: " + ex.Message);
+                    this.CloseConnection();
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    // Handle other exceptions
+                    Console.WriteLine("Exception: " + ex.Message);
+                    this.CloseConnection();
+                    return false;
+                }
+            }
+            return false;
         }
     }
 }

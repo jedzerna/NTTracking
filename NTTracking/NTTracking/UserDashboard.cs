@@ -69,11 +69,10 @@ namespace NTTracking
         int highestId = 0;
         private void UserDashboard_Load(object sender, EventArgs e)
         {
-            ChangeControlStyles(dataGridView2, ControlStyles.OptimizedDoubleBuffer, true);
-            this.dataGridView2.ColumnHeadersDefaultCellStyle.SelectionBackColor = this.dataGridView2.ColumnHeadersDefaultCellStyle.BackColor;
-
-            ChangeControlStyles(dataGridView1, ControlStyles.OptimizedDoubleBuffer, true);
-            this.dataGridView1.ColumnHeadersDefaultCellStyle.SelectionBackColor = this.dataGridView1.ColumnHeadersDefaultCellStyle.BackColor;
+            SuspendLayout();
+            guna2CirclePictureBox1.Controls.Add(pictureBox1);
+            pictureBox1.Location = new Point(69, 62);
+            pictureBox1.BackColor = Color.Transparent;
             startTime = DateTime.Now;
             string data1 = id;
             string data3 = startTime.ToString("dd-MM-yyyy");
@@ -90,6 +89,23 @@ namespace NTTracking
 
             label1.Text = username;
             dataGridView1.ClearSelection();
+
+            ChangeControlStyles(dataGridView2, ControlStyles.OptimizedDoubleBuffer, true);
+            this.dataGridView2.ColumnHeadersDefaultCellStyle.SelectionBackColor = this.dataGridView2.ColumnHeadersDefaultCellStyle.BackColor;
+
+            ChangeControlStyles(dataGridView1, ControlStyles.OptimizedDoubleBuffer, true);
+            this.dataGridView1.ColumnHeadersDefaultCellStyle.SelectionBackColor = this.dataGridView1.ColumnHeadersDefaultCellStyle.BackColor;
+
+          
+            ResumeLayout();
+        }
+        private void PictureBoxForeground_Paint(object sender, PaintEventArgs e)
+        {
+            // Draw the top PictureBox with transparency.
+            using (var brush = new SolidBrush(Color.FromArgb(128, Color.White)))
+            {
+                e.Graphics.FillRectangle(brush, e.ClipRectangle);
+            }
         }
         private void ChangeControlStyles(Control ctrl, ControlStyles flag, bool value)
         {
@@ -146,14 +162,18 @@ namespace NTTracking
         {
             // Handle key down events here
             //Console.WriteLine("Key Down: " + e.KeyCode);
-            guna2TextBox2.Text += e.KeyCode.ToString();
+            //guna2TextBox2.Text += e.KeyCode.ToString();
+
+            idlechecking = 0;
         }
 
         private void KeyUpEventHandler(object sender, KeyEventArgs e)
         {
             // Handle key up events here
-            guna2TextBox1.Text +=  e.KeyCode.ToString();
-           // Console.WriteLine("Key Up: " + e.KeyCode);
+            //guna2TextBox1.Text +=  e.KeyCode.ToString();
+            // Console.WriteLine("Key Up: " + e.KeyCode);
+
+            idlechecking = 0;
         }
         private void EventHandlingThread()
         {
@@ -232,9 +252,15 @@ namespace NTTracking
                         {
                             if (timer1.Enabled == true)
                             {
-                                int a = dataGridView1.Rows.Add();
+                                string desc = dtrow["Software"].ToString().Trim();
+                                if (db.AddTaskRunning(id, desc))
+                                {
+                                    MessageBox.Show(desc);
+                                }
+                               
+                                    int a = dataGridView1.Rows.Add();
                                 dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
-                                dataGridView1.Rows[a].Cells["Software"].Value = dtrow["Software"].ToString().Trim();
+                                dataGridView1.Rows[a].Cells["Software"].Value = desc;
                             }
                         });
                     //}
@@ -285,9 +311,15 @@ namespace NTTracking
                     {
                         if (timer1.Enabled == true)
                         {
+                            string desc = dtrow["Software"].ToString().Trim();
+                            //db.AddTaskRunning(id, desc);
+                            if (db.AddTaskRunning(id, desc))
+                            {
+                                MessageBox.Show(desc);
+                            }
                             int a = dataGridView1.Rows.Add();
-                            dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString();
-                            dataGridView1.Rows[a].Cells["Software"].Value = dtrow["Software"].ToString();
+                            dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
+                            dataGridView1.Rows[a].Cells["Software"].Value = desc;
                         }
                     });
                 }
@@ -311,7 +343,7 @@ namespace NTTracking
             int y = e.Y;
 
             // You can do something with the mouse coordinates
-            if (label12.InvokeRequired)
+            /*if (label12.InvokeRequired)
             {
                 label12.Invoke(new Action(() => label12.Text = x.ToString()));
             }
@@ -327,7 +359,8 @@ namespace NTTracking
             else
             {
                 label13.Text = y.ToString();
-            }
+            }*/
+            idlechecking = 0;
         }
         private void GlobalHookOnMouseClick(object sender, MouseEventArgs e)
         {
@@ -335,7 +368,7 @@ namespace NTTracking
             MouseButtons button = e.Button;
             int x = e.X;
             int y = e.Y;
-
+            idlechecking = 0;
         }
 
         private void guna2Panel1_Paint(object sender, PaintEventArgs e)
@@ -365,14 +398,15 @@ namespace NTTracking
 
         private void UserDashboard_FormClosing(object sender, FormClosingEventArgs e)
         {
-            KeyboardHook.Unhook();
-            base.OnFormClosing(e);
-            m_GlobalHook.MouseMove -= GlobalHookOnMouseMove;
-            m_GlobalHook.MouseClick -= GlobalHookOnMouseClick;
+            Application.Exit();
+            /* KeyboardHook.Unhook();
+             base.OnFormClosing(e);
+             m_GlobalHook.MouseMove -= GlobalHookOnMouseMove;
+             m_GlobalHook.MouseClick -= GlobalHookOnMouseClick;
 
-            // Stop and join the event thread to exit cleanly
-            eventThread.Abort();
-            eventThread.Join();
+             // Stop and join the event thread to exit cleanly
+             eventThread.Abort();
+             eventThread.Join();*/
         }
         private DateTime startTime;
         DBData db = new DBData();
@@ -411,8 +445,30 @@ namespace NTTracking
                 showappsThread = new Thread(LoadProcessesOnUIThread);
                 showappsThread.Start();
             }
+            if (idlechecking >= 1000)
+            {
+                //idlechecking = 0;
+                idlechecking++;
+                //label4.Text = idlechecking.ToString();
+                pictureBox1.Image = Properties.Resources.circlered2;
+            }
+            else if (idlechecking >= 400)
+            {
+                //idlechecking = 0;
+                idlechecking++;
+                //label4.Text = idlechecking.ToString();
+                pictureBox1.Image = Properties.Resources.circlewaiting;
+            }
+            else
+            {
+                idlechecking++;
+                //label4.Text = idlechecking.ToString();
+                pictureBox1.Image = Properties.Resources.circlegreen2;
+            }
         }
-
+        int idlechecking = 0;
+        string keyboardchar;
+        string mousepoint;
         private void guna2Button6_Click(object sender, EventArgs e)
         {
             if (db.OpenConnection())
@@ -443,5 +499,25 @@ namespace NTTracking
             }
             dataGridView1.Rows.Clear();
         }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+
+        }
+
+        private void transparentPictureBox2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void guna2Button5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+                    }
     }
 }
