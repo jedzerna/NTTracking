@@ -328,6 +328,56 @@ namespace NTTracking
             }
             return fdt;
         }
+        public DataTable GetAllPreviousRecord(string userid)
+        {
+            DataTable dt = new DataTable();
+            DataTable fdt = new DataTable();
+            fdt.Columns.Add("Records");
+            fdt.Columns.Add("Image", typeof(Bitmap));
+            if (this.OpenConnection())
+            {
+                string query = "SELECT DATE_FORMAT(datein, '%Y-%d-%m %H:%i:%s') AS datein, " +
+                  "DATE_FORMAT(dateout, '%Y-%d-%m %H:%i:%s') AS dateout, timeout " +
+                  "FROM tbltrackrecords WHERE userid = @userid ORDER BY id DESC";
+
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@userid", userid);
+
+                    using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
+                    {
+                        adapter.Fill(dt);
+                    }
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        DataRow frow = fdt.NewRow();
+                        //MessageBox.Show(DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy"));
+                        //MessageBox.Show(DateTime.Now.ToString("MM/dd/yyyy"));
+                        if (row["timeout"] is DBNull || string.IsNullOrEmpty(row["timeout"].ToString()) && DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy") == DateTime.Now.ToString("MM/dd/yyyy"))
+                        {
+                            frow["Records"] = DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy");
+                            frow["Image"] = new Bitmap(Properties.Resources.circlered2);
+                        }
+                        else if (row["timeout"] is DBNull || string.IsNullOrEmpty(row["timeout"].ToString()) && DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy") != DateTime.Now.ToString("MM/dd/yyyy"))
+                        {
+                            frow["Records"] = DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy");
+                            frow["Image"] = new Bitmap(Properties.Resources.circlered2);
+                        }
+                        else
+                        {
+                            frow["Records"] = DateTime.Parse(row["dateout"].ToString()).ToString("MM/dd/yyyy");
+                            frow["Image"] = new Bitmap(Properties.Resources.circlegreen2);
+                        }
+
+                        fdt.Rows.Add(frow);
+                    }
+
+                    this.CloseConnection();
+                }
+            }
+            return fdt;
+        }
         public bool AddTaskRunning(string userid, string description)
         {
             if (this.OpenConnection())

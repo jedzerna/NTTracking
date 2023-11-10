@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -13,6 +14,7 @@ using System.Windows.Forms;
 using Gma.System.MouseKeyHook;
 using Guna.UI2.WinForms;
 using WindowsInput;
+using static Guna.UI2.Native.WinApi;
 using static NTTracking.DBData;
 using static NTTracking.Model.TrackData;
 
@@ -53,6 +55,7 @@ namespace NTTracking
 
         private string formNum;
         public string username;
+        public string position;
         public string id;
         public Image img;
         private Thread eventThread;
@@ -83,11 +86,16 @@ namespace NTTracking
             else
             {
                 guna2CirclePictureBox1.Image = img;
-                guna2CirclePictureBox2.Image = img;
+
+                Image imggg = resizeImage((Image)img, new Size(35, 35));
+                ImageConverter _imageConverter = new ImageConverter();
+                byte[] xByte = (byte[])_imageConverter.ConvertTo(imggg, typeof(byte[]));
+                guna2CirclePictureBox2.Image = ByteToImage(xByte);
             }
             guna2CirclePictureBox1.Controls.Add(pictureBox1);
             pictureBox1.Location = new Point(73, 63);
             pictureBox1.BackColor = Color.Transparent;
+
 
 
             guna2CirclePictureBox2.Controls.Add(pictureBox2);
@@ -108,6 +116,7 @@ namespace NTTracking
             showappsThread = null;
 
             label1.Text = username;
+            label4.Text = position;
             guna2Button1_Click(sender, e);
             ResumeLayout();
         }
@@ -122,19 +131,43 @@ namespace NTTracking
                 if (Properties.Resources.ResourceManager.GetObject(resourceName) != null)
                 {
                     guna2CirclePictureBox1.Image = (Image)Properties.Resources.ResourceManager.GetObject(resourceName);
-                    guna2CirclePictureBox2.Image = (Image)Properties.Resources.ResourceManager.GetObject(resourceName);
+
+                    Image imggg = resizeImage((Image)Properties.Resources.ResourceManager.GetObject(resourceName), new Size(35, 35));
+                    ImageConverter _imageConverter = new ImageConverter();
+                    byte[] xByte = (byte[])_imageConverter.ConvertTo(imggg, typeof(byte[]));
+                    guna2CirclePictureBox2.Image = ByteToImage(xByte);
                 }
                 else
                 {
                     guna2CirclePictureBox1.Image = Properties.Resources.profilep;
-                    guna2CirclePictureBox2.Image = Properties.Resources.profilep;
+
+                    Image imggg = resizeImage((Image)Properties.Resources.profilep, new Size(35, 35));
+                    ImageConverter _imageConverter = new ImageConverter();
+                    byte[] xByte = (byte[])_imageConverter.ConvertTo(imggg, typeof(byte[]));
+                    guna2CirclePictureBox2.Image = ByteToImage(xByte);
                 }
             }
             else
             {
                 guna2CirclePictureBox1.Image = Properties.Resources.profilep;
-                guna2CirclePictureBox2.Image = Properties.Resources.profilep;
+                Image imggg = resizeImage((Image)Properties.Resources.profilep, new Size(35, 35));
+                ImageConverter _imageConverter = new ImageConverter();
+                byte[] xByte = (byte[])_imageConverter.ConvertTo(imggg, typeof(byte[]));
+                guna2CirclePictureBox2.Image = ByteToImage(xByte);
             }
+        }
+        public static Bitmap ByteToImage(byte[] blob)
+        {
+            MemoryStream mStream = new MemoryStream();
+            byte[] pData = blob;
+            mStream.Write(pData, 0, Convert.ToInt32(pData.Length));
+            Bitmap bm = new Bitmap(mStream, false);
+            mStream.Dispose();
+            return bm;
+        }
+        public static Image resizeImage(Image imgToResize, Size size)
+        {
+            return (Image)(new Bitmap(imgToResize, size));
         }
         private void PictureBoxForeground_Paint(object sender, PaintEventArgs e)
         {
@@ -572,6 +605,31 @@ namespace NTTracking
             guna2ShadowPanel1.Visible = true;
 
 
+
+        }
+
+        formRecords records;
+        private void guna2Button2_Click(object sender, EventArgs e)
+        {
+            if (formNum != "2")
+            {
+                formNum = "2";
+                records = new formRecords();
+                records.id = id;
+                records.username = username;
+                records.Height = panel1.Height;
+                records.Width = panel1.Width;
+                panel1.Controls.Clear();
+                records.TopLevel = false;
+                panel1.Controls.Add(records);
+                panel1.AutoScroll = false;
+                records.BringToFront();
+                records.Show();
+            }
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
 
         }
     }

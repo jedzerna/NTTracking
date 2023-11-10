@@ -18,6 +18,36 @@ namespace NTTracking
 {
     public partial class LoginForm : Form
     {
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams handleparam = base.CreateParams;
+                handleparam.ExStyle |= 0x02000000;
+                return handleparam;
+            }
+
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            this.DoubleBuffered = true;
+        }
+        public static void SetDoubleBuffered(System.Windows.Forms.Control c)
+        {
+            //Taxes: Remote Desktop Connection and painting
+            //http://blogs.msdn.com/oldnewthing/archive/2006/01/03/508694.aspx
+            if (System.Windows.Forms.SystemInformation.TerminalServerSession)
+                return;
+
+            System.Reflection.PropertyInfo aProp =
+                  typeof(System.Windows.Forms.Control).GetProperty(
+                        "DoubleBuffered",
+                        System.Reflection.BindingFlags.NonPublic |
+                        System.Reflection.BindingFlags.Instance);
+
+            aProp.SetValue(c, true, null);
+        }
         public LoginForm()
         {
             InitializeComponent();
@@ -85,6 +115,7 @@ namespace NTTracking
                                 img = null;
                             }
                             id = dr1["id"].ToString();
+                            position = dr1["position"].ToString();
                         }
                         dr1.Close();
 
@@ -121,6 +152,7 @@ namespace NTTracking
             }
         }
         private string id = "";
+        private string position;
         private Image img;
         private void openDash()
         {
@@ -130,6 +162,7 @@ namespace NTTracking
             f.img = img;
             f.username = guna2TextBox1.Text;
             f.id = id;
+            f.position = position;
             this.Hide();
             f.ShowDialog();
             this.Close();
