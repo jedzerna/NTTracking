@@ -116,109 +116,118 @@ namespace NTTracking
 
         private void LoadProcessesOnUIThread()
         {
-            DataTable dt = new DataTable();
-            dt.Clear();
-            dt.Columns.Add("Software");
-            dt.Columns.Add("ProcessID");
-
-            HashSet<int> processIds = new HashSet<int>();
-
-            Process[] processes = Process.GetProcesses();
-
-            foreach (var process in processes)
-            {
-                if (!string.IsNullOrEmpty(process.MainWindowTitle) && !processIds.Contains(process.Id))
-                {
-                    DataRow row = dt.NewRow();
-                    row["Software"] = process.MainWindowTitle.Trim();
-                    row["ProcessID"] = process.Id.ToString().Trim();
-                    dt.Rows.Add(row);
-
-                    // Add the Process ID to the HashSet to prevent duplicates
-                    processIds.Add(process.Id);
-                }
-            }
-            dt.AcceptChanges();
-            dt = RemoveDuplicateRows(dt, "ProcessID");
-            dt.DefaultView.Sort = "Software ASC";
-
-            Thread.Sleep(2000);
-            if (dataGridView1.Rows.Count == 0)
+            try
             {
 
-                foreach (DataRow dtrow in dt.Rows)
+                DataTable dt = new DataTable();
+                dt.Clear();
+                dt.Columns.Add("Software");
+                dt.Columns.Add("ProcessID");
+
+                HashSet<int> processIds = new HashSet<int>();
+
+                Process[] processes = Process.GetProcesses();
+
+                foreach (var process in processes)
                 {
-                    dataGridView1.BeginInvoke((Action)delegate ()
+                    if (!string.IsNullOrEmpty(process.MainWindowTitle) && !processIds.Contains(process.Id))
                     {
-                        if (userd.timer1.Enabled == true)
-                        {
-                            string desc = dtrow["Software"].ToString().Trim();
-                         
+                        DataRow row = dt.NewRow();
+                        row["Software"] = process.MainWindowTitle.Trim();
+                        row["ProcessID"] = process.Id.ToString().Trim();
+                        dt.Rows.Add(row);
 
-                            int a = dataGridView1.Rows.Add();
-                            dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
-                            dataGridView1.Rows[a].Cells["Software"].Value = desc;
-                        }
-                    });
-                }
-            }
-            Thread.Sleep(1000);
-            //checking if task is still exist
-            foreach (DataGridViewRow row in dataGridView1.Rows)
-            {
-                bool found = false;
-                foreach (DataRow dtrow in dt.Rows)
-                {
-                    if (dtrow["ProcessID"].ToString() == row.Cells["ProcessID"].Value.ToString() && dtrow["Software"].ToString() == row.Cells["Software"].Value.ToString())
-                    {
-                        found = true;
-                        break;
+                        // Add the Process ID to the HashSet to prevent duplicates
+                        processIds.Add(process.Id);
                     }
-
                 }
-                if (found == false)
+                dt.AcceptChanges();
+                dt = RemoveDuplicateRows(dt, "ProcessID");
+                dt.DefaultView.Sort = "Software ASC";
+
+                Thread.Sleep(2000);
+                if (dataGridView1.Rows.Count == 0)
                 {
-                    dataGridView1.BeginInvoke((Action)delegate ()
-                    {
-                        if (userd.timer1.Enabled == true)
-                        {
-                            dataGridView1.Rows.Remove(row);
-                        }
-                    });
-                }
-            }
 
-            //add new task
-            foreach (DataRow dtrow in dt.Rows)
-            {
-                bool found = false;
+                    foreach (DataRow dtrow in dt.Rows)
+                    {
+                        dataGridView1.BeginInvoke((Action)delegate ()
+                        {
+                            if (userd.timer1.Enabled == true)
+                            {
+                                string desc = dtrow["Software"].ToString().Trim();
+
+
+                                int a = dataGridView1.Rows.Add();
+                                dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
+                                dataGridView1.Rows[a].Cells["Software"].Value = desc;
+                            }
+                        });
+                    }
+                }
+                Thread.Sleep(1000);
+                //checking if task is still exist
                 foreach (DataGridViewRow row in dataGridView1.Rows)
                 {
-                    if (dtrow["ProcessID"].ToString() == row.Cells["ProcessID"].Value.ToString() && dtrow["Software"].ToString() == row.Cells["Software"].Value.ToString())
+                    bool found = false;
+                    foreach (DataRow dtrow in dt.Rows)
                     {
-                        found = true;
-                        break;
-                    }
-
-                }
-                if (found == false)
-                {
-                    dataGridView1.BeginInvoke((Action)delegate ()
-                    {
-                        if (userd.timer1.Enabled == true)
+                        if (dtrow["ProcessID"].ToString() == row.Cells["ProcessID"].Value.ToString() && dtrow["Software"].ToString() == row.Cells["Software"].Value.ToString())
                         {
-                            string desc = dtrow["Software"].ToString().Trim();
-                            //db.AddTaskRunning(id, desc);
-                          
-                            int a = dataGridView1.Rows.Add();
-                            dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
-                            dataGridView1.Rows[a].Cells["Software"].Value = desc;
+                            found = true;
+                            break;
                         }
-                    });
-                }
-            }
 
-            showappsThread = null;
+                    }
+                    if (found == false)
+                    {
+                        dataGridView1.BeginInvoke((Action)delegate ()
+                        {
+                            if (userd.timer1.Enabled == true)
+                            {
+                                dataGridView1.Rows.Remove(row);
+                            }
+                        });
+                    }
+                }
+
+                //add new task
+                foreach (DataRow dtrow in dt.Rows)
+                {
+                    bool found = false;
+                    foreach (DataGridViewRow row in dataGridView1.Rows)
+                    {
+                        if (dtrow["ProcessID"].ToString() == row.Cells["ProcessID"].Value.ToString() && dtrow["Software"].ToString() == row.Cells["Software"].Value.ToString())
+                        {
+                            found = true;
+                            break;
+                        }
+
+                    }
+                    if (found == false)
+                    {
+                        dataGridView1.BeginInvoke((Action)delegate ()
+                        {
+                            if (userd.timer1.Enabled == true)
+                            {
+                                string desc = dtrow["Software"].ToString().Trim();
+                                //db.AddTaskRunning(id, desc);
+
+                                int a = dataGridView1.Rows.Add();
+                                dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
+                                dataGridView1.Rows[a].Cells["Software"].Value = desc;
+                            }
+                        });
+                    }
+                }
+
+                showappsThread = null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                showappsThread = null;
+            }
 
 
 
