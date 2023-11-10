@@ -51,11 +51,13 @@ namespace NTTracking
             aProp.SetValue(c, true, null);
         }
 
+        private string formNum;
         public string username;
         public string id;
         private Thread eventThread;
         private Thread showappsThread;
-
+        private DateTime startTime;
+        formDashboard dashboard;
         private bool canProcessClick = true; // Indicates whether a click event can be processed
         private System.Windows.Forms.Timer clickTimer; // Timer to reset the flag
         public UserDashboard()
@@ -70,6 +72,10 @@ namespace NTTracking
         private void UserDashboard_Load(object sender, EventArgs e)
         {
             SuspendLayout();
+
+            dtf.Clear();
+            dtf.Columns.Add("Software");
+            dtf.Columns.Add("ProcessID");
             guna2CirclePictureBox1.Controls.Add(pictureBox1);
             pictureBox1.Location = new Point(69, 62);
             pictureBox1.BackColor = Color.Transparent;
@@ -77,7 +83,6 @@ namespace NTTracking
             string data1 = id;
             string data3 = startTime.ToString("dd-MM-yyyy");
             highestId = db.GetHighestId(data1, data3);
-            refreshdata();
             if (highestId > 0)
             {
                 // Do ; with highestId
@@ -88,15 +93,7 @@ namespace NTTracking
             showappsThread = null;
 
             label1.Text = username;
-            dataGridView1.ClearSelection();
-
-            ChangeControlStyles(dataGridView2, ControlStyles.OptimizedDoubleBuffer, true);
-            this.dataGridView2.ColumnHeadersDefaultCellStyle.SelectionBackColor = this.dataGridView2.ColumnHeadersDefaultCellStyle.BackColor;
-
-            ChangeControlStyles(dataGridView1, ControlStyles.OptimizedDoubleBuffer, true);
-            this.dataGridView1.ColumnHeadersDefaultCellStyle.SelectionBackColor = this.dataGridView1.ColumnHeadersDefaultCellStyle.BackColor;
-
-          
+            guna2Button1_Click(sender, e);
             ResumeLayout();
         }
         private void PictureBoxForeground_Paint(object sender, PaintEventArgs e)
@@ -112,13 +109,6 @@ namespace NTTracking
             MethodInfo method = ctrl.GetType().GetMethod("SetStyle", BindingFlags.Instance | BindingFlags.NonPublic);
             if (method != null)
                 method.Invoke(ctrl, new object[] { flag, value });
-        }
-        private void refreshdata()
-        {
-            label7.Text = db.GetAnomalies(id).ToString();
-            dataGridView2.DataSource = db.GetPreviousRecord(id);
-            string datefrom = "01-" + DateTime.Now.ToString("MM") + "-" + DateTime.Now.ToString("yyyy");
-            label10.Text = db.CalculateTimeDifference(datefrom, DateTime.Now.ToString("dd-MM-yyyy"));
         }
         private void loaddata()
         {
@@ -169,10 +159,6 @@ namespace NTTracking
 
         private void KeyUpEventHandler(object sender, KeyEventArgs e)
         {
-            // Handle key up events here
-            //guna2TextBox1.Text +=  e.KeyCode.ToString();
-            // Console.WriteLine("Key Up: " + e.KeyCode);
-
             idlechecking = 0;
         }
         private void EventHandlingThread()
@@ -181,41 +167,47 @@ namespace NTTracking
             m_GlobalHook.MouseClick += GlobalHookOnMouseClick;
             Application.Run();
         }
-        public DataTable RemoveDuplicateRows(DataTable dataTable, string columnToCheck)
+        public DataTable RemoveDuplicateRows(DataTable dataTable, string columnId, string columnName)
         {
             // Create a new DataTable with the same structure
             DataTable distinctTable = dataTable.Clone();
 
-            // Create a HashSet to keep track of seen values in the specified column
+            // Create a HashSet to keep track of seen values in the specified columns
             HashSet<string> seenValues = new HashSet<string>();
 
             foreach (DataRow row in dataTable.Rows)
             {
-                string value = row[columnToCheck].ToString();
+                string valueId = row[columnId].ToString();
+                string valueName = row[columnName].ToString();
 
-                if (!seenValues.Contains(value))
+                // Concatenate values from both columns
+                string concatenatedValues = $"{valueId}_{valueName}";
+
+                if (!seenValues.Contains(concatenatedValues))
                 {
                     // Add the row to the distinctTable and HashSet
                     distinctTable.ImportRow(row);
-                    seenValues.Add(value);
+                    seenValues.Add(concatenatedValues);
                 }
             }
 
             return distinctTable;
         }
+        DataTable dtf = new DataTable();
         private void LoadProcessesOnUIThread()
         {
-            Thread.Sleep(3000);
+            //Thread.Sleep(3000);
             //MessageBox.Show("dawd");
             DataTable dt = new DataTable();
             dt.Clear();
             dt.Columns.Add("Software");
             dt.Columns.Add("ProcessID");
 
+
+
             HashSet<int> processIds = new HashSet<int>();
 
             Process[] processes = Process.GetProcesses();
-
             foreach (var process in processes)
             {
                 if (!string.IsNullOrEmpty(process.MainWindowTitle) && !processIds.Contains(process.Id))
@@ -224,112 +216,60 @@ namespace NTTracking
                     row["Software"] = process.MainWindowTitle.Trim();
                     row["ProcessID"] = process.Id.ToString().Trim();
                     dt.Rows.Add(row);
-
-                    // Add the Process ID to the HashSet to prevent duplicates
                     processIds.Add(process.Id);
                 }
             }
+
+            dt = RemoveDuplicateRows(dt, "ProcessID", "Software");
             dt.AcceptChanges();
-            dt = RemoveDuplicateRows(dt, "ProcessID");
-            dt.DefaultView.Sort = "Software ASC";
-            if (dataGridView1.Rows.Count == 0)
+            foreach (DataRow row in dt.Rows)
             {
-
-                foreach (DataRow dtrow in dt.Rows)
+                bool exist = false;
+                foreach (DataRow rowf in dtf.Rows)
                 {
-                  /*  bool found = false;
-                    foreach (DataGridViewRow row in dataGridView1.Rows)
+                    if (rowf["Software"].ToString() == row["Software"].ToString() && rowf["ProcessID"].ToString() == row["ProcessID"].ToString())
                     {
-                        if (dtrow["Software"].ToString().Trim() == row.Cells["Software"].Value.ToString().Trim())
-                        {
-                            found = true;
-                            break;
-                        }
+                        exist = true; break;
                     }
-                    if (found == false)
-                    {*/
-                        dataGridView1.BeginInvoke((Action)delegate ()
-                        {
-                            if (timer1.Enabled == true)
-                            {
-                                string desc = dtrow["Software"].ToString().Trim();
-                                if (db.AddTaskRunning(id, desc))
-                                {
-                                    MessageBox.Show(desc);
-                                }
-                               
-                                    int a = dataGridView1.Rows.Add();
-                                dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
-                                dataGridView1.Rows[a].Cells["Software"].Value = desc;
-                            }
-                        });
-                    //}
+                }
+                if (exist == false)
+                {
+                    if (db.AddTaskRunning(id, row["Software"].ToString()))
+                    {
+                        DataRow rown = dtf.NewRow();
+                        rown["Software"] = row["Software"].ToString();
+                        rown["ProcessID"] = row["ProcessID"].ToString();
+                        dtf.Rows.Add(rown);
+                    }
                 }
             }
-            Thread.Sleep(3000);
-            //checking if task is still exist
-            foreach (DataGridViewRow row in dataGridView1.Rows)
+            dtf.AcceptChanges();
+            foreach (DataRow rowf in dtf.Rows)
             {
-                bool found = false;
-                foreach (DataRow dtrow in dt.Rows)
+                bool exist = false;
+                foreach (DataRow row in dt.Rows)
                 {
-                    if (dtrow["ProcessID"].ToString() == row.Cells["ProcessID"].Value.ToString() && dtrow["Software"].ToString() == row.Cells["Software"].Value.ToString())
+                    if (rowf["Software"].ToString() == row["Software"].ToString() && rowf["ProcessID"].ToString() == row["ProcessID"].ToString())
                     {
-                        found = true;
-                        break;
+                        exist = true; break;
                     }
-
                 }
-                if (found == false)
+
+                if (exist == false)
                 {
-                    dataGridView1.BeginInvoke((Action)delegate ()
+                    if (db.CloseTaskRunning(id, rowf["Software"].ToString()))
                     {
-                        if (timer1.Enabled == true)
-                        {
-                            dataGridView1.Rows.Remove(row);
-                        }
-                    });
+                        rowf.Delete();
+                    }
                 }
             }
-
-            //add new task
-            foreach (DataRow dtrow in dt.Rows)
-            {
-                bool found = false;
-                foreach (DataGridViewRow row in dataGridView1.Rows)
-                {
-                    if (dtrow["ProcessID"].ToString() == row.Cells["ProcessID"].Value.ToString() && dtrow["Software"].ToString() == row.Cells["Software"].Value.ToString())
-                    {
-                        found = true;
-                        break;
-                    }
-
-                }
-                if (found == false)
-                {
-                    dataGridView1.BeginInvoke((Action)delegate ()
-                    {
-                        if (timer1.Enabled == true)
-                        {
-                            string desc = dtrow["Software"].ToString().Trim();
-                            //db.AddTaskRunning(id, desc);
-                            if (db.AddTaskRunning(id, desc))
-                            {
-                                MessageBox.Show(desc);
-                            }
-                            int a = dataGridView1.Rows.Add();
-                            dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
-                            dataGridView1.Rows[a].Cells["Software"].Value = desc;
-                        }
-                    });
-                }
-            }
-
+            dtf.AcceptChanges();
+            dtf.DefaultView.Sort = "Software ASC";
+            dtf.AcceptChanges();
+            //Thread.Sleep(2000);
+           
             showappsThread = null;
 
-
-
-          
         }
         private void GlobalHookOnMouseMove(object sender, MouseEventArgs e)
         {
@@ -342,24 +282,6 @@ namespace NTTracking
             int x = e.X;
             int y = e.Y;
 
-            // You can do something with the mouse coordinates
-            /*if (label12.InvokeRequired)
-            {
-                label12.Invoke(new Action(() => label12.Text = x.ToString()));
-            }
-            else
-            {
-                label12.Text = x.ToString();
-            }
-
-            if (label13.InvokeRequired)
-            {
-                label13.Invoke(new Action(() => label13.Text = y.ToString()));
-            }
-            else
-            {
-                label13.Text = y.ToString();
-            }*/
             idlechecking = 0;
         }
         private void GlobalHookOnMouseClick(object sender, MouseEventArgs e)
@@ -399,22 +321,15 @@ namespace NTTracking
         private void UserDashboard_FormClosing(object sender, FormClosingEventArgs e)
         {
             Application.Exit();
-            /* KeyboardHook.Unhook();
-             base.OnFormClosing(e);
-             m_GlobalHook.MouseMove -= GlobalHookOnMouseMove;
-             m_GlobalHook.MouseClick -= GlobalHookOnMouseClick;
-
-             // Stop and join the event thread to exit cleanly
-             eventThread.Abort();
-             eventThread.Join();*/
         }
-        private DateTime startTime;
         DBData db = new DBData();
+        public string timeinout;
         private void guna2Button4_Click(object sender, EventArgs e)
         {
 
             if (db.OpenConnection())
             {
+                reload = "1";
                 startTime = DateTime.Now;
                 // Specify the data you want to insert
                 string data1 = id; 
@@ -425,13 +340,16 @@ namespace NTTracking
                 if (db.TimeIn(data1, data2, data3))
                 {
 
-                    refreshdata();
+                    //refreshdata();
                     startTracking();
+                    formDashboard dash = new formDashboard();
+                    dash.refreshdata();
+                    timeinout = "in";
                 }
                 db.CloseConnection();
             }
-        }
 
+        }
         private void timer1_Tick(object sender, EventArgs e)
         {
           
@@ -445,24 +363,37 @@ namespace NTTracking
                 showappsThread = new Thread(LoadProcessesOnUIThread);
                 showappsThread.Start();
             }
-            if (idlechecking >= 1000)
+            if (idlechecking >= 120)
             {
                 //idlechecking = 0;
                 idlechecking++;
+
+                //label2.BeginInvoke((Action)delegate ()
+                //{
+                //    label2.Text = idlechecking.ToString();
+                //});
                 //label4.Text = idlechecking.ToString();
                 pictureBox1.Image = Properties.Resources.circlered2;
             }
-            else if (idlechecking >= 400)
+            else if (idlechecking >= 40)
             {
                 //idlechecking = 0;
                 idlechecking++;
+
+                //label2.BeginInvoke((Action)delegate ()
+                //{
+                //    label2.Text = idlechecking.ToString();
+                //});
                 //label4.Text = idlechecking.ToString();
                 pictureBox1.Image = Properties.Resources.circlewaiting;
             }
             else
             {
                 idlechecking++;
-                //label4.Text = idlechecking.ToString();
+                //label2.BeginInvoke((Action)delegate ()
+                //{
+                //    label2.Text = idlechecking.ToString();
+                //});
                 pictureBox1.Image = Properties.Resources.circlegreen2;
             }
         }
@@ -473,6 +404,7 @@ namespace NTTracking
         {
             if (db.OpenConnection())
             {
+                reload = "2";
                 //startTime = DateTime.Now;
                 // Specify the data you want to insert
                 string data1 = highestId.ToString();
@@ -482,7 +414,7 @@ namespace NTTracking
                 // Insert the data into the database
                 if (db.TimeOut(data1, data2, data3))
                 {
-                    refreshdata();
+                    //refreshdata();
                     KeyboardHook.Unhook();
                     m_GlobalHook.MouseMove -= GlobalHookOnMouseMove;
                     m_GlobalHook.MouseClick -= GlobalHookOnMouseClick;
@@ -494,12 +426,14 @@ namespace NTTracking
                     label3.Text = "0:00";
                     guna2Button6.Visible = false;
                     guna2Button4.Visible = true;
+                    formDashboard dash = new formDashboard();
+                    dash.refreshdata();
+                    timeinout = "out";
                 }
                 db.CloseConnection();
             }
-            dataGridView1.Rows.Clear();
         }
-
+        public string reload;
         private void pictureBox1_Click(object sender, EventArgs e)
         {
 
@@ -519,5 +453,33 @@ namespace NTTracking
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
                     }
+
+        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void guna2Button3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void guna2Button1_Click(object sender, EventArgs e)
+        {
+            //changefill();
+            formNum = "1";
+            //guna2Button6.FillColor = Color.FromArgb(56, 163, 255);
+            dashboard = new formDashboard(this);
+            dashboard.id = id;
+            dashboard.username = username;
+            dashboard.Height = panel1.Height;
+            dashboard.Width = panel1.Width;
+            panel1.Controls.Clear();
+            dashboard.TopLevel = false;
+            panel1.Controls.Add(dashboard);
+            panel1.AutoScroll = false;
+            dashboard.BringToFront();
+            dashboard.Show();
+        }
     }
 }

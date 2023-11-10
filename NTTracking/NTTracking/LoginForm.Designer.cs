@@ -101,6 +101,8 @@
             this.guna2TextBox1.SelectedText = "";
             this.guna2TextBox1.Size = new System.Drawing.Size(265, 36);
             this.guna2TextBox1.TabIndex = 4;
+            this.guna2TextBox1.TextChanged += new System.EventHandler(this.guna2TextBox1_TextChanged);
+            this.guna2TextBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.guna2TextBox1_KeyDown);
             // 
             // guna2TextBox2
             // 
@@ -122,6 +124,7 @@
             this.guna2TextBox2.SelectedText = "";
             this.guna2TextBox2.Size = new System.Drawing.Size(265, 36);
             this.guna2TextBox2.TabIndex = 5;
+            this.guna2TextBox2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.guna2TextBox2_KeyDown);
             // 
             // label3
             // 
