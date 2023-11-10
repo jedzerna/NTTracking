@@ -72,6 +72,10 @@ namespace NTTracking
         private void UserDashboard_Load(object sender, EventArgs e)
         {
             SuspendLayout();
+
+            dtf.Clear();
+            dtf.Columns.Add("Software");
+            dtf.Columns.Add("ProcessID");
             guna2CirclePictureBox1.Controls.Add(pictureBox1);
             pictureBox1.Location = new Point(69, 62);
             pictureBox1.BackColor = Color.Transparent;
@@ -163,28 +167,33 @@ namespace NTTracking
             m_GlobalHook.MouseClick += GlobalHookOnMouseClick;
             Application.Run();
         }
-        public DataTable RemoveDuplicateRows(DataTable dataTable, string columnToCheck)
+        public DataTable RemoveDuplicateRows(DataTable dataTable, string columnId, string columnName)
         {
             // Create a new DataTable with the same structure
             DataTable distinctTable = dataTable.Clone();
 
-            // Create a HashSet to keep track of seen values in the specified column
+            // Create a HashSet to keep track of seen values in the specified columns
             HashSet<string> seenValues = new HashSet<string>();
 
             foreach (DataRow row in dataTable.Rows)
             {
-                string value = row[columnToCheck].ToString();
+                string valueId = row[columnId].ToString();
+                string valueName = row[columnName].ToString();
 
-                if (!seenValues.Contains(value))
+                // Concatenate values from both columns
+                string concatenatedValues = $"{valueId}_{valueName}";
+
+                if (!seenValues.Contains(concatenatedValues))
                 {
                     // Add the row to the distinctTable and HashSet
                     distinctTable.ImportRow(row);
-                    seenValues.Add(value);
+                    seenValues.Add(concatenatedValues);
                 }
             }
 
             return distinctTable;
         }
+        DataTable dtf = new DataTable();
         private void LoadProcessesOnUIThread()
         {
             //Thread.Sleep(3000);
@@ -195,10 +204,6 @@ namespace NTTracking
             dt.Columns.Add("ProcessID");
 
 
-            DataTable dtf = new DataTable();
-            dtf.Clear();
-            dtf.Columns.Add("Software");
-            dtf.Columns.Add("ProcessID");
 
             HashSet<int> processIds = new HashSet<int>();
 
@@ -214,7 +219,8 @@ namespace NTTracking
                     processIds.Add(process.Id);
                 }
             }
-            dt = RemoveDuplicateRows(dt, "ProcessID");
+
+            dt = RemoveDuplicateRows(dt, "ProcessID", "Software");
             dt.AcceptChanges();
             foreach (DataRow row in dt.Rows)
             {
@@ -228,13 +234,16 @@ namespace NTTracking
                 }
                 if (exist == false)
                 {
-                    DataRow rown = dtf.NewRow();
-                    rown["Software"] = row["Software"].ToString();
-                    rown["ProcessID"] = row["ProcessID"].ToString();
-                    dtf.Rows.Add(rown);
-                    dtf.AcceptChanges();
+                    if (db.AddTaskRunning(id, row["Software"].ToString()))
+                    {
+                        DataRow rown = dtf.NewRow();
+                        rown["Software"] = row["Software"].ToString();
+                        rown["ProcessID"] = row["ProcessID"].ToString();
+                        dtf.Rows.Add(rown);
+                    }
                 }
             }
+            dtf.AcceptChanges();
             foreach (DataRow rowf in dtf.Rows)
             {
                 bool exist = false;
@@ -244,23 +253,21 @@ namespace NTTracking
                     {
                         exist = true; break;
                     }
-                    
-
                 }
 
                 if (exist == false)
                 {
-                    rowf.Delete();
-                    dtf.AcceptChanges();
+                    if (db.CloseTaskRunning(id, rowf["Software"].ToString()))
+                    {
+                        rowf.Delete();
+                    }
                 }
             }
+            dtf.AcceptChanges();
             dtf.DefaultView.Sort = "Software ASC";
             dtf.AcceptChanges();
-            Thread.Sleep(2000);
-            dataGridView1.BeginInvoke((Action)delegate ()
-            {
-                dataGridView1.DataSource = dtf;
-            });
+            //Thread.Sleep(2000);
+           
             showappsThread = null;
 
         }
@@ -314,21 +321,15 @@ namespace NTTracking
         private void UserDashboard_FormClosing(object sender, FormClosingEventArgs e)
         {
             Application.Exit();
-            /* KeyboardHook.Unhook();
-             base.OnFormClosing(e);
-             m_GlobalHook.MouseMove -= GlobalHookOnMouseMove;
-             m_GlobalHook.MouseClick -= GlobalHookOnMouseClick;
-
-             // Stop and join the event thread to exit cleanly
-             eventThread.Abort();
-             eventThread.Join();*/
         }
         DBData db = new DBData();
+        public string timeinout;
         private void guna2Button4_Click(object sender, EventArgs e)
         {
 
             if (db.OpenConnection())
             {
+                reload = "1";
                 startTime = DateTime.Now;
                 // Specify the data you want to insert
                 string data1 = id; 
@@ -341,11 +342,14 @@ namespace NTTracking
 
                     //refreshdata();
                     startTracking();
+                    formDashboard dash = new formDashboard();
+                    dash.refreshdata();
+                    timeinout = "in";
                 }
                 db.CloseConnection();
             }
-        }
 
+        }
         private void timer1_Tick(object sender, EventArgs e)
         {
           
@@ -359,24 +363,37 @@ namespace NTTracking
                 showappsThread = new Thread(LoadProcessesOnUIThread);
                 showappsThread.Start();
             }
-            if (idlechecking >= 1000)
+            if (idlechecking >= 120)
             {
                 //idlechecking = 0;
                 idlechecking++;
+
+                //label2.BeginInvoke((Action)delegate ()
+                //{
+                //    label2.Text = idlechecking.ToString();
+                //});
                 //label4.Text = idlechecking.ToString();
                 pictureBox1.Image = Properties.Resources.circlered2;
             }
-            else if (idlechecking >= 400)
+            else if (idlechecking >= 40)
             {
                 //idlechecking = 0;
                 idlechecking++;
+
+                //label2.BeginInvoke((Action)delegate ()
+                //{
+                //    label2.Text = idlechecking.ToString();
+                //});
                 //label4.Text = idlechecking.ToString();
                 pictureBox1.Image = Properties.Resources.circlewaiting;
             }
             else
             {
                 idlechecking++;
-                //label4.Text = idlechecking.ToString();
+                //label2.BeginInvoke((Action)delegate ()
+                //{
+                //    label2.Text = idlechecking.ToString();
+                //});
                 pictureBox1.Image = Properties.Resources.circlegreen2;
             }
         }
@@ -387,6 +404,7 @@ namespace NTTracking
         {
             if (db.OpenConnection())
             {
+                reload = "2";
                 //startTime = DateTime.Now;
                 // Specify the data you want to insert
                 string data1 = highestId.ToString();
@@ -408,11 +426,14 @@ namespace NTTracking
                     label3.Text = "0:00";
                     guna2Button6.Visible = false;
                     guna2Button4.Visible = true;
+                    formDashboard dash = new formDashboard();
+                    dash.refreshdata();
+                    timeinout = "out";
                 }
                 db.CloseConnection();
             }
         }
-
+        public string reload;
         private void pictureBox1_Click(object sender, EventArgs e)
         {
 

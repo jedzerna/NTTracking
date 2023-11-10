@@ -80,19 +80,42 @@ namespace NTTracking
             if (method != null)
                 method.Invoke(ctrl, new object[] { flag, value });
         }
+        int highestId = 0;
 
-        private void refreshdata()
+        public void refreshdata()
         {
             label7.Text = db.GetAnomalies(id).ToString();
             dataGridView2.DataSource = db.GetPreviousRecord(id);
             string datefrom = "01-" + DateTime.Now.ToString("MM") + "-" + DateTime.Now.ToString("yyyy");
             label10.Text = db.CalculateTimeDifference(datefrom, DateTime.Now.ToString("dd-MM-yyyy"));
+            //if (label7.IsHandleCreated)
+            //{
+            //    label7.BeginInvoke((Action)delegate ()
+            //    {
+            //        label7.Text = db.GetAnomalies(id).ToString();
+            //        dataGridView2.DataSource = db.GetPreviousRecord(id);
+            //        string datefrom = "01-" + DateTime.Now.ToString("MM") + "-" + DateTime.Now.ToString("yyyy");
+            //        label10.Text = db.CalculateTimeDifference(datefrom, DateTime.Now.ToString("dd-MM-yyyy"));
+            //    });
+            //}
+            //else
+            //{
+            //    // Handle not created yet, subscribe to HandleCreated event
+            //    label7.HandleCreated += (sender, e) =>
+            //    {
+            //        label7.BeginInvoke((Action)delegate ()
+            //        {
+            //            label7.Text = db.GetAnomalies(id).ToString();
+            //            dataGridView2.DataSource = db.GetPreviousRecord(id);
+            //            string datefrom = "01-" + DateTime.Now.ToString("MM") + "-" + DateTime.Now.ToString("yyyy");
+            //            label10.Text = db.CalculateTimeDifference(datefrom, DateTime.Now.ToString("dd-MM-yyyy"));
+            //        });
+            //    };
+            //}
         }
 
         private void LoadProcessesOnUIThread()
         {
-            //Thread.Sleep(3000);
-            //MessageBox.Show("dawd");
             DataTable dt = new DataTable();
             dt.Clear();
             dt.Columns.Add("Software");
@@ -130,10 +153,7 @@ namespace NTTracking
                         if (userd.timer1.Enabled == true)
                         {
                             string desc = dtrow["Software"].ToString().Trim();
-                            if (db.AddTaskRunning(id, desc))
-                            {
-                                MessageBox.Show(desc);
-                            }
+                         
 
                             int a = dataGridView1.Rows.Add();
                             dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
@@ -189,10 +209,7 @@ namespace NTTracking
                         {
                             string desc = dtrow["Software"].ToString().Trim();
                             //db.AddTaskRunning(id, desc);
-                            if (db.AddTaskRunning(id, desc))
-                            {
-                                MessageBox.Show(desc);
-                            }
+                          
                             int a = dataGridView1.Rows.Add();
                             dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
                             dataGridView1.Rows[a].Cells["Software"].Value = desc;
@@ -232,23 +249,69 @@ namespace NTTracking
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (showappsThread == null && userd.timer1.Enabled == true)
+            try
             {
-                refreshdata();
-                showappsThread = new Thread(LoadProcessesOnUIThread);
-                showappsThread.Start();
-            }
-            else
-            {
-                if (showappsThread == null && userd.timer1.Enabled == false)
+                //if (!string.IsNullOrEmpty(userd.timeinout))
+                //{
+                //    MessageBox.Show(userd.timeinout.ToString());
+                //}
+                //else
+                //{
+                //    MessageBox.Show("null");
+                //}
+                //if (showappsThread == null && userd.timeinout == "in")
+                //{
+                //    showappsThread = new Thread(LoadProcessesOnUIThread);
+                //    showappsThread.Start();
+                //}
+                //else if (showappsThread == null && userd.timeinout == "out")
+                //{
+                //    if (showappsThread == null && userd.guna2Button4.Visible == true)
+                //    {
+                //        if (dataGridView1.Rows.Count != 0)
+                //        {
+                //            dataGridView1.Rows.Clear();
+                //        }
+                //    }
+                //}
+
+                startTime = DateTime.Now;
+                string data1 = id;
+                string data3 = startTime.ToString("dd-MM-yyyy");
+                highestId = db.GetHighestId(data1, data3);
+                if (highestId > 0)
                 {
-                    refreshdata();
-                    if (dataGridView1.Rows.Count != 0)
+                    if (showappsThread == null)
                     {
-                        dataGridView1.Rows.Clear();
+                        showappsThread = new Thread(LoadProcessesOnUIThread);
+                        showappsThread.Start();
                     }
                 }
+                else
+                {
+                    if (showappsThread == null)
+                    {
+                        if (dataGridView1.Rows.Count != 0)
+                        {
+                            dataGridView1.Rows.Clear();
+                        }
+                    }
+                }
+                if (userd != null && userd.reload != null && userd.reload == "2")
+                {
+                    refreshdata();
+                    userd.reload = "";
+                }else if (userd != null && userd.reload != null && userd.reload == "1")
+                {
+                    refreshdata();
+                    userd.reload = "";
+                }
             }
+            catch (NullReferenceException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+           
         }
     }
 }

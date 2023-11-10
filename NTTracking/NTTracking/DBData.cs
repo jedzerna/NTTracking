@@ -333,32 +333,69 @@ namespace NTTracking
             {
                 try
                 {
-                    // Use parameterized query to avoid SQL injection
-                    string query = "INSERT INTO tbltaskrunning (userid, description,datetime,status) VALUES (@userid, @timein, @datein, @status)";
-                    MySqlCommand cmd = new MySqlCommand(query, connection);
-                    cmd.Parameters.AddWithValue("@userid", userid);
-                    cmd.Parameters.AddWithValue("@description", description);
-                    cmd.Parameters.AddWithValue("@datetime", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@status", "Opening");
+                    string query = "INSERT INTO tbltaskrunning (userid, description, date,time, status) VALUES (@userid, @description, @date,@time, @status)";
+                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@userid", userid);
+                        cmd.Parameters.AddWithValue("@description", description);
+                        cmd.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd"));
+                        cmd.Parameters.AddWithValue("@time", DateTime.Now.ToString("HH:mm:ss"));
+                        cmd.Parameters.AddWithValue("@status", "Opening");
 
-                    cmd.ExecuteNonQuery();
-
-
+                        cmd.ExecuteNonQuery();
+                    }
                     this.CloseConnection();
                     return true;
                 }
                 catch (MySqlException ex)
                 {
                     Console.WriteLine("MySQL Exception: " + ex.Message);
-                    this.CloseConnection();
-                    return false;
                 }
                 catch (Exception ex)
                 {
                     // Handle other exceptions
                     Console.WriteLine("Exception: " + ex.Message);
+                }
+                finally
+                {
                     this.CloseConnection();
-                    return false;
+                }
+            }
+            return false;
+        }
+
+        public bool CloseTaskRunning(string userid, string description)
+        {
+            if (this.OpenConnection())
+            {
+                try
+                {
+                    string query = "INSERT INTO tbltaskrunning (userid, description, date,time, status) VALUES (@userid, @description, @date,@time, @status)";
+                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@userid", userid);
+                        cmd.Parameters.AddWithValue("@description", description);
+                        cmd.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd"));
+                        cmd.Parameters.AddWithValue("@time", DateTime.Now.ToString("HH:mm:ss"));
+                        cmd.Parameters.AddWithValue("@status", "Closing");
+
+                        cmd.ExecuteNonQuery();
+                    }
+                    this.CloseConnection();
+                    return true;
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("MySQL Exception: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    // Handle other exceptions
+                    Console.WriteLine("Exception: " + ex.Message);
+                }
+                finally
+                {
+                    this.CloseConnection();
                 }
             }
             return false;
