@@ -31,6 +31,7 @@ namespace NTTracking
         {
             loginT = new Thread(login);
             loginT.Start();
+            //login();
         }
         
 
@@ -130,6 +131,24 @@ namespace NTTracking
             {
                 openDash();
             }
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            Register reg = new Register();
+            reg.ShowDialog();
+            this.Close();
+        }
+
+        private void guna2TextBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void guna2TextBox2_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
