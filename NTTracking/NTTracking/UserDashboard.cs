@@ -54,6 +54,7 @@ namespace NTTracking
         private string formNum;
         public string username;
         public string id;
+        public Image img;
         private Thread eventThread;
         private Thread showappsThread;
         private DateTime startTime;
@@ -72,13 +73,27 @@ namespace NTTracking
         private void UserDashboard_Load(object sender, EventArgs e)
         {
             SuspendLayout();
-
             dtf.Clear();
             dtf.Columns.Add("Software");
             dtf.Columns.Add("ProcessID");
+            if (img == null)
+            {
+                pictureisnull();
+            }
+            else
+            {
+                guna2CirclePictureBox1.Image = img;
+                guna2CirclePictureBox2.Image = img;
+            }
             guna2CirclePictureBox1.Controls.Add(pictureBox1);
-            pictureBox1.Location = new Point(69, 62);
+            pictureBox1.Location = new Point(73, 63);
             pictureBox1.BackColor = Color.Transparent;
+
+
+            guna2CirclePictureBox2.Controls.Add(pictureBox2);
+            pictureBox2.Location = new Point(12, 12);
+            pictureBox2.BackColor = Color.Transparent;
+
             startTime = DateTime.Now;
             string data1 = id;
             string data3 = startTime.ToString("dd-MM-yyyy");
@@ -95,6 +110,31 @@ namespace NTTracking
             label1.Text = username;
             guna2Button1_Click(sender, e);
             ResumeLayout();
+        }
+        private void pictureisnull()
+        {
+            string inputString = username.Trim();
+
+            if (!string.IsNullOrEmpty(inputString)) // Check if the string is not empty
+            {
+                char firstLetter = inputString[0];
+                string resourceName = firstLetter.ToString().ToLower(); 
+                if (Properties.Resources.ResourceManager.GetObject(resourceName) != null)
+                {
+                    guna2CirclePictureBox1.Image = (Image)Properties.Resources.ResourceManager.GetObject(resourceName);
+                    guna2CirclePictureBox2.Image = (Image)Properties.Resources.ResourceManager.GetObject(resourceName);
+                }
+                else
+                {
+                    guna2CirclePictureBox1.Image = Properties.Resources.profilep;
+                    guna2CirclePictureBox2.Image = Properties.Resources.profilep;
+                }
+            }
+            else
+            {
+                guna2CirclePictureBox1.Image = Properties.Resources.profilep;
+                guna2CirclePictureBox2.Image = Properties.Resources.profilep;
+            }
         }
         private void PictureBoxForeground_Paint(object sender, PaintEventArgs e)
         {
@@ -143,7 +183,9 @@ namespace NTTracking
 
             loaddata();
             guna2Button6.Visible = true;
+            guna2Button9.Visible = true;
             guna2Button4.Visible = false;
+            guna2Button11.Visible = false;
 
         }
         private IKeyboardMouseEvents m_GlobalHook;
@@ -357,7 +399,9 @@ namespace NTTracking
                 label3.Text = elapsedTime.Hours.ToString("00") + "\n" +
                              elapsedTime.Minutes.ToString("00") + "\n" +
                             elapsedTime.Seconds.ToString("00");
-
+            label6.Text = elapsedTime.Hours.ToString("00") + ":" +
+                             elapsedTime.Minutes.ToString("00") + ":" +
+                            elapsedTime.Seconds.ToString("00");
             if (showappsThread == null && timer1.Enabled == true)
             {
                 showappsThread = new Thread(LoadProcessesOnUIThread);
@@ -374,6 +418,7 @@ namespace NTTracking
                 //});
                 //label4.Text = idlechecking.ToString();
                 pictureBox1.Image = Properties.Resources.circlered2;
+                pictureBox2.Image = Properties.Resources.circlered2;
             }
             else if (idlechecking >= 40)
             {
@@ -386,6 +431,7 @@ namespace NTTracking
                 //});
                 //label4.Text = idlechecking.ToString();
                 pictureBox1.Image = Properties.Resources.circlewaiting;
+                pictureBox2.Image = Properties.Resources.circlewaiting;
             }
             else
             {
@@ -395,6 +441,7 @@ namespace NTTracking
                 //    label2.Text = idlechecking.ToString();
                 //});
                 pictureBox1.Image = Properties.Resources.circlegreen2;
+                pictureBox2.Image = Properties.Resources.circlegreen2;
             }
         }
         int idlechecking = 0;
@@ -425,7 +472,9 @@ namespace NTTracking
                     showappsThread = null;
                     label3.Text = "0:00";
                     guna2Button6.Visible = false;
+                    guna2Button9.Visible = false;
                     guna2Button4.Visible = true;
+                    guna2Button11.Visible = true;
                     formDashboard dash = new formDashboard();
                     dash.refreshdata();
                     timeinout = "out";
@@ -467,19 +516,63 @@ namespace NTTracking
         private void guna2Button1_Click(object sender, EventArgs e)
         {
             //changefill();
-            formNum = "1";
-            //guna2Button6.FillColor = Color.FromArgb(56, 163, 255);
-            dashboard = new formDashboard(this);
-            dashboard.id = id;
-            dashboard.username = username;
-            dashboard.Height = panel1.Height;
-            dashboard.Width = panel1.Width;
-            panel1.Controls.Clear();
-            dashboard.TopLevel = false;
-            panel1.Controls.Add(dashboard);
-            panel1.AutoScroll = false;
-            dashboard.BringToFront();
-            dashboard.Show();
+            if (formNum != "1")
+            {
+                formNum = "1";
+                dashboard = new formDashboard(this);
+                dashboard.id = id;
+                dashboard.username = username;
+                dashboard.Height = panel1.Height;
+                dashboard.Width = panel1.Width;
+                panel1.Controls.Clear();
+                dashboard.TopLevel = false;
+                panel1.Controls.Add(dashboard);
+                panel1.AutoScroll = false;
+                dashboard.BringToFront();
+                dashboard.Show();
+            }
+        }
+
+        private void panel1_Paint_1(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void guna2Button7_Click(object sender, EventArgs e)
+        {
+            guna2Transition1.HideSync(guna2ShadowPanel1);
+            guna2ShadowPanel1.Visible = false;
+
+
+            guna2Transition2.ShowSync(guna2ShadowPanel2);
+            guna2ShadowPanel2.Visible = true;
+
+            panel1.SetBounds(117, 46, 774, 543);
+        }
+
+        private void guna2ShadowPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void guna2CirclePictureBox2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void guna2Button8_Click(object sender, EventArgs e)
+        {
+
+            guna2Transition2.HideSync(guna2ShadowPanel2);
+            guna2ShadowPanel2.Visible = false;
+
+            panel1.SetBounds(188, 48, 774, 543);
+
+            guna2Transition1.ShowSync(guna2ShadowPanel1);
+            guna2ShadowPanel1.Visible = true;
+
+
+
         }
     }
 }

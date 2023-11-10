@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using System.Threading;
+using System.IO;
 
 namespace NTTracking
 {
@@ -73,6 +74,16 @@ namespace NTTracking
 
                         if (dr1.Read())
                         {
+                            if (dr1["user_image"] != DBNull.Value)
+                            {
+                                byte[] imageBytes = (byte[])dr1["user_image"];
+                                img = ByteArrayToImage(imageBytes);
+                            }
+                            else
+                            {
+                                // Handle the case when user_image is null in the database
+                                img = null;
+                            }
                             id = dr1["id"].ToString();
                         }
                         dr1.Close();
@@ -100,14 +111,23 @@ namespace NTTracking
                     guna2Button1.Enabled = true;
                 });
             }
-            
+
+        }
+        private Image ByteArrayToImage(byte[] byteArray)
+        {
+            using (MemoryStream ms = new MemoryStream(byteArray))
+            {
+                return Image.FromStream(ms);
+            }
         }
         private string id = "";
+        private Image img;
         private void openDash()
         {
             timer1.Stop();
             timer1.Enabled = false;
             UserDashboard f = new UserDashboard();
+            f.img = img;
             f.username = guna2TextBox1.Text;
             f.id = id;
             this.Hide();

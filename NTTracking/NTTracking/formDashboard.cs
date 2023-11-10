@@ -87,7 +87,7 @@ namespace NTTracking
             label7.Text = db.GetAnomalies(id).ToString();
             dataGridView2.DataSource = db.GetPreviousRecord(id);
             string datefrom = "01-" + DateTime.Now.ToString("MM") + "-" + DateTime.Now.ToString("yyyy");
-            label10.Text = db.CalculateTimeDifference(datefrom, DateTime.Now.ToString("dd-MM-yyyy"));
+            label10.Text = db.CalculateTimeDifference(id,datefrom, DateTime.Now.ToString("dd-MM-yyyy"));
             //if (label7.IsHandleCreated)
             //{
             //    label7.BeginInvoke((Action)delegate ()

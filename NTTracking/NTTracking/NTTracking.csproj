@@ -202,6 +202,35 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".nuget\mouse-keyboard-hook-logo.png" />
+    <None Include="Resources\menu.png" />
+    <None Include="Resources\profilep.png" />
+    <None Include="Resources\z.png" />
+    <None Include="Resources\y.png" />
+    <None Include="Resources\x.png" />
+    <None Include="Resources\w.png" />
+    <None Include="Resources\v.png" />
+    <None Include="Resources\u.png" />
+    <None Include="Resources\t.png" />
+    <None Include="Resources\s.png" />
+    <None Include="Resources\r.png" />
+    <None Include="Resources\q.png" />
+    <None Include="Resources\p.png" />
+    <None Include="Resources\o.png" />
+    <None Include="Resources\n.png" />
+    <None Include="Resources\m.png" />
+    <None Include="Resources\l.png" />
+    <None Include="Resources\k.png" />
+    <None Include="Resources\j.png" />
+    <None Include="Resources\i.png" />
+    <None Include="Resources\h.png" />
+    <None Include="Resources\g.png" />
+    <None Include="Resources\f.png" />
+    <None Include="Resources\e.png" />
+    <None Include="Resources\d.png" />
+    <None Include="Resources\c.png" />
+    <None Include="Resources\b.png" />
+    <None Include="Resources\a.png" />
+    <None Include="Resources\acicled.png" />
     <None Include="Resources\loading2.gif" />
     <None Include="Resources\loading3.gif" />
     <None Include="Resources\loading.gif" />

@@ -240,15 +240,16 @@ namespace NTTracking
 
             return highestId;
         }
-        public string CalculateTimeDifference(string datefrom, string dateto)
+        public string CalculateTimeDifference(string userid, string datefrom, string dateto)
         {
             TimeSpan totalTimeDifference = TimeSpan.Zero;
             if (this.OpenConnection())
             {
 
-                string query = "SELECT timein, timeout FROM tbltrackrecords WHERE dateout BETWEEN @startDate AND @endDate AND timeout IS NOT NULL";
+                string query = "SELECT timein, timeout FROM tbltrackrecords WHERE userid=@userid AND dateout BETWEEN @startDate AND @endDate AND timeout IS NOT NULL";
                 MySqlCommand command = new MySqlCommand(query, connection);
 
+                command.Parameters.AddWithValue("@userid", userid);
                 DateTime datefromD = DateTime.Parse(datefrom);
                 command.Parameters.AddWithValue("@startDate", datefromD.ToString("yyyy-MM-dd"));
                 DateTime datetoD = DateTime.Parse(dateto);
