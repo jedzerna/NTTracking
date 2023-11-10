@@ -25,16 +25,13 @@ namespace NTTracking
         private void Form1_Load(object sender, EventArgs e)
         {
 
-            loginT = null;
         }
         Thread loginT;
         private void guna2Button1_Click(object sender, EventArgs e)
         {
-            if (loginT == null)
-            {
-                loginT = new Thread(login);
-                loginT.Start();
-            }
+            loginT = new Thread(login);
+            loginT.Start();
+            //login();
         }
         
 
@@ -81,7 +78,6 @@ namespace NTTracking
                         dr1.Close();
 
                         con.Close();
-                        loginT = null;
                     }
                     else
                     {
@@ -92,8 +88,6 @@ namespace NTTracking
                             guna2Button1.Enabled = true;
                         });
                         MessageBox.Show("Invalid Login. Please check the username and password.");
-
-                        loginT = null;
                     }
                 }
             }catch(Exception ex)
@@ -105,7 +99,6 @@ namespace NTTracking
                     guna2ProgressIndicator1.Stop();
                     guna2Button1.Enabled = true;
                 });
-                loginT = null;
             }
             
         }
@@ -140,13 +133,12 @@ namespace NTTracking
             }
         }
 
-        private void guna2TextBox2_KeyDown(object sender, KeyEventArgs e)
+        private void label6_Click(object sender, EventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
-            {
-                guna2Button1_Click(sender, e);
-                //e.Handled = true;
-            }
+            this.Hide();
+            Register reg = new Register();
+            reg.ShowDialog();
+            this.Close();
         }
 
         private void guna2TextBox1_TextChanged(object sender, EventArgs e)
@@ -154,13 +146,9 @@ namespace NTTracking
 
         }
 
-        private void guna2TextBox1_KeyDown(object sender, KeyEventArgs e)
+        private void guna2TextBox2_TextChanged(object sender, EventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
-            {
-                guna2Button1_Click(sender, e);
-               // e.Handled = true;
-            }
+
         }
     }
 }
