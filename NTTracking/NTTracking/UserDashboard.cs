@@ -96,7 +96,7 @@ namespace NTTracking
             ChangeControlStyles(dataGridView1, ControlStyles.OptimizedDoubleBuffer, true);
             this.dataGridView1.ColumnHeadersDefaultCellStyle.SelectionBackColor = this.dataGridView1.ColumnHeadersDefaultCellStyle.BackColor;
 
-          
+
             ResumeLayout();
         }
         private void PictureBoxForeground_Paint(object sender, PaintEventArgs e)
@@ -118,7 +118,7 @@ namespace NTTracking
             label7.Text = db.GetAnomalies(id).ToString();
             dataGridView2.DataSource = db.GetPreviousRecord(id);
             string datefrom = "01-" + DateTime.Now.ToString("MM") + "-" + DateTime.Now.ToString("yyyy");
-            label10.Text = db.CalculateTimeDifference(datefrom, DateTime.Now.ToString("dd-MM-yyyy"));
+            label10.Text = db.CalculateTimeDifference(id,datefrom, DateTime.Now.ToString("dd-MM-yyyy"));
         }
         private void loaddata()
         {
@@ -237,32 +237,32 @@ namespace NTTracking
 
                 foreach (DataRow dtrow in dt.Rows)
                 {
-                  /*  bool found = false;
-                    foreach (DataGridViewRow row in dataGridView1.Rows)
+                    /*  bool found = false;
+                      foreach (DataGridViewRow row in dataGridView1.Rows)
+                      {
+                          if (dtrow["Software"].ToString().Trim() == row.Cells["Software"].Value.ToString().Trim())
+                          {
+                              found = true;
+                              break;
+                          }
+                      }
+                      if (found == false)
+                      {*/
+                    dataGridView1.BeginInvoke((Action)delegate ()
                     {
-                        if (dtrow["Software"].ToString().Trim() == row.Cells["Software"].Value.ToString().Trim())
+                        if (timer1.Enabled == true)
                         {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (found == false)
-                    {*/
-                        dataGridView1.BeginInvoke((Action)delegate ()
-                        {
-                            if (timer1.Enabled == true)
+                            string desc = dtrow["Software"].ToString().Trim();
+                            if (db.AddTaskRunning(id, desc))
                             {
-                                string desc = dtrow["Software"].ToString().Trim();
-                                if (db.AddTaskRunning(id, desc))
-                                {
-                                    MessageBox.Show(desc);
-                                }
-                               
-                                    int a = dataGridView1.Rows.Add();
-                                dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
-                                dataGridView1.Rows[a].Cells["Software"].Value = desc;
+                                MessageBox.Show(desc);
                             }
-                        });
+
+                            int a = dataGridView1.Rows.Add();
+                            dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
+                            dataGridView1.Rows[a].Cells["Software"].Value = desc;
+                        }
+                    });
                     //}
                 }
             }
@@ -329,7 +329,7 @@ namespace NTTracking
 
 
 
-          
+
         }
         private void GlobalHookOnMouseMove(object sender, MouseEventArgs e)
         {
@@ -417,7 +417,7 @@ namespace NTTracking
             {
                 startTime = DateTime.Now;
                 // Specify the data you want to insert
-                string data1 = id; 
+                string data1 = id;
                 string data2 = startTime.ToString(@"HH\:mm\:ss");
                 string data3 = startTime.ToString("dd-MM-yyyy");
 
@@ -434,11 +434,11 @@ namespace NTTracking
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-          
-                TimeSpan elapsedTime = DateTime.Now - startTime;
-                label3.Text = elapsedTime.Hours.ToString("00") + "\n" +
-                             elapsedTime.Minutes.ToString("00") + "\n" +
-                            elapsedTime.Seconds.ToString("00");
+
+            TimeSpan elapsedTime = DateTime.Now - startTime;
+            label3.Text = elapsedTime.Hours.ToString("00") + "\n" +
+                         elapsedTime.Minutes.ToString("00") + "\n" +
+                        elapsedTime.Seconds.ToString("00");
 
             if (showappsThread == null && timer1.Enabled == true)
             {
@@ -518,6 +518,28 @@ namespace NTTracking
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
-                    }
+        }
+
+        private void guna2CirclePictureBox1_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            UsersAccount dash = new UsersAccount();
+            dash.ShowDialog();
+            this.Close();
+        }
+
+        private void guna2Button7_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            UsersAccount dash = new UsersAccount();
+            dash.ShowDialog();
+            this.Close();
+        }
+       
+
+        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
-}
+    }

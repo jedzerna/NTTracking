@@ -210,14 +210,70 @@ namespace NTTracking
 
             return dataList;
         }
+        public class UserData
+        {
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string Position { get; set; }
+            public string Username { get; set; }
+            public string Email { get; set; }
+            public string PhoneNo { get; set; }
+        }
 
-     
+        // Modify the method to use UserData class
+        public List<UserData> RetrieveUsersAccount(string id)
+        {
+            List<UserData> dataList = new List<UserData>();
+
+            if (this.OpenConnection())
+            {
+                try
+                {
+                    string query = "SELECT first_name, last_name, position, username, phone_no FROM accounts WHERE id = @id";
+
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            UserData data = new UserData
+                            {
+                                // Map database columns to your data type properties
+                                FirstName = reader["first_name"].ToString(),
+                                LastName = reader["last_name"].ToString(),
+                                Position = reader["position"].ToString(),
+                                Username = reader["username"].ToString(),
+                                Email = reader["email"].ToString(),
+                                PhoneNo = reader["phone_no"].ToString(),
+                            };
+
+                            dataList.Add(data);
+                        }
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    // Handle retrieval error
+                    // Log or display an error message here
+                }
+                finally
+                {
+                    this.CloseConnection();
+                }
+            }
+
+            return dataList;
+        }
+
+
         public int GetAnomalies(string userid)
         {
             DateTime recentDate = DateTime.Now.AddDays(-1);
             DateTime firstDate = DateTime.Now;
             string recentDateF = recentDate.ToString("yyyy-dd-MM");
-            string firstDateF = firstDate.ToString("yyyy") + "-01" + "-" + firstDate.ToString("MM") ;
+            string firstDateF = firstDate.ToString("yyyy") + "-01" + "-" + firstDate.ToString("MM");
 
             int highestId = 0;
 
@@ -240,15 +296,16 @@ namespace NTTracking
 
             return highestId;
         }
-        public string CalculateTimeDifference(string datefrom, string dateto)
+        public string CalculateTimeDifference(string userid, string datefrom, string dateto)
         {
             TimeSpan totalTimeDifference = TimeSpan.Zero;
             if (this.OpenConnection())
             {
 
-                string query = "SELECT timein, timeout FROM tbltrackrecords WHERE dateout BETWEEN @startDate AND @endDate AND timeout IS NOT NULL";
+                string query = "SELECT timein, timeout FROM tbltrackrecords WHERE userid=@userid AND dateout BETWEEN @startDate AND @endDate AND timeout IS NOT NULL";
                 MySqlCommand command = new MySqlCommand(query, connection);
 
+                command.Parameters.AddWithValue("@userid", userid);
                 DateTime datefromD = DateTime.Parse(datefrom);
                 command.Parameters.AddWithValue("@startDate", datefromD.ToString("yyyy-MM-dd"));
                 DateTime datetoD = DateTime.Parse(dateto);
@@ -285,8 +342,8 @@ namespace NTTracking
             fdt.Columns.Add("Image", typeof(Bitmap));
             if (this.OpenConnection())
             {
-                string query = "SELECT DATE_FORMAT(datein, '%Y-%d-%m %H:%i:%s') AS datein, " +
-                  "DATE_FORMAT(dateout, '%Y-%d-%m %H:%i:%s') AS dateout, timeout " +
+                string query = "SELECT DATE_FORMAT(datein, '%Y-%m-%d %H:%i:%s') AS datein, " +
+                  "DATE_FORMAT(dateout, '%Y-%m-%d %H:%i:%s') AS dateout, timeout " +
                   "FROM tbltrackrecords WHERE userid = @userid ORDER BY id DESC LIMIT 10";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, connection))
@@ -333,36 +390,74 @@ namespace NTTracking
             {
                 try
                 {
-                    // Use parameterized query to avoid SQL injection
-                    string query = "INSERT INTO tbltaskrunning (userid, description,datetime,status) VALUES (@userid, @timein, @datein, @status)";
-                    MySqlCommand cmd = new MySqlCommand(query, connection);
-                    cmd.Parameters.AddWithValue("@userid", userid);
-                    cmd.Parameters.AddWithValue("@description", description);
-                    cmd.Parameters.AddWithValue("@datetime", DateTime.Now);
-                    cmd.Parameters.AddWithValue("@status", "Opening");
+                    string query = "INSERT INTO tbltaskrunning (userid, description, date,time, status) VALUES (@userid, @description, @date,@time, @status)";
+                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@userid", userid);
+                        cmd.Parameters.AddWithValue("@description", description);
+                        cmd.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd"));
+                        cmd.Parameters.AddWithValue("@time", DateTime.Now.ToString("HH:mm:ss"));
+                        cmd.Parameters.AddWithValue("@status", "Opening");
 
-                    cmd.ExecuteNonQuery();
-
-
+                        cmd.ExecuteNonQuery();
+                    }
                     this.CloseConnection();
                     return true;
                 }
                 catch (MySqlException ex)
                 {
                     Console.WriteLine("MySQL Exception: " + ex.Message);
-                    this.CloseConnection();
-                    return false;
                 }
                 catch (Exception ex)
                 {
                     // Handle other exceptions
                     Console.WriteLine("Exception: " + ex.Message);
+                }
+                finally
+                {
                     this.CloseConnection();
-                    return false;
                 }
             }
             return false;
         }
+
+        public bool CloseTaskRunning(string userid, string description)
+        {
+            if (this.OpenConnection())
+            {
+                try
+                {
+                    string query = "INSERT INTO tbltaskrunning (userid, description, date,time, status) VALUES (@userid, @description, @date,@time, @status)";
+                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@userid", userid);
+                        cmd.Parameters.AddWithValue("@description", description);
+                        cmd.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd"));
+                        cmd.Parameters.AddWithValue("@time", DateTime.Now.ToString("HH:mm:ss"));
+                        cmd.Parameters.AddWithValue("@status", "Closing");
+
+                        cmd.ExecuteNonQuery();
+                    }
+                    this.CloseConnection();
+                    return true;
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("MySQL Exception: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    // Handle other exceptions
+                    Console.WriteLine("Exception: " + ex.Message);
+                }
+                finally
+                {
+                    this.CloseConnection();
+                }
+            }
+            return false;
+            }
+       
     }
 }
 
