@@ -11,8 +11,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls;
 using System.Windows.Forms;
-using System.Text.RegularExpressions;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace NTTracking
 {
@@ -48,7 +46,6 @@ namespace NTTracking
 
             aProp.SetValue(c, true, null);
         }
-
         public Register()
         {
             InitializeComponent();
@@ -84,25 +81,7 @@ namespace NTTracking
 
         private void Register_Load(object sender, EventArgs e)
         {
-            position_dropdown.Items.AddRange(new object[]
-            {
-                "Software Engineer",
-                "Junior Software Engineer",
-                "Associate Software Engineer",
-                "Senior Software Engineer",
-                "IT Support Engineer",
-                "Intern",
-                "Pre-editor - Journal",
-                "Pre-editor - Book",
-                "Copyeditor - Journal",
-                "Copyeditor - Book",
-                "Quality Assurance",
-                "Proof Collator",
-                "Supervisor",
-                "Manager",
-                "VP",
-                "President"
-            });
+
         }
 
         private void guna2TextBox4_TextChanged(object sender, EventArgs e)
@@ -162,32 +141,16 @@ namespace NTTracking
 
         Thread registerT;
 
-
         private void guna2Button2_Click(object sender, EventArgs e)
         {
             var br = Environment.NewLine;
-
-            // Validate first_name_txt, last_name_txt, and username_txt
-            if (!IsValidName(first_name_txt.Text) || !IsValidName(last_name_txt.Text))
+            if (first_name_txt.Text == "" || last_name_txt.Text == "" || position_txt.Text == "" || username_txt.Text == "" || pass_txt.Text == "" || email_txt.Text == "")
             {
-                MessageBox.Show("Invalid characters in First Name or Last Name. Please use only letters." + br + br + "Registration Failed!");
-            }
-            else if (!IsValidUsername(username_txt.Text))
-            {
-                MessageBox.Show("Invalid characters in Username. Please use only letters and clear whitespaces." + br + br + "Registration Failed!");
-            }
-            else if (!IsValidEmail(email_txt.Text))
-            {
-                MessageBox.Show("Invalid email address. Please enter a valid email." + br + br + "Registration Failed!");
-            }
-            else if (string.IsNullOrWhiteSpace(first_name_txt.Text) || string.IsNullOrWhiteSpace(last_name_txt.Text) || string.IsNullOrWhiteSpace(department_txt.Text) ||
-                     string.IsNullOrWhiteSpace(username_txt.Text) || string.IsNullOrWhiteSpace(pass_txt.Text) || string.IsNullOrWhiteSpace(email_txt.Text))
-            {
-                MessageBox.Show("All Fields are required!" + br + br + "Registration Failed!");
+                MessageBox.Show("All Fields are required!" + br + br + br + "Registration Failed!");
             }
             else if (pass_txt.Text != confirm_pass_txt.Text)
             {
-                MessageBox.Show("Password does not match!" + br + br + "Registration Failed!");
+                MessageBox.Show("Password does not match!" + br + br + br + "Registration Failed!");
             }
             else
             {
@@ -196,32 +159,10 @@ namespace NTTracking
             }
         }
 
-        private bool IsValidName(string input)
-        {
-            // Use regular expression to allow only letters and spaces
-            Regex regex = new Regex("^[a-zA-Z ]+$");
-            return regex.IsMatch(input);
-        }
-
-        private bool IsValidUsername(string input)
-        {
-            // Use regular expression to allow only letters
-            Regex regex = new Regex("^[a-zA-Z]+$");
-            return regex.IsMatch(input);
-        }
-
-        private bool IsValidEmail(string email)
-        {
-            // Use regular expression for email validation
-            Regex regex = new Regex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
-            return regex.IsMatch(email);
-        }
-
         private void register()
         {
             try
             {
-                // UI updates
                 guna2ProgressIndicator1.BeginInvoke((Action)delegate ()
                 {
                     guna2ProgressIndicator1.Visible = true;
@@ -229,69 +170,45 @@ namespace NTTracking
                     guna2Button1.Enabled = false;
                 });
 
-                // Database connection string
-                string connectionString = "Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=;";
+                String MyConnection = "Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=;";
 
+                String MySqlQuery = "INSERT INTO accounts(first_name, last_name, position, username, password, email, status) VALUES ('" +first_name_txt.Text.Trim()+ "', '" + last_name_txt.Text.Trim() + "', '"+position_txt.Text.Trim()+"', '"+username_txt.Text.Trim()+"', '"+pass_txt.Text.Trim()+"', '"+email_txt.Text.Trim()+"', 'Pending');";
+                MySqlConnection MyConnection2 = new MySqlConnection(MyConnection);
+                MySqlCommand RegCommand = new MySqlCommand(MySqlQuery, MyConnection2);
 
-                // SQL query
-                string query = "INSERT INTO accounts(user_image, first_name, last_name, position, department, username, password, email, type, status)" +
-                    "VALUES (@user_image, @first_name_txt, @last_name_txt, @position_dropdown, @department_txt, @username_txt, @pass_txt, @email_txt, 'User', 'Pending');";
+                MySqlDataReader MyReader;
 
+                MyConnection2.Open();
+                MyReader = RegCommand.ExecuteReader();
 
-                // Check if USERNAME already exists
-                if (IsUsernameExists(username_txt.Text, connectionString))
+                if (true)
                 {
-                    MessageBox.Show("Username already exists. Registration Failed!");
-                    return; // Exit the registration process if USERNAME already exists
+                    var br = Environment.NewLine;
+                    MessageBox.Show("Registration Successful!"+ br + br + br +"Please contact your direct manager to activate your account.");
+                    success = "1";
+                    registerT = null;
+                }
+                
+
+                while (MyReader.Read())
+                {
+                    
                 }
 
+                MyConnection2.Close();
 
-                // Check if EMAIL already exists
-                if (IsEmailExists(email_txt.Text, connectionString))
-                {
-                    MessageBox.Show("Email already exists. Registration Failed!");
-                    return; // Exit the registration process if EMAIL already exists
-                }
+                // Add parameters to the query
+                //cmd.Parameters.AddWithValue("@Username", first_name_txt.Text);
+                //cmd.Parameters.AddWithValue("@Password", pass_txt.Text);
 
+                //MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+                //DataTable dt = new DataTable();
+                //da.Fill(dt);
 
-                // Database operations
-                using (MySqlConnection connection = new MySqlConnection(connectionString))
-                {
-                    using (MySqlCommand command = new MySqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@user_image", DBNull.Value);
-                        command.Parameters.AddWithValue("@first_name_txt", first_name_txt.Text.Trim());
-                        command.Parameters.AddWithValue("@last_name_txt", last_name_txt.Text.Trim());
-                        command.Parameters.AddWithValue("@position_dropdown", selected);
-                        command.Parameters.AddWithValue("@department_txt", department_txt.Text.Trim());
-                        command.Parameters.AddWithValue("@username_txt", username_txt.Text.Trim());
-                        command.Parameters.AddWithValue("@pass_txt", pass_txt.Text.Trim());
-                        command.Parameters.AddWithValue("@email_txt", email_txt.Text.Trim());
-
-                        connection.Open();
-
-                        // Execute the query
-                        command.ExecuteNonQuery();
-
-                        // Display success message
-                        StringBuilder successMessage = new StringBuilder();
-                        successMessage.AppendLine("Registration Successful!");
-                        successMessage.AppendLine();
-                        successMessage.AppendLine("Please contact your direct manager to activate your account.");
-                        MessageBox.Show(successMessage.ToString());
-
-                        success = "1";
-                        registerT = null;
-                    }
-                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                // UI updates
                 guna2ProgressIndicator1.BeginInvoke((Action)delegate ()
                 {
                     guna2ProgressIndicator1.Visible = false;
@@ -299,54 +216,8 @@ namespace NTTracking
                     guna2Button1.Enabled = true;
                 });
             }
+
         }
-
-
-
-        private bool IsUsernameExists(string username, string connectionString)
-        {
-            // SQL query to check if the USERNAME already exists
-            string query = "SELECT COUNT(*) FROM accounts WHERE username = @username";
-
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                using (MySqlCommand command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@username", username);
-                    connection.Open();
-
-                    // Execute the query
-                    int count = Convert.ToInt32(command.ExecuteScalar());
-
-                    // If count is greater than 0, the email already exists
-                    return count > 0;
-                }
-            }
-        }
-
-
-        private bool IsEmailExists(string email, string connectionString)
-        {
-            // SQL query to check if the EMAIL already exists
-            string query = "SELECT COUNT(*) FROM accounts WHERE email = @email";
-
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                using (MySqlCommand command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@email", email);
-                    connection.Open();
-
-                    // Execute the query
-                    int count = Convert.ToInt32(command.ExecuteScalar());
-
-                    // If count is greater than 0, the email already exists
-                    return count > 0;
-                }
-            }
-        }
-
-
         string success = "";
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -358,72 +229,6 @@ namespace NTTracking
                 LoginForm reg = new LoginForm();
                 reg.ShowDialog();
                 this.Close();
-            }
-        }
-
-        private void label11_Click(object sender, EventArgs e)
-        {
-
-        }
-
-
-
-        private void Register_combo(object sender, EventArgs e)
-        {
-            // Populate the positions in the combo box
-
-        }
-
-        private void department_txt_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-
-        private void department_txt_Load(object sender, EventArgs e)
-        {
-
-        }
-        private string selected;
-        private void position_dropdown_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Check if the selected item is not null
-            if (position_dropdown.SelectedItem != null)
-            {
-                selected = position_dropdown.SelectedItem.ToString();
-                // Get the selected item from the combo box
-                string selectedPosition = position_dropdown.SelectedItem.ToString();
-
-                // Set the department_txt based on the selected position
-                if (selectedPosition == "Software Engineer" ||
-                    selectedPosition == "Junior Software Engineer" ||
-                    selectedPosition == "Associate Software Engineer" ||
-                    selectedPosition == "Senior Software Engineer" ||
-                    selectedPosition == "IT Support Engineer")
-                {
-                    department_txt.Text = "IT Department";
-                }
-                else if (selectedPosition == "Pre-editor - Journal" ||
-                         selectedPosition == "Pre-editor - Book" ||
-                         selectedPosition == "Copyeditor - Journal" ||
-                         selectedPosition == "Copyeditor - Book" ||
-                         selectedPosition == "Proof Collator" ||
-                         selectedPosition == "Quality Assurance")
-                {
-                    department_txt.Text = "Production";
-                }
-                else if (selectedPosition == "Supervisor" ||
-                         selectedPosition == "Manager" ||
-                         selectedPosition == "VP" ||
-                         selectedPosition == "President")
-                {
-                    department_txt.Text = "Management";
-                }
-                else
-                {
-                    // Handle other positions or set a default value for the department_txt
-                    department_txt.Text = "Unknown Department";
-                }
             }
         }
     }

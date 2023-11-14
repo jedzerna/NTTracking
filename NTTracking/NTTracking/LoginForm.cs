@@ -12,12 +12,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using System.Threading;
+using System.IO;
 
 namespace NTTracking
 {
     public partial class LoginForm : Form
     {
-
         protected override CreateParams CreateParams
         {
             get
@@ -48,8 +48,6 @@ namespace NTTracking
 
             aProp.SetValue(c, true, null);
         }
-
-
         public LoginForm()
         {
             InitializeComponent();
@@ -64,6 +62,7 @@ namespace NTTracking
         {
             loginT = new Thread(login);
             loginT.Start();
+            //login();
         }
         
 
@@ -105,7 +104,18 @@ namespace NTTracking
 
                         if (dr1.Read())
                         {
+                            if (dr1["user_image"] != DBNull.Value)
+                            {
+                                byte[] imageBytes = (byte[])dr1["user_image"];
+                                img = ByteArrayToImage(imageBytes);
+                            }
+                            else
+                            {
+                                // Handle the case when user_image is null in the database
+                                img = null;
+                            }
                             id = dr1["id"].ToString();
+                            position = dr1["position"].ToString();
                         }
                         dr1.Close();
 
@@ -132,16 +142,27 @@ namespace NTTracking
                     guna2Button1.Enabled = true;
                 });
             }
-            
+
+        }
+        private Image ByteArrayToImage(byte[] byteArray)
+        {
+            using (MemoryStream ms = new MemoryStream(byteArray))
+            {
+                return Image.FromStream(ms);
+            }
         }
         private string id = "";
+        private string position;
+        private Image img;
         private void openDash()
         {
             timer1.Stop();
             timer1.Enabled = false;
             UserDashboard f = new UserDashboard();
+            f.img = img;
             f.username = guna2TextBox1.Text;
             f.id = id;
+            f.position = position;
             this.Hide();
             f.ShowDialog();
             this.Close();
@@ -165,7 +186,20 @@ namespace NTTracking
             }
         }
 
+        private void label6_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            Register reg = new Register();
+            reg.ShowDialog();
+            this.Close();
+        }
+
         private void guna2TextBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void guna2TextBox2_TextChanged(object sender, EventArgs e)
         {
 
         }
