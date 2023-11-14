@@ -361,6 +361,11 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+<<<<<<< Updated upstream
 
 # Custom files
 *.csproj
+=======
+NTTracking/NTTracking/LoginForm.cs
+NTTracking/NTTracking/Register.cs
+>>>>>>> Stashed changes
