@@ -24,7 +24,7 @@ namespace NTTracking
                 handleparam.ExStyle |= 0x02000000;
                 return handleparam;
             }
-            
+
         }
 
         protected override void OnPaint(PaintEventArgs e)

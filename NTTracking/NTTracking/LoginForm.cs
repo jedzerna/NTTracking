@@ -18,7 +18,6 @@ namespace NTTracking
 {
     public partial class LoginForm : Form
     {
-
         protected override CreateParams CreateParams
         {
             get
