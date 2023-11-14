@@ -44,7 +44,7 @@
       <HintPath>..\packages\Google.Protobuf.3.21.9\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="Guna.UI2">
-      <HintPath>..\..\..\..\..\Downloads\Guna.UI2.dll</HintPath>
+      <HintPath>..\..\..\Projects\DemoBookkeeping\bin\Debug\Guna.UI2.dll</HintPath>
     </Reference>
     <Reference Include="K4os.Compression.LZ4, Version=1.3.5.0, Culture=neutral, PublicKeyToken=2186fa9121ef231d, processorArchitecture=MSIL">
       <HintPath>..\packages\K4os.Compression.LZ4.1.3.5\lib\net462\K4os.Compression.LZ4.dll</HintPath>
@@ -112,12 +112,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DBData.cs" />
-    <Compile Include="formDashboard.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="formDashboard.Designer.cs">
-      <DependentUpon>formDashboard.cs</DependentUpon>
-    </Compile>
     <Compile Include="KeyboardHook.cs" />
     <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>
@@ -128,21 +122,18 @@
     <Compile Include="Model\TrackData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Register.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Register.Designer.cs">
-      <DependentUpon>Register.cs</DependentUpon>
-    </Compile>
     <Compile Include="UserDashboard.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UserDashboard.Designer.cs">
       <DependentUpon>UserDashboard.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="formDashboard.resx">
-      <DependentUpon>formDashboard.cs</DependentUpon>
-    </EmbeddedResource>
+    <Compile Include="UsersAccount.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UsersAccount.Designer.cs">
+      <DependentUpon>UsersAccount.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -156,11 +147,11 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Register.resx">
-      <DependentUpon>Register.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UserDashboard.resx">
       <DependentUpon>UserDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UsersAccount.resx">
+      <DependentUpon>UsersAccount.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -202,35 +193,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".nuget\mouse-keyboard-hook-logo.png" />
-    <None Include="Resources\menu.png" />
-    <None Include="Resources\profilep.png" />
-    <None Include="Resources\z.png" />
-    <None Include="Resources\y.png" />
-    <None Include="Resources\x.png" />
-    <None Include="Resources\w.png" />
-    <None Include="Resources\v.png" />
-    <None Include="Resources\u.png" />
-    <None Include="Resources\t.png" />
-    <None Include="Resources\s.png" />
-    <None Include="Resources\r.png" />
-    <None Include="Resources\q.png" />
-    <None Include="Resources\p.png" />
-    <None Include="Resources\o.png" />
-    <None Include="Resources\n.png" />
-    <None Include="Resources\m.png" />
-    <None Include="Resources\l.png" />
-    <None Include="Resources\k.png" />
-    <None Include="Resources\j.png" />
-    <None Include="Resources\i.png" />
-    <None Include="Resources\h.png" />
-    <None Include="Resources\g.png" />
-    <None Include="Resources\f.png" />
-    <None Include="Resources\e.png" />
-    <None Include="Resources\d.png" />
-    <None Include="Resources\c.png" />
-    <None Include="Resources\b.png" />
-    <None Include="Resources\a.png" />
-    <None Include="Resources\acicled.png" />
     <None Include="Resources\loading2.gif" />
     <None Include="Resources\loading3.gif" />
     <None Include="Resources\loading.gif" />
