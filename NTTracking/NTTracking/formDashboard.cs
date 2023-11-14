@@ -86,8 +86,7 @@ namespace NTTracking
         {
             label7.Text = db.GetAnomalies(id).ToString();
             dataGridView2.DataSource = db.GetPreviousRecord(id);
-            string datefrom = "01-" + DateTime.Now.ToString("MM") + "-" + DateTime.Now.ToString("yyyy");
-            label10.Text = db.CalculateTimeDifference(id,datefrom, DateTime.Now.ToString("dd-MM-yyyy"));
+            label10.Text = db.CalculateTimeDifference(id, DateTime.Now);
             //if (label7.IsHandleCreated)
             //{
             //    label7.BeginInvoke((Action)delegate ()
@@ -287,7 +286,7 @@ namespace NTTracking
                 startTime = DateTime.Now;
                 string data1 = id;
                 string data3 = startTime.ToString("dd-MM-yyyy");
-                highestId = db.GetHighestId(data1, data3);
+                highestId = db.GetHighestId(data1, startTime);
                 if (highestId > 0)
                 {
                     if (showappsThread == null)
@@ -321,6 +320,16 @@ namespace NTTracking
                 MessageBox.Show(ex.Message);
             }
            
+        }
+
+        private void label11_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void guna2ShadowPanel4_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

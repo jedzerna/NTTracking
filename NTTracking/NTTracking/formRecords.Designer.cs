@@ -45,6 +45,7 @@
             this.label14.TabIndex = 20;
             this.label14.Text = "Records";
             this.label14.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.label14.Click += new System.EventHandler(this.label14_Click);
             // 
             // panel1
             // 
@@ -70,6 +71,8 @@
             this.guna2Button2.Name = "guna2Button2";
             this.guna2Button2.Size = new System.Drawing.Size(49, 30);
             this.guna2Button2.TabIndex = 7;
+            this.guna2Button2.Visible = false;
+            this.guna2Button2.Click += new System.EventHandler(this.guna2Button2_Click);
             // 
             // formRecords
             // 
@@ -89,9 +92,8 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Panel panel1;
         private Guna.UI2.WinForms.Guna2Button guna2Button2;
+        public System.Windows.Forms.Label label14;
     }
 }

@@ -118,6 +118,12 @@
     <Compile Include="formDashboard.Designer.cs">
       <DependentUpon>formDashboard.cs</DependentUpon>
     </Compile>
+    <Compile Include="formRecordInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="formRecordInfo.Designer.cs">
+      <DependentUpon>formRecordInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="formRecords.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -154,6 +160,9 @@
     </Compile>
     <EmbeddedResource Include="formDashboard.resx">
       <DependentUpon>formDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="formRecordInfo.resx">
+      <DependentUpon>formRecordInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="formRecords.resx">
       <DependentUpon>formRecords.cs</DependentUpon>

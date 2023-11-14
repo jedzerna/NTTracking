@@ -105,7 +105,7 @@ namespace NTTracking
             startTime = DateTime.Now;
             string data1 = id;
             string data3 = startTime.ToString("dd-MM-yyyy");
-            highestId = db.GetHighestId(data1, data3);
+            highestId = db.GetHighestId(data1, startTime);
             if (highestId > 0)
             {
                 // Do ; with highestId
@@ -200,7 +200,7 @@ namespace NTTracking
             startTime = DateTime.Now;
             string data1 = id;
             string data3 = startTime.ToString("dd-MM-yyyy");
-            highestId = db.GetHighestId(data1, data3);
+            highestId = db.GetHighestId(data1, startTime);
             //MessageBox.Show(highestId.ToString());
             KeyboardHook.SetHook();
             KeyboardHook.KeyDown += KeyDownEventHandler;
@@ -238,9 +238,16 @@ namespace NTTracking
         }
         private void EventHandlingThread()
         {
-            m_GlobalHook.MouseMove += GlobalHookOnMouseMove;
-            m_GlobalHook.MouseClick += GlobalHookOnMouseClick;
-            Application.Run();
+            try
+            {
+                m_GlobalHook.MouseMove += GlobalHookOnMouseMove;
+                m_GlobalHook.MouseClick += GlobalHookOnMouseClick;
+                Application.Run();
+            }
+            catch
+            {
+
+            }
         }
         public DataTable RemoveDuplicateRows(DataTable dataTable, string columnId, string columnName)
         {
@@ -309,7 +316,7 @@ namespace NTTracking
                 }
                 if (exist == false)
                 {
-                    if (db.AddTaskRunning(id, row["Software"].ToString()))
+                    if (db.AddTaskRunning(id, highestId.ToString(),row["Software"].ToString()))
                     {
                         DataRow rown = dtf.NewRow();
                         rown["Software"] = row["Software"].ToString();
@@ -332,7 +339,7 @@ namespace NTTracking
 
                 if (exist == false)
                 {
-                    if (db.CloseTaskRunning(id, rowf["Software"].ToString()))
+                    if (db.CloseTaskRunning(id, highestId.ToString(),rowf["Software"].ToString()))
                     {
                         rowf.Delete();
                     }
@@ -408,11 +415,9 @@ namespace NTTracking
                 startTime = DateTime.Now;
                 // Specify the data you want to insert
                 string data1 = id; 
-                string data2 = startTime.ToString(@"HH\:mm\:ss");
-                string data3 = startTime.ToString("dd-MM-yyyy");
 
                 // Insert the data into the database
-                if (db.TimeIn(data1, data2, data3))
+                if (db.TimeIn(data1, startTime))
                 {
 
                     //refreshdata();
@@ -492,7 +497,7 @@ namespace NTTracking
                 string data3 = DateTime.Now.ToString("dd-MM-yyyy");
 
                 // Insert the data into the database
-                if (db.TimeOut(data1, data2, data3))
+                if (db.TimeOut(data1, DateTime.Now))
                 {
                     //refreshdata();
                     KeyboardHook.Unhook();
@@ -504,6 +509,7 @@ namespace NTTracking
                     eventThread = null;
                     showappsThread = null;
                     label3.Text = "0:00";
+                    label6.Text = "0:00";
                     guna2Button6.Visible = false;
                     guna2Button9.Visible = false;
                     guna2Button4.Visible = true;
@@ -631,6 +637,17 @@ namespace NTTracking
         private void label6_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void guna2Button9_Click(object sender, EventArgs e)
+        {
+            guna2Button6_Click(sender,e);
+        }
+
+        private void guna2Button11_Click(object sender, EventArgs e)
+        {
+
+            guna2Button4_Click(sender, e);
         }
     }
 }
