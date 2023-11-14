@@ -18,7 +18,7 @@ namespace NTTracking
 {
     public partial class LoginForm : Form
     {
-<<<<<<< HEAD
+
         protected override CreateParams CreateParams
         {
             get
@@ -49,8 +49,6 @@ namespace NTTracking
 
             aProp.SetValue(c, true, null);
         }
-=======
->>>>>>> parent of 1c68d1e (Merge branch 'Dave')
         public LoginForm()
         {
             InitializeComponent();

@@ -16,7 +16,6 @@ namespace NTTracking
 {
     public partial class Register : Form
     {
-<<<<<<< HEAD
         protected override CreateParams CreateParams
         {
             get
@@ -25,7 +24,7 @@ namespace NTTracking
                 handleparam.ExStyle |= 0x02000000;
                 return handleparam;
             }
-
+            
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -47,8 +46,6 @@ namespace NTTracking
 
             aProp.SetValue(c, true, null);
         }
-=======
->>>>>>> parent of 1c68d1e (Merge branch 'Dave')
         public Register()
         {
             InitializeComponent();
