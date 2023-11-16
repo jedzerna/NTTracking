@@ -39,10 +39,10 @@
             this.label4 = new System.Windows.Forms.Label();
             this.guna2ProgressIndicator1 = new Guna.UI2.WinForms.Guna2ProgressIndicator();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
@@ -65,7 +65,7 @@
             this.guna2Button1.Location = new System.Drawing.Point(57, 385);
             this.guna2Button1.Name = "guna2Button1";
             this.guna2Button1.PressedColor = System.Drawing.Color.Crimson;
-            this.guna2Button1.Size = new System.Drawing.Size(136, 39);
+            this.guna2Button1.Size = new System.Drawing.Size(113, 39);
             this.guna2Button1.TabIndex = 0;
             this.guna2Button1.Text = "Login";
             this.guna2Button1.Click += new System.EventHandler(this.guna2Button1_Click);
@@ -108,7 +108,7 @@
             this.guna2TextBox1.PasswordChar = '\0';
             this.guna2TextBox1.PlaceholderText = "";
             this.guna2TextBox1.SelectedText = "";
-            this.guna2TextBox1.Size = new System.Drawing.Size(265, 36);
+            this.guna2TextBox1.Size = new System.Drawing.Size(255, 36);
             this.guna2TextBox1.TabIndex = 4;
             this.guna2TextBox1.TextChanged += new System.EventHandler(this.guna2TextBox1_TextChanged);
             // 
@@ -130,7 +130,7 @@
             this.guna2TextBox2.PasswordChar = '•';
             this.guna2TextBox2.PlaceholderText = "";
             this.guna2TextBox2.SelectedText = "";
-            this.guna2TextBox2.Size = new System.Drawing.Size(265, 36);
+            this.guna2TextBox2.Size = new System.Drawing.Size(255, 36);
             this.guna2TextBox2.TabIndex = 5;
             this.guna2TextBox2.TextChanged += new System.EventHandler(this.guna2TextBox2_TextChanged);
             // 
@@ -171,27 +171,6 @@
             this.timer1.Enabled = true;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::NTTracking.Properties.Resources.Untitled_1;
-            this.pictureBox1.Location = new System.Drawing.Point(146, 44);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(87, 80);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(127, 0);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(252, 603);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox2.TabIndex = 32;
-            this.pictureBox2.TabStop = false;
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -214,6 +193,27 @@
             this.label6.TabIndex = 34;
             this.label6.Text = "Register Here";
             this.label6.Click += new System.EventHandler(this.label6_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::NTTracking.Properties.Resources.Untitled_1;
+            this.pictureBox1.Location = new System.Drawing.Point(146, 44);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(87, 80);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 1;
+            this.pictureBox1.TabStop = false;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
+            this.pictureBox2.Location = new System.Drawing.Point(127, 0);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(252, 603);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox2.TabIndex = 32;
+            this.pictureBox2.TabStop = false;
             // 
             // LoginForm
             // 

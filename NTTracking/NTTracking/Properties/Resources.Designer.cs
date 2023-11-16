@@ -103,6 +103,16 @@ namespace NTTracking.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap backright {
+            get {
+                object obj = ResourceManager.GetObject("backright", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap c {
             get {
                 object obj = ResourceManager.GetObject("c", resourceCulture);

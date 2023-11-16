@@ -33,45 +33,48 @@
             Guna.UI2.AnimatorNS.Animation animation1 = new Guna.UI2.AnimatorNS.Animation();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserDashboard));
             this.guna2ShadowPanel1 = new Guna.UI2.WinForms.Guna2ShadowPanel();
+            this.guna2ProgressIndicator1 = new Guna.UI2.WinForms.Guna2ProgressIndicator();
+            this.guna2Button7 = new Guna.UI2.WinForms.Guna2Button();
             this.label4 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.guna2ShadowPanel3 = new Guna.UI2.WinForms.Guna2ShadowPanel();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.guna2Button5 = new Guna.UI2.WinForms.Guna2Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.guna2Button6 = new Guna.UI2.WinForms.Guna2Button();
+            this.guna2CirclePictureBox1 = new Guna.UI2.WinForms.Guna2CirclePictureBox();
             this.guna2Button4 = new Guna.UI2.WinForms.Guna2Button();
+            this.guna2Button6 = new Guna.UI2.WinForms.Guna2Button();
             this.guna2Button3 = new Guna.UI2.WinForms.Guna2Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.guna2ShadowPanel2 = new Guna.UI2.WinForms.Guna2ShadowPanel();
+            this.guna2Button8 = new Guna.UI2.WinForms.Guna2Button();
             this.label6 = new System.Windows.Forms.Label();
             this.guna2Button10 = new Guna.UI2.WinForms.Guna2Button();
-            this.guna2Button9 = new Guna.UI2.WinForms.Guna2Button();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.guna2CirclePictureBox2 = new Guna.UI2.WinForms.Guna2CirclePictureBox();
             this.guna2Button11 = new Guna.UI2.WinForms.Guna2Button();
+            this.guna2Button9 = new Guna.UI2.WinForms.Guna2Button();
             this.guna2Transition1 = new Guna.UI2.WinForms.Guna2Transition();
             this.guna2Button1 = new Guna.UI2.WinForms.Guna2Button();
             this.guna2Button2 = new Guna.UI2.WinForms.Guna2Button();
-            this.guna2Transition2 = new Guna.UI2.WinForms.Guna2Transition();
-            this.guna2Button8 = new Guna.UI2.WinForms.Guna2Button();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.guna2CirclePictureBox2 = new Guna.UI2.WinForms.Guna2CirclePictureBox();
             this.guna2TextBox2 = new Guna.UI2.WinForms.Guna2TextBox();
-            this.guna2Button7 = new Guna.UI2.WinForms.Guna2Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.guna2CirclePictureBox1 = new Guna.UI2.WinForms.Guna2CirclePictureBox();
+            this.guna2Transition2 = new Guna.UI2.WinForms.Guna2Transition();
+            this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.guna2ShadowPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.guna2ShadowPanel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.guna2CirclePictureBox1)).BeginInit();
             this.guna2ShadowPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.guna2CirclePictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.guna2CirclePictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // guna2ShadowPanel1
             // 
             this.guna2ShadowPanel1.BackColor = System.Drawing.Color.Transparent;
+            this.guna2ShadowPanel1.Controls.Add(this.guna2ProgressIndicator1);
             this.guna2ShadowPanel1.Controls.Add(this.guna2Button7);
             this.guna2ShadowPanel1.Controls.Add(this.label4);
             this.guna2ShadowPanel1.Controls.Add(this.pictureBox1);
@@ -79,8 +82,8 @@
             this.guna2ShadowPanel1.Controls.Add(this.guna2Button5);
             this.guna2ShadowPanel1.Controls.Add(this.label1);
             this.guna2ShadowPanel1.Controls.Add(this.guna2CirclePictureBox1);
-            this.guna2ShadowPanel1.Controls.Add(this.guna2Button4);
             this.guna2ShadowPanel1.Controls.Add(this.guna2Button6);
+            this.guna2ShadowPanel1.Controls.Add(this.guna2Button4);
             this.guna2Transition2.SetDecoration(this.guna2ShadowPanel1, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Transition1.SetDecoration(this.guna2ShadowPanel1, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2ShadowPanel1.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
@@ -94,8 +97,46 @@
             this.guna2ShadowPanel1.TabIndex = 1;
             this.guna2ShadowPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.guna2ShadowPanel1_Paint);
             // 
+            // guna2ProgressIndicator1
+            // 
+            this.guna2ProgressIndicator1.BackColor = System.Drawing.Color.Transparent;
+            this.guna2ProgressIndicator1.CircleSize = 1F;
+            this.guna2Transition2.SetDecoration(this.guna2ProgressIndicator1, Guna.UI2.AnimatorNS.DecorationType.None);
+            this.guna2Transition1.SetDecoration(this.guna2ProgressIndicator1, Guna.UI2.AnimatorNS.DecorationType.None);
+            this.guna2ProgressIndicator1.Location = new System.Drawing.Point(70, 14);
+            this.guna2ProgressIndicator1.Name = "guna2ProgressIndicator1";
+            this.guna2ProgressIndicator1.ProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(101)))));
+            this.guna2ProgressIndicator1.Size = new System.Drawing.Size(28, 36);
+            this.guna2ProgressIndicator1.TabIndex = 26;
+            this.guna2ProgressIndicator1.Visible = false;
+            // 
+            // guna2Button7
+            // 
+            this.guna2Button7.Animated = true;
+            this.guna2Button7.BorderRadius = 4;
+            this.guna2Button7.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.guna2Transition2.SetDecoration(this.guna2Button7, Guna.UI2.AnimatorNS.DecorationType.None);
+            this.guna2Transition1.SetDecoration(this.guna2Button7, Guna.UI2.AnimatorNS.DecorationType.None);
+            this.guna2Button7.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.guna2Button7.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.guna2Button7.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.guna2Button7.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.guna2Button7.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.guna2Button7.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            this.guna2Button7.ForeColor = System.Drawing.Color.Black;
+            this.guna2Button7.Image = global::NTTracking.Properties.Resources.menu;
+            this.guna2Button7.ImageOffset = new System.Drawing.Point(0, -1);
+            this.guna2Button7.ImageSize = new System.Drawing.Size(18, 18);
+            this.guna2Button7.Location = new System.Drawing.Point(121, 17);
+            this.guna2Button7.Margin = new System.Windows.Forms.Padding(0);
+            this.guna2Button7.Name = "guna2Button7";
+            this.guna2Button7.Size = new System.Drawing.Size(25, 25);
+            this.guna2Button7.TabIndex = 13;
+            this.guna2Button7.Click += new System.EventHandler(this.guna2Button7_Click);
+            // 
             // label4
             // 
+            this.label4.Cursor = System.Windows.Forms.Cursors.Hand;
             this.guna2Transition1.SetDecoration(this.label4, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Transition2.SetDecoration(this.label4, Guna.UI2.AnimatorNS.DecorationType.None);
             this.label4.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -105,6 +146,19 @@
             this.label4.TabIndex = 21;
             this.label4.Text = "label4";
             this.label4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // pictureBox1
+            // 
+            this.guna2Transition1.SetDecoration(this.pictureBox1, Guna.UI2.AnimatorNS.DecorationType.None);
+            this.guna2Transition2.SetDecoration(this.pictureBox1, Guna.UI2.AnimatorNS.DecorationType.None);
+            this.pictureBox1.Image = global::NTTracking.Properties.Resources.circlegreen2;
+            this.pictureBox1.Location = new System.Drawing.Point(115, 121);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(15, 15);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 20;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // guna2ShadowPanel3
             // 
@@ -152,6 +206,7 @@
             // 
             this.guna2Button5.Animated = true;
             this.guna2Button5.BorderRadius = 8;
+            this.guna2Button5.Cursor = System.Windows.Forms.Cursors.Hand;
             this.guna2Transition2.SetDecoration(this.guna2Button5, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Transition1.SetDecoration(this.guna2Button5, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Button5.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
@@ -171,6 +226,7 @@
             // 
             // label1
             // 
+            this.label1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.guna2Transition1.SetDecoration(this.label1, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Transition2.SetDecoration(this.label1, Guna.UI2.AnimatorNS.DecorationType.None);
             this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -181,10 +237,48 @@
             this.label1.Text = "label1";
             this.label1.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
+            // guna2CirclePictureBox1
+            // 
+            this.guna2CirclePictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.guna2Transition2.SetDecoration(this.guna2CirclePictureBox1, Guna.UI2.AnimatorNS.DecorationType.None);
+            this.guna2Transition1.SetDecoration(this.guna2CirclePictureBox1, Guna.UI2.AnimatorNS.DecorationType.None);
+            this.guna2CirclePictureBox1.Image = global::NTTracking.Properties.Resources.acicled;
+            this.guna2CirclePictureBox1.ImageRotate = 0F;
+            this.guna2CirclePictureBox1.Location = new System.Drawing.Point(38, 52);
+            this.guna2CirclePictureBox1.Name = "guna2CirclePictureBox1";
+            this.guna2CirclePictureBox1.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
+            this.guna2CirclePictureBox1.Size = new System.Drawing.Size(94, 91);
+            this.guna2CirclePictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.guna2CirclePictureBox1.TabIndex = 0;
+            this.guna2CirclePictureBox1.TabStop = false;
+            // 
+            // guna2Button4
+            // 
+            this.guna2Button4.Animated = true;
+            this.guna2Button4.BorderRadius = 8;
+            this.guna2Button4.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.guna2Transition2.SetDecoration(this.guna2Button4, Guna.UI2.AnimatorNS.DecorationType.None);
+            this.guna2Transition1.SetDecoration(this.guna2Button4, Guna.UI2.AnimatorNS.DecorationType.None);
+            this.guna2Button4.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.guna2Button4.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.guna2Button4.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.guna2Button4.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.guna2Button4.FillColor = System.Drawing.Color.DodgerBlue;
+            this.guna2Button4.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.guna2Button4.ForeColor = System.Drawing.Color.White;
+            this.guna2Button4.Location = new System.Drawing.Point(33, 233);
+            this.guna2Button4.Margin = new System.Windows.Forms.Padding(1);
+            this.guna2Button4.Name = "guna2Button4";
+            this.guna2Button4.Size = new System.Drawing.Size(105, 30);
+            this.guna2Button4.TabIndex = 8;
+            this.guna2Button4.Text = "Time In";
+            this.guna2Button4.Click += new System.EventHandler(this.guna2Button4_Click);
+            // 
             // guna2Button6
             // 
             this.guna2Button6.Animated = true;
             this.guna2Button6.BorderRadius = 8;
+            this.guna2Button6.Cursor = System.Windows.Forms.Cursors.Hand;
             this.guna2Transition2.SetDecoration(this.guna2Button6, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Transition1.SetDecoration(this.guna2Button6, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Button6.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
@@ -203,31 +297,11 @@
             this.guna2Button6.Visible = false;
             this.guna2Button6.Click += new System.EventHandler(this.guna2Button6_Click);
             // 
-            // guna2Button4
-            // 
-            this.guna2Button4.Animated = true;
-            this.guna2Button4.BorderRadius = 8;
-            this.guna2Transition2.SetDecoration(this.guna2Button4, Guna.UI2.AnimatorNS.DecorationType.None);
-            this.guna2Transition1.SetDecoration(this.guna2Button4, Guna.UI2.AnimatorNS.DecorationType.None);
-            this.guna2Button4.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button4.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button4.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.guna2Button4.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.guna2Button4.FillColor = System.Drawing.Color.DodgerBlue;
-            this.guna2Button4.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.guna2Button4.ForeColor = System.Drawing.Color.White;
-            this.guna2Button4.Location = new System.Drawing.Point(33, 233);
-            this.guna2Button4.Margin = new System.Windows.Forms.Padding(1);
-            this.guna2Button4.Name = "guna2Button4";
-            this.guna2Button4.Size = new System.Drawing.Size(105, 30);
-            this.guna2Button4.TabIndex = 8;
-            this.guna2Button4.Text = "Time In";
-            this.guna2Button4.Click += new System.EventHandler(this.guna2Button4_Click);
-            // 
             // guna2Button3
             // 
             this.guna2Button3.Animated = true;
             this.guna2Button3.BorderRadius = 8;
+            this.guna2Button3.Cursor = System.Windows.Forms.Cursors.Hand;
             this.guna2Transition2.SetDecoration(this.guna2Button3, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Transition1.SetDecoration(this.guna2Button3, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Button3.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
@@ -268,8 +342,8 @@
             this.guna2ShadowPanel2.Controls.Add(this.guna2Button10);
             this.guna2ShadowPanel2.Controls.Add(this.pictureBox2);
             this.guna2ShadowPanel2.Controls.Add(this.guna2CirclePictureBox2);
-            this.guna2ShadowPanel2.Controls.Add(this.guna2Button11);
             this.guna2ShadowPanel2.Controls.Add(this.guna2Button9);
+            this.guna2ShadowPanel2.Controls.Add(this.guna2Button11);
             this.guna2Transition2.SetDecoration(this.guna2ShadowPanel2, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Transition1.SetDecoration(this.guna2ShadowPanel2, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2ShadowPanel2.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
@@ -281,6 +355,30 @@
             this.guna2ShadowPanel2.Size = new System.Drawing.Size(428, 39);
             this.guna2ShadowPanel2.TabIndex = 10;
             this.guna2ShadowPanel2.Visible = false;
+            // 
+            // guna2Button8
+            // 
+            this.guna2Button8.Animated = true;
+            this.guna2Button8.BorderRadius = 4;
+            this.guna2Button8.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.guna2Transition2.SetDecoration(this.guna2Button8, Guna.UI2.AnimatorNS.DecorationType.None);
+            this.guna2Transition1.SetDecoration(this.guna2Button8, Guna.UI2.AnimatorNS.DecorationType.None);
+            this.guna2Button8.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.guna2Button8.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.guna2Button8.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.guna2Button8.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.guna2Button8.FillColor = System.Drawing.Color.White;
+            this.guna2Button8.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            this.guna2Button8.ForeColor = System.Drawing.Color.Black;
+            this.guna2Button8.Image = global::NTTracking.Properties.Resources.menu;
+            this.guna2Button8.ImageOffset = new System.Drawing.Point(0, -1);
+            this.guna2Button8.ImageSize = new System.Drawing.Size(12, 12);
+            this.guna2Button8.Location = new System.Drawing.Point(391, 8);
+            this.guna2Button8.Margin = new System.Windows.Forms.Padding(0);
+            this.guna2Button8.Name = "guna2Button8";
+            this.guna2Button8.Size = new System.Drawing.Size(26, 22);
+            this.guna2Button8.TabIndex = 22;
+            this.guna2Button8.Click += new System.EventHandler(this.guna2Button8_Click);
             // 
             // label6
             // 
@@ -299,6 +397,7 @@
             // 
             this.guna2Button10.Animated = true;
             this.guna2Button10.BorderRadius = 8;
+            this.guna2Button10.Cursor = System.Windows.Forms.Cursors.Hand;
             this.guna2Transition2.SetDecoration(this.guna2Button10, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Transition1.SetDecoration(this.guna2Button10, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Button10.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
@@ -315,10 +414,61 @@
             this.guna2Button10.TabIndex = 9;
             this.guna2Button10.Text = "Break";
             // 
+            // pictureBox2
+            // 
+            this.guna2Transition1.SetDecoration(this.pictureBox2, Guna.UI2.AnimatorNS.DecorationType.None);
+            this.guna2Transition2.SetDecoration(this.pictureBox2, Guna.UI2.AnimatorNS.DecorationType.None);
+            this.pictureBox2.Image = global::NTTracking.Properties.Resources.circlegreen2;
+            this.pictureBox2.Location = new System.Drawing.Point(375, 20);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(10, 10);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox2.TabIndex = 20;
+            this.pictureBox2.TabStop = false;
+            // 
+            // guna2CirclePictureBox2
+            // 
+            this.guna2CirclePictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.guna2Transition2.SetDecoration(this.guna2CirclePictureBox2, Guna.UI2.AnimatorNS.DecorationType.None);
+            this.guna2Transition1.SetDecoration(this.guna2CirclePictureBox2, Guna.UI2.AnimatorNS.DecorationType.None);
+            this.guna2CirclePictureBox2.Image = global::NTTracking.Properties.Resources.acicled;
+            this.guna2CirclePictureBox2.ImageRotate = 0F;
+            this.guna2CirclePictureBox2.Location = new System.Drawing.Point(359, 8);
+            this.guna2CirclePictureBox2.Name = "guna2CirclePictureBox2";
+            this.guna2CirclePictureBox2.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
+            this.guna2CirclePictureBox2.Size = new System.Drawing.Size(22, 22);
+            this.guna2CirclePictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.guna2CirclePictureBox2.TabIndex = 0;
+            this.guna2CirclePictureBox2.TabStop = false;
+            this.guna2CirclePictureBox2.Click += new System.EventHandler(this.guna2CirclePictureBox2_Click);
+            // 
+            // guna2Button11
+            // 
+            this.guna2Button11.Animated = true;
+            this.guna2Button11.BorderRadius = 8;
+            this.guna2Button11.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.guna2Transition2.SetDecoration(this.guna2Button11, Guna.UI2.AnimatorNS.DecorationType.None);
+            this.guna2Transition1.SetDecoration(this.guna2Button11, Guna.UI2.AnimatorNS.DecorationType.None);
+            this.guna2Button11.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.guna2Button11.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.guna2Button11.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.guna2Button11.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.guna2Button11.FillColor = System.Drawing.Color.DodgerBlue;
+            this.guna2Button11.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.guna2Button11.ForeColor = System.Drawing.Color.White;
+            this.guna2Button11.Location = new System.Drawing.Point(10, 8);
+            this.guna2Button11.Margin = new System.Windows.Forms.Padding(1);
+            this.guna2Button11.Name = "guna2Button11";
+            this.guna2Button11.Size = new System.Drawing.Size(105, 22);
+            this.guna2Button11.TabIndex = 8;
+            this.guna2Button11.Text = "Time In";
+            this.guna2Button11.Click += new System.EventHandler(this.guna2Button11_Click);
+            // 
             // guna2Button9
             // 
             this.guna2Button9.Animated = true;
             this.guna2Button9.BorderRadius = 8;
+            this.guna2Button9.Cursor = System.Windows.Forms.Cursors.Hand;
             this.guna2Transition2.SetDecoration(this.guna2Button9, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Transition1.SetDecoration(this.guna2Button9, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Button9.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
@@ -336,27 +486,6 @@
             this.guna2Button9.Text = "Time Out";
             this.guna2Button9.Visible = false;
             this.guna2Button9.Click += new System.EventHandler(this.guna2Button9_Click);
-            // 
-            // guna2Button11
-            // 
-            this.guna2Button11.Animated = true;
-            this.guna2Button11.BorderRadius = 8;
-            this.guna2Transition2.SetDecoration(this.guna2Button11, Guna.UI2.AnimatorNS.DecorationType.None);
-            this.guna2Transition1.SetDecoration(this.guna2Button11, Guna.UI2.AnimatorNS.DecorationType.None);
-            this.guna2Button11.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button11.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button11.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.guna2Button11.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.guna2Button11.FillColor = System.Drawing.Color.DodgerBlue;
-            this.guna2Button11.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.guna2Button11.ForeColor = System.Drawing.Color.White;
-            this.guna2Button11.Location = new System.Drawing.Point(10, 8);
-            this.guna2Button11.Margin = new System.Windows.Forms.Padding(1);
-            this.guna2Button11.Name = "guna2Button11";
-            this.guna2Button11.Size = new System.Drawing.Size(105, 22);
-            this.guna2Button11.TabIndex = 8;
-            this.guna2Button11.Text = "Time In";
-            this.guna2Button11.Click += new System.EventHandler(this.guna2Button11_Click);
             // 
             // guna2Transition1
             // 
@@ -383,6 +512,7 @@
             // 
             this.guna2Button1.Animated = true;
             this.guna2Button1.BorderRadius = 8;
+            this.guna2Button1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.guna2Transition2.SetDecoration(this.guna2Button1, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Transition1.SetDecoration(this.guna2Button1, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Button1.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
@@ -404,6 +534,7 @@
             // 
             this.guna2Button2.Animated = true;
             this.guna2Button2.BorderRadius = 8;
+            this.guna2Button2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.guna2Transition2.SetDecoration(this.guna2Button2, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Transition1.SetDecoration(this.guna2Button2, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Button2.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
@@ -420,77 +551,6 @@
             this.guna2Button2.TabIndex = 6;
             this.guna2Button2.Text = "Records";
             this.guna2Button2.Click += new System.EventHandler(this.guna2Button2_Click);
-            // 
-            // guna2Transition2
-            // 
-            this.guna2Transition2.AnimationType = Guna.UI2.AnimatorNS.AnimationType.VertSlide;
-            this.guna2Transition2.Cursor = null;
-            animation1.AnimateOnlyDifferences = true;
-            animation1.BlindCoeff = ((System.Drawing.PointF)(resources.GetObject("animation1.BlindCoeff")));
-            animation1.LeafCoeff = 0F;
-            animation1.MaxTime = 1F;
-            animation1.MinTime = 0F;
-            animation1.MosaicCoeff = ((System.Drawing.PointF)(resources.GetObject("animation1.MosaicCoeff")));
-            animation1.MosaicShift = ((System.Drawing.PointF)(resources.GetObject("animation1.MosaicShift")));
-            animation1.MosaicSize = 0;
-            animation1.Padding = new System.Windows.Forms.Padding(0);
-            animation1.RotateCoeff = 0F;
-            animation1.RotateLimit = 0F;
-            animation1.ScaleCoeff = ((System.Drawing.PointF)(resources.GetObject("animation1.ScaleCoeff")));
-            animation1.SlideCoeff = ((System.Drawing.PointF)(resources.GetObject("animation1.SlideCoeff")));
-            animation1.TimeCoeff = 0F;
-            animation1.TransparencyCoeff = 0F;
-            this.guna2Transition2.DefaultAnimation = animation1;
-            // 
-            // guna2Button8
-            // 
-            this.guna2Button8.Animated = true;
-            this.guna2Button8.BorderRadius = 4;
-            this.guna2Transition2.SetDecoration(this.guna2Button8, Guna.UI2.AnimatorNS.DecorationType.None);
-            this.guna2Transition1.SetDecoration(this.guna2Button8, Guna.UI2.AnimatorNS.DecorationType.None);
-            this.guna2Button8.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button8.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button8.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.guna2Button8.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.guna2Button8.FillColor = System.Drawing.Color.White;
-            this.guna2Button8.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.guna2Button8.ForeColor = System.Drawing.Color.Black;
-            this.guna2Button8.Image = global::NTTracking.Properties.Resources.menu;
-            this.guna2Button8.ImageOffset = new System.Drawing.Point(0, -1);
-            this.guna2Button8.ImageSize = new System.Drawing.Size(12, 12);
-            this.guna2Button8.Location = new System.Drawing.Point(391, 8);
-            this.guna2Button8.Margin = new System.Windows.Forms.Padding(0);
-            this.guna2Button8.Name = "guna2Button8";
-            this.guna2Button8.Size = new System.Drawing.Size(26, 22);
-            this.guna2Button8.TabIndex = 22;
-            this.guna2Button8.Click += new System.EventHandler(this.guna2Button8_Click);
-            // 
-            // pictureBox2
-            // 
-            this.guna2Transition1.SetDecoration(this.pictureBox2, Guna.UI2.AnimatorNS.DecorationType.None);
-            this.guna2Transition2.SetDecoration(this.pictureBox2, Guna.UI2.AnimatorNS.DecorationType.None);
-            this.pictureBox2.Image = global::NTTracking.Properties.Resources.circlegreen2;
-            this.pictureBox2.Location = new System.Drawing.Point(375, 20);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(10, 10);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox2.TabIndex = 20;
-            this.pictureBox2.TabStop = false;
-            // 
-            // guna2CirclePictureBox2
-            // 
-            this.guna2Transition2.SetDecoration(this.guna2CirclePictureBox2, Guna.UI2.AnimatorNS.DecorationType.None);
-            this.guna2Transition1.SetDecoration(this.guna2CirclePictureBox2, Guna.UI2.AnimatorNS.DecorationType.None);
-            this.guna2CirclePictureBox2.Image = global::NTTracking.Properties.Resources.acicled;
-            this.guna2CirclePictureBox2.ImageRotate = 0F;
-            this.guna2CirclePictureBox2.Location = new System.Drawing.Point(359, 8);
-            this.guna2CirclePictureBox2.Name = "guna2CirclePictureBox2";
-            this.guna2CirclePictureBox2.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
-            this.guna2CirclePictureBox2.Size = new System.Drawing.Size(22, 22);
-            this.guna2CirclePictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.guna2CirclePictureBox2.TabIndex = 0;
-            this.guna2CirclePictureBox2.TabStop = false;
-            this.guna2CirclePictureBox2.Click += new System.EventHandler(this.guna2CirclePictureBox2_Click);
             // 
             // guna2TextBox2
             // 
@@ -515,55 +575,32 @@
             this.guna2TextBox2.Size = new System.Drawing.Size(164, 30);
             this.guna2TextBox2.TabIndex = 4;
             // 
-            // guna2Button7
+            // guna2Transition2
             // 
-            this.guna2Button7.Animated = true;
-            this.guna2Button7.BorderRadius = 4;
-            this.guna2Transition2.SetDecoration(this.guna2Button7, Guna.UI2.AnimatorNS.DecorationType.None);
-            this.guna2Transition1.SetDecoration(this.guna2Button7, Guna.UI2.AnimatorNS.DecorationType.None);
-            this.guna2Button7.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button7.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button7.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.guna2Button7.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.guna2Button7.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.guna2Button7.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            this.guna2Button7.ForeColor = System.Drawing.Color.Black;
-            this.guna2Button7.Image = global::NTTracking.Properties.Resources.menu;
-            this.guna2Button7.ImageOffset = new System.Drawing.Point(0, -1);
-            this.guna2Button7.ImageSize = new System.Drawing.Size(18, 18);
-            this.guna2Button7.Location = new System.Drawing.Point(121, 17);
-            this.guna2Button7.Margin = new System.Windows.Forms.Padding(0);
-            this.guna2Button7.Name = "guna2Button7";
-            this.guna2Button7.Size = new System.Drawing.Size(25, 25);
-            this.guna2Button7.TabIndex = 13;
-            this.guna2Button7.Click += new System.EventHandler(this.guna2Button7_Click);
+            this.guna2Transition2.AnimationType = Guna.UI2.AnimatorNS.AnimationType.VertSlide;
+            this.guna2Transition2.Cursor = null;
+            animation1.AnimateOnlyDifferences = true;
+            animation1.BlindCoeff = ((System.Drawing.PointF)(resources.GetObject("animation1.BlindCoeff")));
+            animation1.LeafCoeff = 0F;
+            animation1.MaxTime = 1F;
+            animation1.MinTime = 0F;
+            animation1.MosaicCoeff = ((System.Drawing.PointF)(resources.GetObject("animation1.MosaicCoeff")));
+            animation1.MosaicShift = ((System.Drawing.PointF)(resources.GetObject("animation1.MosaicShift")));
+            animation1.MosaicSize = 0;
+            animation1.Padding = new System.Windows.Forms.Padding(0);
+            animation1.RotateCoeff = 0F;
+            animation1.RotateLimit = 0F;
+            animation1.ScaleCoeff = ((System.Drawing.PointF)(resources.GetObject("animation1.ScaleCoeff")));
+            animation1.SlideCoeff = ((System.Drawing.PointF)(resources.GetObject("animation1.SlideCoeff")));
+            animation1.TimeCoeff = 0F;
+            animation1.TransparencyCoeff = 0F;
+            this.guna2Transition2.DefaultAnimation = animation1;
             // 
-            // pictureBox1
+            // timer2
             // 
-            this.guna2Transition1.SetDecoration(this.pictureBox1, Guna.UI2.AnimatorNS.DecorationType.None);
-            this.guna2Transition2.SetDecoration(this.pictureBox1, Guna.UI2.AnimatorNS.DecorationType.None);
-            this.pictureBox1.Image = global::NTTracking.Properties.Resources.circlegreen2;
-            this.pictureBox1.Location = new System.Drawing.Point(115, 121);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(15, 15);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 20;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
-            // 
-            // guna2CirclePictureBox1
-            // 
-            this.guna2Transition2.SetDecoration(this.guna2CirclePictureBox1, Guna.UI2.AnimatorNS.DecorationType.None);
-            this.guna2Transition1.SetDecoration(this.guna2CirclePictureBox1, Guna.UI2.AnimatorNS.DecorationType.None);
-            this.guna2CirclePictureBox1.Image = global::NTTracking.Properties.Resources.acicled;
-            this.guna2CirclePictureBox1.ImageRotate = 0F;
-            this.guna2CirclePictureBox1.Location = new System.Drawing.Point(38, 52);
-            this.guna2CirclePictureBox1.Name = "guna2CirclePictureBox1";
-            this.guna2CirclePictureBox1.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
-            this.guna2CirclePictureBox1.Size = new System.Drawing.Size(94, 91);
-            this.guna2CirclePictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.guna2CirclePictureBox1.TabIndex = 0;
-            this.guna2CirclePictureBox1.TabStop = false;
+            this.timer2.Enabled = true;
+            this.timer2.Interval = 2000;
+            this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
             // UserDashboard
             // 
@@ -588,12 +625,12 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.UserDashboard_FormClosing);
             this.Load += new System.EventHandler(this.UserDashboard_Load);
             this.guna2ShadowPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.guna2ShadowPanel3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.guna2CirclePictureBox1)).EndInit();
             this.guna2ShadowPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.guna2CirclePictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.guna2CirclePictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -611,7 +648,6 @@
         private Guna.UI2.WinForms.Guna2ShadowPanel guna2ShadowPanel3;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Panel panel1;
-        public System.Windows.Forms.Timer timer1;
         public Guna.UI2.WinForms.Guna2Button guna2Button4;
         public Guna.UI2.WinForms.Guna2Button guna2Button6;
         private System.Windows.Forms.Label label4;
@@ -627,6 +663,9 @@
         private Guna.UI2.WinForms.Guna2Transition guna2Transition2;
         private Guna.UI2.WinForms.Guna2Button guna2Button8;
         private Guna.UI2.WinForms.Guna2Button guna2Button1;
-        private Guna.UI2.WinForms.Guna2Button guna2Button2;
+        private Guna.UI2.WinForms.Guna2ProgressIndicator guna2ProgressIndicator1;
+        public System.Windows.Forms.Timer timer2;
+        public System.Windows.Forms.Timer timer1;
+        public Guna.UI2.WinForms.Guna2Button guna2Button2;
     }
 }

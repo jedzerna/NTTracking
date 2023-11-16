@@ -56,6 +56,8 @@ namespace NTTracking
         private string formNum;
         public string username;
         public string position;
+        public string trackid ="";
+        public string recorddate ="";
         public string id;
         public Image img;
         private Thread eventThread;
@@ -73,8 +75,11 @@ namespace NTTracking
             clickTimer.Tick += (s, e) => canProcessClick = true;
         }
         int highestId = 0;
+        private DataTable appcategories = new DataTable();
         private void UserDashboard_Load(object sender, EventArgs e)
         {
+            appcategories = db.GetAppCategories();
+
             SuspendLayout();
             dtf.Clear();
             dtf.Columns.Add("Software");
@@ -278,6 +283,8 @@ namespace NTTracking
         DataTable dtf = new DataTable();
         private void LoadProcessesOnUIThread()
         {
+          
+            
             //Thread.Sleep(3000);
             //MessageBox.Show("dawd");
             DataTable dt = new DataTable();
@@ -297,6 +304,7 @@ namespace NTTracking
                     DataRow row = dt.NewRow();
                     row["Software"] = process.MainWindowTitle.Trim();
                     row["ProcessID"] = process.Id.ToString().Trim();
+
                     dt.Rows.Add(row);
                     processIds.Add(process.Id);
                 }
@@ -316,7 +324,16 @@ namespace NTTracking
                 }
                 if (exist == false)
                 {
-                    if (db.AddTaskRunning(id, highestId.ToString(),row["Software"].ToString()))
+                    string catid = "6";
+                    foreach (DataRow rowprocess in appcategories.Rows)
+                    {
+                        if (row["Software"].ToString().Contains(rowprocess["name"].ToString()))
+                        {
+                            catid = rowprocess["id"].ToString();
+                            break; // Break the loop once a match is found
+                        }
+                    }
+                    if (db.AddTaskRunning(id, highestId.ToString(),row["Software"].ToString(), catid))
                     {
                         DataRow rown = dtf.NewRow();
                         rown["Software"] = row["Software"].ToString();
@@ -430,56 +447,81 @@ namespace NTTracking
             }
 
         }
+        bool connection = false;
+        private void connectionlost()
+        {
+
+            guna2ProgressIndicator1.BeginInvoke((Action)delegate ()
+            {
+                guna2ProgressIndicator1.Start();
+                guna2ProgressIndicator1.Visible = true;
+            });
+        }
+        private void connected()
+        {
+
+                loading = null;
+                guna2ProgressIndicator1.Stop();
+                guna2ProgressIndicator1.Visible = false;
+
+        }
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            if (db.OpenConnection() == true)
+            {
+                connected();
+            }
+        }
+        Thread loading;
         private void timer1_Tick(object sender, EventArgs e)
         {
-          
+
+            try
+            {
+
                 TimeSpan elapsedTime = DateTime.Now - startTime;
                 label3.Text = elapsedTime.Hours.ToString("00") + "\n" +
                              elapsedTime.Minutes.ToString("00") + "\n" +
                             elapsedTime.Seconds.ToString("00");
-            label6.Text = elapsedTime.Hours.ToString("00") + ":" +
-                             elapsedTime.Minutes.ToString("00") + ":" +
-                            elapsedTime.Seconds.ToString("00");
-            if (showappsThread == null && timer1.Enabled == true)
-            {
-                showappsThread = new Thread(LoadProcessesOnUIThread);
-                showappsThread.Start();
+                label6.Text = elapsedTime.Hours.ToString("00") + ":" +
+                                 elapsedTime.Minutes.ToString("00") + ":" +
+                                elapsedTime.Seconds.ToString("00");
+                if (showappsThread == null && timer1.Enabled == true)
+                {
+                    showappsThread = new Thread(LoadProcessesOnUIThread);
+                    showappsThread.Start();
+                }
+                if (idlechecking >= 120)
+                {
+                    idlechecking++;
+                    pictureBox1.Image = Properties.Resources.circlered2;
+                    pictureBox2.Image = Properties.Resources.circlered2;
+                }
+                else if (idlechecking >= 40)
+                {
+                    idlechecking++;
+                    pictureBox1.Image = Properties.Resources.circlewaiting;
+                    pictureBox2.Image = Properties.Resources.circlewaiting;
+                }
+                else
+                {
+                    idlechecking++;
+                    pictureBox1.Image = Properties.Resources.circlegreen2;
+                    pictureBox2.Image = Properties.Resources.circlegreen2;
+                }
             }
-            if (idlechecking >= 120)
+            catch
             {
-                //idlechecking = 0;
-                idlechecking++;
 
-                //label2.BeginInvoke((Action)delegate ()
-                //{
-                //    label2.Text = idlechecking.ToString();
-                //});
-                //label4.Text = idlechecking.ToString();
-                pictureBox1.Image = Properties.Resources.circlered2;
-                pictureBox2.Image = Properties.Resources.circlered2;
-            }
-            else if (idlechecking >= 40)
-            {
-                //idlechecking = 0;
-                idlechecking++;
-
-                //label2.BeginInvoke((Action)delegate ()
-                //{
-                //    label2.Text = idlechecking.ToString();
-                //});
-                //label4.Text = idlechecking.ToString();
-                pictureBox1.Image = Properties.Resources.circlewaiting;
-                pictureBox2.Image = Properties.Resources.circlewaiting;
-            }
-            else
-            {
-                idlechecking++;
-                //label2.BeginInvoke((Action)delegate ()
-                //{
-                //    label2.Text = idlechecking.ToString();
-                //});
-                pictureBox1.Image = Properties.Resources.circlegreen2;
-                pictureBox2.Image = Properties.Resources.circlegreen2;
+            
+                    connection = false;
+                    loading = new Thread(connectionlost);
+                    loading.Start();
+                    timer1.Enabled = false;
+                    timer1.Stop();
+                    timer2.Start();
+                    return;
+                
             }
         }
         int idlechecking = 0;
@@ -497,7 +539,7 @@ namespace NTTracking
                 string data3 = DateTime.Now.ToString("dd-MM-yyyy");
 
                 // Insert the data into the database
-                if (db.TimeOut(data1, DateTime.Now))
+                if (db.TimeOut(data1, DateTime.Now,id))
                 {
                     //refreshdata();
                     KeyboardHook.Unhook();
@@ -563,7 +605,7 @@ namespace NTTracking
                 dashboard.username = username;
                 dashboard.Height = panel1.Height;
                 dashboard.Width = panel1.Width;
-                panel1.Controls.Clear();
+                //panel1.Controls.Clear();
                 dashboard.TopLevel = false;
                 panel1.Controls.Add(dashboard);
                 panel1.AutoScroll = false;
@@ -615,7 +657,7 @@ namespace NTTracking
         }
 
         formRecords records;
-        private void guna2Button2_Click(object sender, EventArgs e)
+        public void guna2Button2_Click(object sender, EventArgs e)
         {
             if (formNum != "2")
             {
@@ -623,9 +665,11 @@ namespace NTTracking
                 records = new formRecords();
                 records.id = id;
                 records.username = username;
+                records.trackid = trackid;
+                records.recorddate = recorddate;
                 records.Height = panel1.Height;
                 records.Width = panel1.Width;
-                panel1.Controls.Clear();
+                //panel1.Controls.Clear();
                 records.TopLevel = false;
                 panel1.Controls.Add(records);
                 panel1.AutoScroll = false;
@@ -649,5 +693,6 @@ namespace NTTracking
 
             guna2Button4_Click(sender, e);
         }
+
     }
 }
