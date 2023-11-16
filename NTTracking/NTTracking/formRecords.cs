@@ -16,6 +16,7 @@ namespace NTTracking
     {
         public string id;
         public string username;
+        public string recorddate = "";
         public formRecords()
         {
             
@@ -25,15 +26,26 @@ namespace NTTracking
         {
             list = null;
             info = null;
-            trackid = "";
-            recordslist();
+            //MessageBox.Show(trackid.Trim());
+            if (trackid.Trim() != "")
+            {
+                label14.Text = recorddate;
+                recordinfo();
+
+                UserDashboard user = (UserDashboard)Application.OpenForms["UserDashboard"];
+                user.trackid = "";
+            }
+            else
+            {
+                recordslist();
+            }
         }
         formRecordsList list;
         formRecordInfo info;
         private void recordslist()
         {
             guna2Button2.Visible = false;
-            panel1.Controls.Clear();
+            //panel1.Controls.Clear();
             list = new formRecordsList(this);
             list.id = id;
             list.username = username;
@@ -50,16 +62,16 @@ namespace NTTracking
             try
             {
                 guna2Button2.Visible = true;
-                panel1.Controls.Clear();
-            //formRecordInfo info = new formRecordInfo();
-           info = new formRecordInfo
-            {
-                trackid = trackid,
-                id = id,
-                username = username,
-                Height = panel1.Height,
-                Width = panel1.Width
-            };
+                //panel1.Controls.Clear();
+                //formRecordInfo info = new formRecordInfo();
+                info = new formRecordInfo();
+
+                info.trackid = trackid;
+                info.id = id;
+                info.username = username;
+                info.Height = panel1.Height;
+                info.Width = panel1.Width;
+         
 
             info.TopLevel = false;
             panel1.Controls.Add(info);
@@ -78,7 +90,7 @@ namespace NTTracking
         {
 
         }
-        public string trackid;
+        public string trackid = "";
         private void label1_TextChanged(object sender, EventArgs e)
         {
             //MessageBox.Show(trackid);
@@ -95,7 +107,17 @@ namespace NTTracking
 
         private void guna2Button2_Click(object sender, EventArgs e)
         {
-            recordslist();
+            guna2Button2.Visible = false;
+            label14.Text = "Records";
+            if (list == null)
+            {
+                recordslist();
+            }
+            else
+            {
+                list.BringToFront();
+                list.Show();
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Guna.UI2.WinForms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -65,14 +66,14 @@ namespace NTTracking
 
         private void formDashboard_Load(object sender, EventArgs e)
         {
-            refreshdata();
+                refreshdata();
             dataGridView1.ClearSelection();
             ChangeControlStyles(dataGridView2, ControlStyles.OptimizedDoubleBuffer, true);
             this.dataGridView2.ColumnHeadersDefaultCellStyle.SelectionBackColor = this.dataGridView2.ColumnHeadersDefaultCellStyle.BackColor;
 
             ChangeControlStyles(dataGridView1, ControlStyles.OptimizedDoubleBuffer, true);
             this.dataGridView1.ColumnHeadersDefaultCellStyle.SelectionBackColor = this.dataGridView1.ColumnHeadersDefaultCellStyle.BackColor;
-            timer1.Start();
+           timer1.Start();
         }
         private void ChangeControlStyles(Control ctrl, ControlStyles flag, bool value)
         {
@@ -152,14 +153,17 @@ namespace NTTracking
                     {
                         dataGridView1.BeginInvoke((Action)delegate ()
                         {
-                            if (userd.timer1.Enabled == true)
+                            if (showappsThread != null)
                             {
-                                string desc = dtrow["Software"].ToString().Trim();
+                                if (userd.timer1.Enabled == true)
+                                {
+                                    string desc = dtrow["Software"].ToString().Trim();
 
 
-                                int a = dataGridView1.Rows.Add();
-                                dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
-                                dataGridView1.Rows[a].Cells["Software"].Value = desc;
+                                    int a = dataGridView1.Rows.Add();
+                                    dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
+                                    dataGridView1.Rows[a].Cells["Software"].Value = desc;
+                                }
                             }
                         });
                     }
@@ -171,10 +175,13 @@ namespace NTTracking
                     bool found = false;
                     foreach (DataRow dtrow in dt.Rows)
                     {
-                        if (dtrow["ProcessID"].ToString() == row.Cells["ProcessID"].Value.ToString() && dtrow["Software"].ToString() == row.Cells["Software"].Value.ToString())
+                        if (showappsThread != null)
                         {
-                            found = true;
-                            break;
+                            if (dtrow["ProcessID"].ToString() == row.Cells["ProcessID"].Value.ToString() && dtrow["Software"].ToString() == row.Cells["Software"].Value.ToString())
+                            {
+                                found = true;
+                                break;
+                            }
                         }
 
                     }
@@ -182,9 +189,12 @@ namespace NTTracking
                     {
                         dataGridView1.BeginInvoke((Action)delegate ()
                         {
-                            if (userd.timer1.Enabled == true)
+                            if (showappsThread != null)
                             {
-                                dataGridView1.Rows.Remove(row);
+                                if (userd.timer1.Enabled == true)
+                                {
+                                    dataGridView1.Rows.Remove(row);
+                                }
                             }
                         });
                     }
@@ -196,27 +206,33 @@ namespace NTTracking
                     bool found = false;
                     foreach (DataGridViewRow row in dataGridView1.Rows)
                     {
-                        if (dtrow["ProcessID"].ToString() == row.Cells["ProcessID"].Value.ToString() && dtrow["Software"].ToString() == row.Cells["Software"].Value.ToString())
+                        if (showappsThread != null)
                         {
-                            found = true;
-                            break;
+                            if (dtrow["ProcessID"].ToString() == row.Cells["ProcessID"].Value.ToString() && dtrow["Software"].ToString() == row.Cells["Software"].Value.ToString())
+                            {
+                                found = true;
+                                break;
+                            }
                         }
 
                     }
                     if (found == false)
                     {
-                        dataGridView1.BeginInvoke((Action)delegate ()
-                        {
-                            if (userd.timer1.Enabled == true)
+                            dataGridView1.BeginInvoke((Action)delegate ()
                             {
-                                string desc = dtrow["Software"].ToString().Trim();
-                                //db.AddTaskRunning(id, desc);
+                                if (showappsThread != null)
+                                {
+                                    if (userd.timer1.Enabled == true)
+                                    {
+                                        string desc = dtrow["Software"].ToString().Trim();
+                                        //db.AddTaskRunning(id, desc);
 
-                                int a = dataGridView1.Rows.Add();
-                                dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
-                                dataGridView1.Rows[a].Cells["Software"].Value = desc;
-                            }
-                        });
+                                        int a = dataGridView1.Rows.Add();
+                                        dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
+                                        dataGridView1.Rows[a].Cells["Software"].Value = desc;
+                                    }
+                                }
+                            });
                     }
                 }
 
@@ -254,35 +270,23 @@ namespace NTTracking
 
             return distinctTable;
         }
-
+        bool connection = false;
         private void timer1_Tick(object sender, EventArgs e)
         {
             try
             {
-                //if (!string.IsNullOrEmpty(userd.timeinout))
-                //{
-                //    MessageBox.Show(userd.timeinout.ToString());
-                //}
-                //else
-                //{
-                //    MessageBox.Show("null");
-                //}
-                //if (showappsThread == null && userd.timeinout == "in")
-                //{
-                //    showappsThread = new Thread(LoadProcessesOnUIThread);
-                //    showappsThread.Start();
-                //}
-                //else if (showappsThread == null && userd.timeinout == "out")
-                //{
-                //    if (showappsThread == null && userd.guna2Button4.Visible == true)
-                //    {
-                //        if (dataGridView1.Rows.Count != 0)
-                //        {
-                //            dataGridView1.Rows.Clear();
-                //        }
-                //    }
-                //}
+                if (db.OpenConnection())
+                {
+                    db.CloseConnection();
+                }
+                else
+                {
+                    connection = false;
 
+                    timer1.Enabled = false;
+                    timer1.Stop();
+                    return;
+                }
                 startTime = DateTime.Now;
                 string data1 = id;
                 string data3 = startTime.ToString("dd-MM-yyyy");
@@ -330,6 +334,17 @@ namespace NTTracking
         private void guna2ShadowPanel4_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void dataGridView2_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            UserDashboard user = (UserDashboard)Application.OpenForms["UserDashboard"];
+
+            user.recorddate = "Records for " + DateTime.Parse(dataGridView2.CurrentRow.Cells["records"].Value.ToString()).ToString("MMM/dd/yyyy");
+            // UserDashboard user = new UserDashboard();
+            user.trackid = dataGridView2.CurrentRow.Cells["Column1"].Value.ToString().Trim();
+            user.guna2Button2_Click(sender,e);
+           // guna2Button2
         }
     }
 }
