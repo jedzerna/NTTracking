@@ -81,7 +81,15 @@ namespace NTTracking
 
         private void Register_Load(object sender, EventArgs e)
         {
-
+            pictureBox2.Controls.Add(position_txt);
+            position_txt.Location = new Point(17, 247);
+            position_txt.BackColor = Color.Transparent;
+            pictureBox2.Controls.Add(pass_txt);
+            pass_txt.Location = new Point(17, 307);
+            pass_txt.BackColor = Color.Transparent;
+            pictureBox2.Controls.Add(confirm_pass_txt);
+            confirm_pass_txt.Location = new Point(17, 366);
+            confirm_pass_txt.BackColor = Color.Transparent;
         }
 
         private void guna2TextBox4_TextChanged(object sender, EventArgs e)

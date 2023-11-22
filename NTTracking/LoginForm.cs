@@ -309,5 +309,10 @@ namespace NTTracking
                 label7.Text = "";
             }
         }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
