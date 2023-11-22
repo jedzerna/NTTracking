@@ -14,8 +14,38 @@ namespace NTTracking
 {
     public partial class formRecords : Form
     {
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams handleparam = base.CreateParams;
+                handleparam.ExStyle |= 0x02000000;
+                return handleparam;
+            }
+
+        }
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            this.DoubleBuffered = true;
+        }
+        public static void SetDoubleBuffered(System.Windows.Forms.Control c)
+        {
+            //Taxes: Remote Desktop Connection and painting
+            //http://blogs.msdn.com/oldnewthing/archive/2006/01/03/508694.aspx
+            if (System.Windows.Forms.SystemInformation.TerminalServerSession)
+                return;
+
+            System.Reflection.PropertyInfo aProp =
+                  typeof(System.Windows.Forms.Control).GetProperty(
+                        "DoubleBuffered",
+                        System.Reflection.BindingFlags.NonPublic |
+                        System.Reflection.BindingFlags.Instance);
+
+            aProp.SetValue(c, true, null);
+        }
         public string id;
         public string username;
+        public string recorddate = "";
         public formRecords()
         {
             
@@ -25,15 +55,26 @@ namespace NTTracking
         {
             list = null;
             info = null;
-            trackid = "";
-            recordslist();
+            //MessageBox.Show(trackid.Trim());
+            if (trackid.Trim() != "")
+            {
+                label14.Text = recorddate;
+                recordinfo();
+
+                UserDashboard user = (UserDashboard)Application.OpenForms["UserDashboard"];
+                user.trackid = "";
+            }
+            else
+            {
+                recordslist();
+            }
         }
         formRecordsList list;
         formRecordInfo info;
         private void recordslist()
         {
             guna2Button2.Visible = false;
-            panel1.Controls.Clear();
+            //panel1.Controls.Clear();
             list = new formRecordsList(this);
             list.id = id;
             list.username = username;
@@ -50,16 +91,16 @@ namespace NTTracking
             try
             {
                 guna2Button2.Visible = true;
-                panel1.Controls.Clear();
-            //formRecordInfo info = new formRecordInfo();
-           info = new formRecordInfo
-            {
-                trackid = trackid,
-                id = id,
-                username = username,
-                Height = panel1.Height,
-                Width = panel1.Width
-            };
+                //panel1.Controls.Clear();
+                //formRecordInfo info = new formRecordInfo();
+                info = new formRecordInfo();
+
+                info.trackid = trackid;
+                info.id = id;
+                info.username = username;
+                info.Height = panel1.Height;
+                info.Width = panel1.Width;
+         
 
             info.TopLevel = false;
             panel1.Controls.Add(info);
@@ -78,7 +119,7 @@ namespace NTTracking
         {
 
         }
-        public string trackid;
+        public string trackid = "";
         private void label1_TextChanged(object sender, EventArgs e)
         {
             //MessageBox.Show(trackid);
@@ -95,7 +136,29 @@ namespace NTTracking
 
         private void guna2Button2_Click(object sender, EventArgs e)
         {
-            recordslist();
+            guna2Button2.Visible = false;
+            label14.Text = "Records";
+            if (list == null)
+            {
+                recordslist();
+            }
+            else
+            {
+                list.BringToFront();
+                list.Show();
+            }
+        }
+        public event EventHandler<string> TextUpdated;
+        public void OnTextUpdated(string newText)
+        {
+            // Trigger the event to notify Form1 about the updated text
+            TextUpdated?.Invoke(this, newText);
+        }
+
+        public void UpdateLabelText(string newText)
+        {
+            // Update the label text in Form2
+            label14.Text = newText;
         }
     }
 }
