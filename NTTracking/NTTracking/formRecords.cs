@@ -14,6 +14,35 @@ namespace NTTracking
 {
     public partial class formRecords : Form
     {
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams handleparam = base.CreateParams;
+                handleparam.ExStyle |= 0x02000000;
+                return handleparam;
+            }
+
+        }
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            this.DoubleBuffered = true;
+        }
+        public static void SetDoubleBuffered(System.Windows.Forms.Control c)
+        {
+            //Taxes: Remote Desktop Connection and painting
+            //http://blogs.msdn.com/oldnewthing/archive/2006/01/03/508694.aspx
+            if (System.Windows.Forms.SystemInformation.TerminalServerSession)
+                return;
+
+            System.Reflection.PropertyInfo aProp =
+                  typeof(System.Windows.Forms.Control).GetProperty(
+                        "DoubleBuffered",
+                        System.Reflection.BindingFlags.NonPublic |
+                        System.Reflection.BindingFlags.Instance);
+
+            aProp.SetValue(c, true, null);
+        }
         public string id;
         public string username;
         public string recorddate = "";
@@ -118,6 +147,18 @@ namespace NTTracking
                 list.BringToFront();
                 list.Show();
             }
+        }
+        public event EventHandler<string> TextUpdated;
+        public void OnTextUpdated(string newText)
+        {
+            // Trigger the event to notify Form1 about the updated text
+            TextUpdated?.Invoke(this, newText);
+        }
+
+        public void UpdateLabelText(string newText)
+        {
+            // Update the label text in Form2
+            label14.Text = newText;
         }
     }
 }

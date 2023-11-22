@@ -7,16 +7,25 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Gma.System.MouseKeyHook;
+using Google.Protobuf;
 using Guna.UI2.WinForms;
 using WindowsInput;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using static Guna.UI2.Native.WinApi;
 using static NTTracking.DBData;
 using static NTTracking.Model.TrackData;
+using static System.TimeZoneInfo;
+using System.Data.SqlClient;
+using System.Web.Management;
+using MySqlX.XDevAPI.Relational;
+using System.Security.Policy;
 
 namespace NTTracking
 {
@@ -74,6 +83,14 @@ namespace NTTracking
             clickTimer.Interval = 1000; // Adjust this interval as needed (in milliseconds)
             clickTimer.Tick += (s, e) => canProcessClick = true;
         }
+
+        private formRecordsList List;
+
+        public UserDashboard(formRecordsList form1)
+        {
+            InitializeComponent();
+            List = form1;
+        }
         int highestId = 0;
         private DataTable appcategories = new DataTable();
         private void UserDashboard_Load(object sender, EventArgs e)
@@ -81,9 +98,6 @@ namespace NTTracking
             appcategories = db.GetAppCategories();
 
             SuspendLayout();
-            dtf.Clear();
-            dtf.Columns.Add("Software");
-            dtf.Columns.Add("ProcessID");
             if (img == null)
             {
                 pictureisnull();
@@ -220,10 +234,10 @@ namespace NTTracking
             eventThread.Start();
 
             loaddata();
-            guna2Button6.Visible = true;
-            guna2Button9.Visible = true;
-            guna2Button4.Visible = false;
-            guna2Button11.Visible = false;
+            guna2Button6.Enabled = true;
+            guna2Button9.Enabled = true;
+            guna2Button4.Enabled = false;
+            guna2Button11.Enabled = false;
 
         }
         private IKeyboardMouseEvents m_GlobalHook;
@@ -280,93 +294,102 @@ namespace NTTracking
 
             return distinctTable;
         }
-        DataTable dtf = new DataTable();
+        public class ProcessInfo
+        {
+            public string Software { get; set; }
+        }
+        public class ProcessInfoTemp
+        {
+            public string Software { get; set; }
+        }
+        List<ProcessInfo> dataList = new List<ProcessInfo>();
         private void LoadProcessesOnUIThread()
         {
-          
-            
-            //Thread.Sleep(3000);
-            //MessageBox.Show("dawd");
-            DataTable dt = new DataTable();
-            dt.Clear();
-            dt.Columns.Add("Software");
-            dt.Columns.Add("ProcessID");
-
-
-
+            List<ProcessInfoTemp> dataListT = new List<ProcessInfoTemp>();
+            dataListT.Clear();
             HashSet<int> processIds = new HashSet<int>();
 
             Process[] processes = Process.GetProcesses();
+
             foreach (var process in processes)
             {
                 if (!string.IsNullOrEmpty(process.MainWindowTitle) && !processIds.Contains(process.Id))
                 {
-                    DataRow row = dt.NewRow();
-                    row["Software"] = process.MainWindowTitle.Trim();
-                    row["ProcessID"] = process.Id.ToString().Trim();
+                    ProcessInfoTemp newRowT = new ProcessInfoTemp
+                    {
+                        Software = process.MainWindowTitle.Trim(),
+                    };
 
-                    dt.Rows.Add(row);
+                    dataListT.Add(newRowT);
                     processIds.Add(process.Id);
+
                 }
             }
 
-            dt = RemoveDuplicateRows(dt, "ProcessID", "Software");
-            dt.AcceptChanges();
-            foreach (DataRow row in dt.Rows)
+            dataListT = dataListT.GroupBy(x => x.Software)
+                                 .Select(group => group.First())
+                                 .ToList();
+
+            foreach (ProcessInfoTemp itemT in dataListT)
             {
+
                 bool exist = false;
-                foreach (DataRow rowf in dtf.Rows)
+                foreach (ProcessInfo item in dataList)
                 {
-                    if (rowf["Software"].ToString() == row["Software"].ToString() && rowf["ProcessID"].ToString() == row["ProcessID"].ToString())
+                    if (item.Software.Trim() == itemT.Software.Trim())
                     {
-                        exist = true; break;
+                        exist = true;
+                        break;
                     }
                 }
-                if (exist == false)
+                if (!exist)
                 {
                     string catid = "6";
                     foreach (DataRow rowprocess in appcategories.Rows)
                     {
-                        if (row["Software"].ToString().Contains(rowprocess["name"].ToString()))
+                        if (itemT.Software.Contains(rowprocess["name"].ToString()))
                         {
                             catid = rowprocess["id"].ToString();
                             break; // Break the loop once a match is found
                         }
                     }
-                    if (db.AddTaskRunning(id, highestId.ToString(),row["Software"].ToString(), catid))
+                    if (db.AddTaskRunning(id, highestId.ToString(), itemT.Software, catid))
                     {
-                        DataRow rown = dtf.NewRow();
-                        rown["Software"] = row["Software"].ToString();
-                        rown["ProcessID"] = row["ProcessID"].ToString();
-                        dtf.Rows.Add(rown);
+                        ProcessInfo newRow = new ProcessInfo
+                        {
+                            Software = itemT.Software
+                        };
+                        dataList.Add(newRow);
                     }
+
                 }
             }
-            dtf.AcceptChanges();
-            foreach (DataRow rowf in dtf.Rows)
+            List<ProcessInfo> itemsToRemove = new List<ProcessInfo>();
+            foreach (ProcessInfo item in dataList)
             {
                 bool exist = false;
-                foreach (DataRow row in dt.Rows)
+                foreach (ProcessInfoTemp itemT in dataListT)
                 {
-                    if (rowf["Software"].ToString() == row["Software"].ToString() && rowf["ProcessID"].ToString() == row["ProcessID"].ToString())
+                    if (item.Software.Trim() == itemT.Software.Trim())
                     {
-                        exist = true; break;
+                        exist = true;
+                        break;
                     }
                 }
 
                 if (exist == false)
                 {
-                    if (db.CloseTaskRunning(id, highestId.ToString(),rowf["Software"].ToString()))
+                    if (db.CloseTaskRunning(id, highestId.ToString(), item.Software))
                     {
-                        rowf.Delete();
+                        itemsToRemove.Add(item);
                     }
                 }
             }
-            dtf.AcceptChanges();
-            dtf.DefaultView.Sort = "Software ASC";
-            dtf.AcceptChanges();
-            //Thread.Sleep(2000);
-           
+            foreach (ProcessInfo itemToRemove in itemsToRemove)
+            {
+                dataList.Remove(itemToRemove);
+            }
+
             showappsThread = null;
 
         }
@@ -419,16 +442,16 @@ namespace NTTracking
 
         private void UserDashboard_FormClosing(object sender, FormClosingEventArgs e)
         {
+            showappsThread = null;
+        
             Application.Exit();
         }
         DBData db = new DBData();
-        public string timeinout;
         private void guna2Button4_Click(object sender, EventArgs e)
         {
-
+            Cursor.Current = Cursors.WaitCursor;
             if (db.OpenConnection())
             {
-                reload = "1";
                 startTime = DateTime.Now;
                 // Specify the data you want to insert
                 string data1 = id; 
@@ -436,16 +459,16 @@ namespace NTTracking
                 // Insert the data into the database
                 if (db.TimeIn(data1, startTime))
                 {
-
+                    formDashboard fdash = (formDashboard)Application.OpenForms["formDashboard"];
+                    fdash.refreshdata();
+                    fdash.EnableTimer(); 
+                    fdash.showappsThread = null;
                     //refreshdata();
                     startTracking();
-                    formDashboard dash = new formDashboard();
-                    dash.refreshdata();
-                    timeinout = "in";
                 }
                 db.CloseConnection();
             }
-
+            Cursor.Current = Cursors.Default;
         }
         bool connection = false;
         private void connectionlost()
@@ -529,41 +552,42 @@ namespace NTTracking
         string mousepoint;
         private void guna2Button6_Click(object sender, EventArgs e)
         {
-            if (db.OpenConnection())
+            Cursor.Current = Cursors.WaitCursor;
+            //try
+            //{
+
+                    //startTime = DateTime.Now;
+                    // Specify the data you want to insert
+                    string data1 = highestId.ToString();
+                    string data2 = DateTime.Now.ToString(@"HH\:mm\:ss");
+                    string data3 = DateTime.Now.ToString("dd-MM-yyyy");
+
+                    // Insert the data into the database
+                    if (db.TimeOut(data1, DateTime.Now, id))
             {
-                reload = "2";
-                //startTime = DateTime.Now;
-                // Specify the data you want to insert
-                string data1 = highestId.ToString();
-                string data2 = DateTime.Now.ToString(@"HH\:mm\:ss");
-                string data3 = DateTime.Now.ToString("dd-MM-yyyy");
+                formDashboard fdash = (formDashboard)Application.OpenForms["formDashboard"];
+                fdash.StopTimer();
+                fdash.showappsThread = null;
+                fdash.refreshdata();
+                //refreshdata();
+                KeyboardHook.Unhook();
+                        m_GlobalHook.MouseMove -= GlobalHookOnMouseMove;
+                        m_GlobalHook.MouseClick -= GlobalHookOnMouseClick;
 
-                // Insert the data into the database
-                if (db.TimeOut(data1, DateTime.Now,id))
-                {
-                    //refreshdata();
-                    KeyboardHook.Unhook();
-                    m_GlobalHook.MouseMove -= GlobalHookOnMouseMove;
-                    m_GlobalHook.MouseClick -= GlobalHookOnMouseClick;
-
-                    timer1.Stop();
-                    timer1.Enabled = false;
-                    eventThread = null;
-                    showappsThread = null;
-                    label3.Text = "0:00";
-                    label6.Text = "0:00";
-                    guna2Button6.Visible = false;
-                    guna2Button9.Visible = false;
-                    guna2Button4.Visible = true;
-                    guna2Button11.Visible = true;
-                    formDashboard dash = new formDashboard();
-                    dash.refreshdata();
-                    timeinout = "out";
-                }
-                db.CloseConnection();
+                        timer1.Stop();
+                        timer1.Enabled = false;
+                        eventThread = null;
+                showappsThread = null;
+                        label3.Text = "0:00";
+                        label6.Text = "0:00";
+                        guna2Button6.Enabled = false;
+                        guna2Button9.Enabled = false;
+                guna2Button4.Enabled = true;
+                        guna2Button11.Enabled = true;
             }
+
+            Cursor.Current = Cursors.Default;
         }
-        public string reload;
         private void pictureBox1_Click(object sender, EventArgs e)
         {
 
@@ -575,10 +599,6 @@ namespace NTTracking
 
         }
 
-        private void guna2Button5_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
@@ -596,22 +616,33 @@ namespace NTTracking
 
         private void guna2Button1_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
             //changefill();
             if (formNum != "1")
             {
-                formNum = "1";
-                dashboard = new formDashboard(this);
-                dashboard.id = id;
-                dashboard.username = username;
-                dashboard.Height = panel1.Height;
-                dashboard.Width = panel1.Width;
-                //panel1.Controls.Clear();
-                dashboard.TopLevel = false;
-                panel1.Controls.Add(dashboard);
-                panel1.AutoScroll = false;
-                dashboard.BringToFront();
-                dashboard.Show();
+                if (dashboard != null)
+                {
+                    formNum = "1";
+                    dashboard.BringToFront();
+                    dashboard.Show();
+                }
+                else
+                {
+                    formNum = "1";
+                    dashboard = new formDashboard(this);
+                    dashboard.id = id;
+                    dashboard.username = username;
+                    dashboard.Height = panel1.Height;
+                    dashboard.Width = panel1.Width;
+                    //panel1.Controls.Clear();
+                    dashboard.TopLevel = false;
+                    panel1.Controls.Add(dashboard);
+                    panel1.AutoScroll = false;
+                    dashboard.BringToFront();
+                    dashboard.Show();
+                }
             }
+            Cursor.Current = Cursors.Default;
         }
 
         private void panel1_Paint_1(object sender, PaintEventArgs e)
@@ -656,26 +687,37 @@ namespace NTTracking
 
         }
 
-        formRecords records;
+        public formRecords records;
         public void guna2Button2_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
             if (formNum != "2")
             {
-                formNum = "2";
-                records = new formRecords();
-                records.id = id;
-                records.username = username;
-                records.trackid = trackid;
-                records.recorddate = recorddate;
-                records.Height = panel1.Height;
-                records.Width = panel1.Width;
-                //panel1.Controls.Clear();
-                records.TopLevel = false;
-                panel1.Controls.Add(records);
-                panel1.AutoScroll = false;
-                records.BringToFront();
-                records.Show();
+                if (records != null)
+                {
+                    formNum = "2";
+                    records.BringToFront();
+                    records.Show();
+                }
+                else
+                {
+                    formNum = "2";
+                    records = new formRecords();
+                    records.id = id;
+                    records.username = username;
+                    records.trackid = trackid;
+                    records.recorddate = recorddate;
+                    records.Height = panel1.Height;
+                    records.Width = panel1.Width;
+                    //panel1.Controls.Clear();
+                    records.TopLevel = false;
+                    panel1.Controls.Add(records);
+                    panel1.AutoScroll = false;
+                    records.BringToFront();
+                    records.Show();
+                }
             }
+            Cursor.Current = Cursors.Default;
         }
 
         private void label6_Click(object sender, EventArgs e)
@@ -694,5 +736,67 @@ namespace NTTracking
             guna2Button4_Click(sender, e);
         }
 
+        private void guna2TextBox2_TextChanged(object sender, EventArgs e)
+        {
+            if (guna2TextBox2.Text != "")
+            {
+                if (DateTime.TryParse(guna2TextBox2.Text, out DateTime date))
+                {
+                    label5.Visible = false;
+                    guna2TextBox2.BorderColor = Color.FromArgb(94, 148, 255);
+                    guna2TextBox2.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+                    guna2TextBox2.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+                }
+                else
+                {
+                    label5.Visible = true;
+                    guna2TextBox2.FocusedState.BorderColor = Color.Maroon;
+                    guna2TextBox2.HoverState.BorderColor = Color.Maroon;
+                    guna2TextBox2.BorderColor = Color.Maroon;
+                }
+            }
+            else
+            {
+                label5.Visible = false;
+                guna2TextBox2.BorderColor = Color.FromArgb(94, 148, 255);
+                guna2TextBox2.FocusedState.BorderColor = Color.FromArgb(94, 148, 255);
+                guna2TextBox2.HoverState.BorderColor = Color.FromArgb(94, 148, 255);
+            }
+            formRecordsList dasha = (formRecordsList)Application.OpenForms["formRecordsList"];
+            dasha.label2.Text = guna2TextBox2.Text;
+        }
+
+        private void guna2TextBox2_Enter(object sender, EventArgs e)
+        {
+            //records = null;
+            guna2Button2_Click(sender,e);
+        }
+
+        private void guna2Button5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void guna2Button12_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void UserDashboard_SizeChanged(object sender, EventArgs e)
+        {
+            //if (this.WindowState == FormWindowState.Minimized)
+            //{
+            //    this.FormBorderStyle = FormBorderStyle.None;
+            //}
+            //else
+            //{
+            //    this.FormBorderStyle = FormBorderStyle.Sizable;
+            //}
+        }
+
+        private void label4_Click_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }

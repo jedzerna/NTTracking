@@ -12,6 +12,35 @@ namespace NTTracking
 {
     public partial class formRecordInfo : Form
     {
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams handleparam = base.CreateParams;
+                handleparam.ExStyle |= 0x02000000;
+                return handleparam;
+            }
+
+        }
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            this.DoubleBuffered = true;
+        }
+        public static void SetDoubleBuffered(System.Windows.Forms.Control c)
+        {
+            //Taxes: Remote Desktop Connection and painting
+            //http://blogs.msdn.com/oldnewthing/archive/2006/01/03/508694.aspx
+            if (System.Windows.Forms.SystemInformation.TerminalServerSession)
+                return;
+
+            System.Reflection.PropertyInfo aProp =
+                  typeof(System.Windows.Forms.Control).GetProperty(
+                        "DoubleBuffered",
+                        System.Reflection.BindingFlags.NonPublic |
+                        System.Reflection.BindingFlags.Instance);
+
+            aProp.SetValue(c, true, null);
+        }
         public string id;
         public string username;
         public string trackid;
@@ -27,10 +56,11 @@ namespace NTTracking
         private void formRecordInfo_Load(object sender, EventArgs e)
         {
             load();
-            dataTable = db.GetTasks(id, trackid);
-
+            dataTable = db.GetTasks(id, trackid, "");
             LoadData();
-            dataGridView2.DataSource = db.TotalEachCategories(id, trackid);
+            DataTable dt = db.TotalEachCategories(id, trackid);
+            dt.DefaultView.Sort = "Total DESC";
+            dataGridView2.DataSource = dt;
             //dataGridView2.DataSource = db.GetSessions(id,trackid);
         }
         private void LoadData()
@@ -43,7 +73,6 @@ namespace NTTracking
 
                 // Calculate the total number of records
                 totalRecords = dataTable.Rows.Count;
-
                 // Calculate the starting index for the current page
                 int startIndex = (currentPage - 1) * pageSize;
 
@@ -52,7 +81,7 @@ namespace NTTracking
                     .Skip(startIndex)
                     .Take(pageSize)
                     .CopyToDataTable();
-
+                //MessageBox.Show(totalRecords.ToString());
                 // Bind the paginated DataTable to a DataGridView or any other UI control
                 dataGridView1.DataSource = pageData;
 
@@ -61,7 +90,11 @@ namespace NTTracking
             }
             catch (Exception ex)
             {
-               
+                dataTable.Rows.Clear();
+                dataGridView1.DataSource = dataTable;
+                label8.Text = "0/0";
+                guna2Button1.Visible = false;
+                guna2Button2.Visible = false;
             }
         }
         //private void FillDummyData()
@@ -144,6 +177,30 @@ namespace NTTracking
         {
 
             currentPage++;
+            LoadData();
+        }
+
+        private void dataGridView2_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            guna2Button1.Visible = true;
+            if (guna2Button3.Visible == false)
+            {
+                guna2Button3.Visible = true;
+            }
+            dataTable.Clear();
+            dataTable = db.GetTasks(id, trackid, dataGridView2.CurrentRow.Cells["Column2"].Value.ToString());
+            currentPage = 1;
+            LoadData();
+        }
+
+        private void guna2Button3_Click(object sender, EventArgs e)
+        {
+
+            guna2Button1.Visible = true;
+            guna2Button3.Visible = false;
+            dataTable.Clear();
+            dataTable = db.GetTasks(id, trackid, "");
+            currentPage = 1;
             LoadData();
         }
     }

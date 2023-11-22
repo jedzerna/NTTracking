@@ -1,4 +1,5 @@
 ﻿using Guna.UI2.WinForms;
+using MySqlX.XDevAPI.Relational;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -51,7 +52,7 @@ namespace NTTracking
         private DateTime startTime;
         DBData db = new DBData();
         //UserDashboard userdash;
-        private Thread showappsThread;
+        public Thread showappsThread;
         public formDashboard()
         {
             InitializeComponent();
@@ -119,6 +120,11 @@ namespace NTTracking
             try
             {
 
+                startTime = DateTime.Now;
+                string data1 = id;
+                string data3 = startTime.ToString("dd-MM-yyyy");
+                highestId = db.GetHighestId(data1, startTime);
+
                 DataTable dt = new DataTable();
                 dt.Clear();
                 dt.Columns.Add("Software");
@@ -145,27 +151,30 @@ namespace NTTracking
                 dt = RemoveDuplicateRows(dt, "ProcessID");
                 dt.DefaultView.Sort = "Software ASC";
 
-                Thread.Sleep(2000);
                 if (dataGridView1.Rows.Count == 0)
                 {
 
                     foreach (DataRow dtrow in dt.Rows)
                     {
-                        dataGridView1.BeginInvoke((Action)delegate ()
+                        if (showappsThread != null)
                         {
-                            if (showappsThread != null)
+                            Thread.Sleep(1000);
+                            dataGridView1.BeginInvoke((Action)delegate ()
                             {
-                                if (userd.timer1.Enabled == true)
-                                {
-                                    string desc = dtrow["Software"].ToString().Trim();
 
-
-                                    int a = dataGridView1.Rows.Add();
-                                    dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
-                                    dataGridView1.Rows[a].Cells["Software"].Value = desc;
-                                }
-                            }
-                        });
+                                    // Use Invoke to add rows to the DataGridView on the UI thread
+                                    dataGridView1.Invoke(new Action(() =>
+                                    {
+                                    if (userd.timer1.Enabled == true)
+                                        {
+                                            string desc = dtrow["Software"].ToString().Trim();
+                                            int a = dataGridView1.Rows.Add();
+                                        dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
+                                        dataGridView1.Rows[a].Cells["Software"].Value = desc;
+                                        }
+                                    }));
+                            });
+                        }
                     }
                 }
                 Thread.Sleep(1000);
@@ -187,19 +196,24 @@ namespace NTTracking
                     }
                     if (found == false)
                     {
-                        dataGridView1.BeginInvoke((Action)delegate ()
+                        if (showappsThread != null)
                         {
-                            if (showappsThread != null)
+                            Thread.Sleep(1000);
+                            dataGridView1.BeginInvoke((Action)delegate ()
                             {
-                                if (userd.timer1.Enabled == true)
-                                {
-                                    dataGridView1.Rows.Remove(row);
-                                }
-                            }
-                        });
+                               
+                                    dataGridView1.Invoke(new Action(() =>
+                                    {
+                                    if (userd.timer1.Enabled == true)
+                                    {
+                                        dataGridView1.Rows.Remove(row);
+                                        }
+                                    }));
+                            });
+                        }
                     }
                 }
-
+                List<DataGridViewRow> rowsToAdd = new List<DataGridViewRow>();
                 //add new task
                 foreach (DataRow dtrow in dt.Rows)
                 {
@@ -218,24 +232,39 @@ namespace NTTracking
                     }
                     if (found == false)
                     {
-                            dataGridView1.BeginInvoke((Action)delegate ()
-                            {
-                                if (showappsThread != null)
-                                {
-                                    if (userd.timer1.Enabled == true)
-                                    {
-                                        string desc = dtrow["Software"].ToString().Trim();
-                                        //db.AddTaskRunning(id, desc);
+                        //dataGridView1.BeginInvoke((Action)delegate ()
+                        //{
+                        //    dataGridView1.Invoke(new Action(() =>
+                        //    {
+                        //        if (userd.timer1.Enabled == true)
+                        //        {
+                        //            string desc = dtrow["Software"].ToString().Trim();
+                        //            int a = dataGridView1.Rows.Add();
+                        //            dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
+                        //            dataGridView1.Rows[a].Cells["Software"].Value = desc;
+                        //        }
+                        //    }));
+                        //});
 
-                                        int a = dataGridView1.Rows.Add();
-                                        dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
-                                        dataGridView1.Rows[a].Cells["Software"].Value = desc;
-                                    }
-                                }
-                            });
+                        rowsToAdd.Add(CreateDataGridViewRow(dtrow));
                     }
                 }
 
+                if (rowsToAdd.Count > 0)
+                {
+                    Thread.Sleep(1000);
+                    dataGridView1.BeginInvoke((Action)delegate ()
+                    {
+
+                        dataGridView1.Invoke(new Action(() =>
+                        {
+                            if (userd.timer1.Enabled == true)
+                            {
+                                dataGridView1.Rows.AddRange(rowsToAdd.ToArray());
+                            }
+                        }));
+                    });
+                }
                 showappsThread = null;
             }
             catch (Exception ex)
@@ -243,14 +272,29 @@ namespace NTTracking
                 MessageBox.Show(ex.Message);
                 showappsThread = null;
             }
+        }
 
+        private DataGridViewRow CreateDataGridViewRow(DataRow dtrow)
+        {
+            DataGridViewRow newRow = new DataGridViewRow();
+            dataGridView1.BeginInvoke((Action)delegate ()
+            {
 
-
-
+                dataGridView1.Invoke(new Action(() =>
+                {
+                    if (userd.timer1.Enabled == true)
+                    {
+                        string desc = dtrow["Software"].ToString().Trim();
+                        newRow.CreateCells(dataGridView1);
+                        newRow.Cells[dataGridView1.Columns["ProcessID"].Index].Value = dtrow["ProcessID"].ToString().Trim();
+                        newRow.Cells[dataGridView1.Columns["Software"].Index].Value = desc;
+                    }
+                }));
+            });
+            return newRow;
         }
         public DataTable RemoveDuplicateRows(DataTable dataTable, string columnToCheck)
         {
-            // Create a new DataTable with the same structure
             DataTable distinctTable = dataTable.Clone();
 
             // Create a HashSet to keep track of seen values in the specified column
@@ -271,61 +315,74 @@ namespace NTTracking
             return distinctTable;
         }
         bool connection = false;
+        int a = 0;
         private void timer1_Tick(object sender, EventArgs e)
         {
             try
             {
-                if (db.OpenConnection())
-                {
-                    db.CloseConnection();
-                }
-                else
-                {
-                    connection = false;
+                //if (db.OpenConnection())
+                //{
+                //    db.CloseConnection();
+                //}
+                //else
+                //{
+                //    connection = false;
 
-                    timer1.Enabled = false;
-                    timer1.Stop();
-                    return;
-                }
-                startTime = DateTime.Now;
-                string data1 = id;
-                string data3 = startTime.ToString("dd-MM-yyyy");
-                highestId = db.GetHighestId(data1, startTime);
-                if (highestId > 0)
+                //    timer1.Enabled = false;
+                //    timer1.Stop();
+                //    return;
+                //}
+
+                if (showappsThread == null)
                 {
-                    if (showappsThread == null)
-                    {
                         showappsThread = new Thread(LoadProcessesOnUIThread);
                         showappsThread.Start();
-                    }
+
+                  
                 }
-                else
-                {
-                    if (showappsThread == null)
-                    {
-                        if (dataGridView1.Rows.Count != 0)
-                        {
-                            dataGridView1.Rows.Clear();
-                        }
-                    }
-                }
-                if (userd != null && userd.reload != null && userd.reload == "2")
-                {
-                    refreshdata();
-                    userd.reload = "";
-                }else if (userd != null && userd.reload != null && userd.reload == "1")
-                {
-                    refreshdata();
-                    userd.reload = "";
-                }
+              
             }
             catch (NullReferenceException ex)
             {
+                StopTimer();
+                MessageBox.Show(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                StopTimer();
                 MessageBox.Show(ex.Message);
             }
            
         }
-
+        public void StopTimer()
+        {
+            if (timer1 != null && timer1.Enabled)
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new MethodInvoker(() => timer1.Stop()));
+                }
+                else
+                {
+                    timer1.Stop();
+                }
+            }
+            dataGridView1.Rows.Clear();
+        }
+        public void EnableTimer()
+        {
+            if (timer1 != null && !timer1.Enabled)
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new MethodInvoker(() => timer1.Start()));
+                }
+                else
+                {
+                    timer1.Start();
+                }
+            }
+        }
         private void label11_Click(object sender, EventArgs e)
         {
 
@@ -338,12 +395,12 @@ namespace NTTracking
 
         private void dataGridView2_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            UserDashboard user = (UserDashboard)Application.OpenForms["UserDashboard"];
-
-            user.recorddate = "Records for " + DateTime.Parse(dataGridView2.CurrentRow.Cells["records"].Value.ToString()).ToString("MMM/dd/yyyy");
-            // UserDashboard user = new UserDashboard();
-            user.trackid = dataGridView2.CurrentRow.Cells["Column1"].Value.ToString().Trim();
-            user.guna2Button2_Click(sender,e);
+            //UserDashboard user = (UserDashboard)Application.OpenForms["UserDashboard"];
+            //user.records = null;
+            //user.recorddate = "Records for " + DateTime.Parse(dataGridView2.CurrentRow.Cells["records"].Value.ToString()).ToString("MMM/dd/yyyy");
+            //// UserDashboard user = new UserDashboard();
+            //user.trackid = dataGridView2.CurrentRow.Cells["Column1"].Value.ToString().Trim();
+            //user.guna2Button2_Click(sender,e);
            // guna2Button2
         }
     }

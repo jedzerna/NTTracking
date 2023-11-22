@@ -22,14 +22,15 @@ namespace NTTracking
         public DBData()
         {
             // Initialize the connection string
-            //connectionString = $"Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
-            connectionString = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=";
+            connectionString = $"Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
+            //connectionString = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=";
 
             // using (MySqlConnection con = new MySqlConnection("Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password="))
             // Create a new MySqlConnection using the connection string
             connection = new MySqlConnection(connectionString);
         }
-
+        private string con = $"Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
+        //private string con = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=";
         public bool OpenConnection()
         {
             try
@@ -87,12 +88,13 @@ namespace NTTracking
                         cmda.Parameters.AddWithValue("@datein", datetimein.ToString("yyyy-MM-dd"));
                         cmda.Parameters.AddWithValue("@userid", userid);
 
-                        using (MySqlDataReader readera = cmda.ExecuteReader())
+                        using (MySqlDataReader reader = cmda.ExecuteReader())
                         {
-                            if (readera.Read() && !readera.IsDBNull(0))
+                            if (reader.Read() && !reader.IsDBNull(0))
                             {
-                                highestId = readera.GetInt32(0);
+                                highestId = reader.GetInt32(0);
                             }
+                            reader.Close();
                         }
                     }
 
@@ -162,13 +164,15 @@ namespace NTTracking
                         cmda.Parameters.AddWithValue("@datein", datetimeout.ToString("yyyy-MM-dd"));
                         cmda.Parameters.AddWithValue("@userid", userid);
 
-                        using (MySqlDataReader readera = cmda.ExecuteReader())
+                        using (MySqlDataReader reader = cmda.ExecuteReader())
                         {
-                            if (readera.Read() && !readera.IsDBNull(0))
+                            if (reader.Read() && !reader.IsDBNull(0))
                             {
-                                highestId = readera.GetInt32(0);
+                                highestId = reader.GetInt32(0);
                             }
+                            reader.Close();
                         }
+
                     }
 
                     if (highestId != 0)
@@ -207,28 +211,33 @@ namespace NTTracking
         {
             int highestId = 0;
 
-            if (this.OpenConnection())
+
+            connection.Open();
+            //if (this.OpenConnection())
+            //{
+            string querya = "SELECT MAX(id) FROM tbltrackrecords WHERE datein = @datein AND timeout IS NULL AND userid = @userid";
+
+            using (MySqlCommand cmda = new MySqlCommand(querya, connection))
             {
-                string querya = "SELECT MAX(id) FROM tbltrackrecords WHERE datein = @datein AND timeout IS NULL AND userid = @userid";
-
-                using (MySqlCommand cmda = new MySqlCommand(querya, connection))
+                //MessageBox.Show(datein.ToString());
+                //DateTime dateinDate = DateTime.Parse(datein);
+                cmda.Parameters.AddWithValue("@datein", datein.ToString("yyyy-MM-dd"));
+                cmda.Parameters.AddWithValue("@userid", userid);
+                using (MySqlDataReader reader = cmda.ExecuteReader())
                 {
-                    //MessageBox.Show(datein.ToString());
-                    //DateTime dateinDate = DateTime.Parse(datein);
-                    cmda.Parameters.AddWithValue("@datein", datein.ToString("yyyy-MM-dd"));
-                    cmda.Parameters.AddWithValue("@userid", userid);
-
-                    using (MySqlDataReader readera = cmda.ExecuteReader())
+                    if (reader.Read() && !reader.IsDBNull(0))
                     {
-                        if (readera.Read() && !readera.IsDBNull(0))
-                        {
-                            highestId = readera.GetInt32(0);
-                        }
+                        highestId = reader.GetInt32(0);
                     }
+                    reader.Close();
                 }
-
-                this.CloseConnection();
             }
+
+
+            connection.Close();
+            //this.CloseConnection();
+            //}
+
 
             return highestId;
         }
@@ -242,109 +251,125 @@ namespace NTTracking
         {
             List<MyData> dataList = new List<MyData>();
 
-            if (this.OpenConnection())
+            //if (this.OpenConnection())
+            //{
+            try
             {
-                try
-                {
-                    string query = "SELECT * FROM tbltrackrecords WHERE id = @id";
-                    MySqlCommand cmd = new MySqlCommand(query, connection);
-                    cmd.Parameters.AddWithValue("@id", id);
 
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                connection.Open();
+                string query = "SELECT * FROM tbltrackrecords WHERE id = @id";
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@id", id);
+
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        MyData data = new MyData
                         {
-                            MyData data = new MyData
-                            {
-                                // Map database columns to your data type properties
-                                YourProperty1 = reader["timein"].ToString(),
-                                YourProperty2 = reader["userid"].ToString(),
-                            };
+                            // Map database columns to your data type properties
+                            YourProperty1 = reader["timein"].ToString(),
+                            YourProperty2 = reader["userid"].ToString(),
+                        };
 
-                            dataList.Add(data);
-                        }
+                        dataList.Add(data);
                     }
+
+                    reader.Close();
                 }
-                catch (MySqlException ex)
-                {
-                    // Handle retrieval error
-                    // Log or display an error message here
-                }
-                finally
-                {
-                    this.CloseConnection();
-                }
+                connection.Close();
+                //this.CloseConnection();
             }
+            catch (MySqlException ex)
+            {
+                this.CloseConnection();
+                // Handle retrieval error
+                // Log or display an error message here
+            }
+
 
             return dataList;
         }
 
-     
         public int GetAnomalies(string userid)
         {
             DateTime recentDate = DateTime.Now.AddDays(-1);
             DateTime firstDate = DateTime.Now;
             string recentDateF = recentDate.ToString("yyyy-MM-dd");
-            string firstDateF = firstDate.ToString("yyyy") + firstDate.ToString("MM")  + "-" + "-01";
+            string firstDateF = firstDate.ToString("yyyy") + firstDate.ToString("MM") + "-" + "-01";
 
             int highestId = 0;
-
-            if (this.OpenConnection())
+            if (connection.State != ConnectionState.Open)
             {
-                string query = "SELECT COUNT(*) FROM tbltrackrecords WHERE userid = @userid AND datein BETWEEN @startDate AND @endDate AND timeout IS NULL"; // Replace with your actual table name
-
-                using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                {
-                    cmd.Parameters.AddWithValue("@userid", userid);
-                    cmd.Parameters.AddWithValue("@startDate", firstDateF); // Set your start date parameter
-                    cmd.Parameters.AddWithValue("@endDate", recentDateF);
-                    int rowCount = Convert.ToInt32(cmd.ExecuteScalar()); // Use ExecuteScalar to get the count directly
-
-                    highestId = rowCount;
-                }
-
-                this.CloseConnection();
+                connection.Open();
             }
+            //if (this.OpenConnection())
+            //{
+            string query = "SELECT COUNT(*) FROM tbltrackrecords WHERE userid = @userid AND datein BETWEEN @startDate AND @endDate AND timeout IS NULL"; // Replace with your actual table name
+
+            using (MySqlCommand cmd = new MySqlCommand(query, connection))
+            {
+                cmd.Parameters.AddWithValue("@userid", userid);
+                cmd.Parameters.AddWithValue("@startDate", firstDateF); // Set your start date parameter
+                cmd.Parameters.AddWithValue("@endDate", recentDateF);
+
+                //int rowCount = Convert.ToInt32(cmd.ExecuteScalar()); // Use ExecuteScalar to get the count directly
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read() && !reader.IsDBNull(0))
+                    {
+                        highestId = reader.GetInt32(0);
+                    }
+                    reader.Close();
+                }
+               // highestId = rowCount;
+            }
+
+            connection.Close();
+            //    this.CloseConnection();
+            //}
 
             return highestId;
         }
-        public string CalculateTimeDifference(string userid,  DateTime dateto)
+        public string CalculateTimeDifference(string userid, DateTime dateto)
         {
             TimeSpan totalTimeDifference = TimeSpan.Zero;
-            if (this.OpenConnection())
+            //if (this.OpenConnection())
+            //{
+            connection.Open();
+            string datefrom = DateTime.Now.ToString("yyyy") + "-" + DateTime.Now.ToString("MM") + "-" + "01";
+            //MessageBox.Show(userid);
+            string query = "SELECT timein, timeout FROM tbltrackrecords WHERE userid=@userid AND dateout BETWEEN @startDate AND @endDate AND timeout IS NOT NULL";
+            MySqlCommand command = new MySqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@userid", userid);
+            DateTime datefromD = DateTime.Parse(datefrom);
+            command.Parameters.AddWithValue("@startDate", datefromD.ToString("yyyy-MM-dd"));
+            //DateTime datetoD = DateTime.Parse(dateto);
+            command.Parameters.AddWithValue("@endDate", dateto.ToString("yyyy-MM-dd"));
+
+            using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
             {
-                string datefrom = DateTime.Now.ToString("yyyy") + "-" + DateTime.Now.ToString("MM") + "-" + "01";
-                //MessageBox.Show(userid);
-                string query = "SELECT timein, timeout FROM tbltrackrecords WHERE userid=@userid AND dateout BETWEEN @startDate AND @endDate AND timeout IS NOT NULL";
-                MySqlCommand command = new MySqlCommand(query, connection);
+                DataTable dataTable = new DataTable();
+                adapter.Fill(dataTable);
 
-                command.Parameters.AddWithValue("@userid", userid);
-                DateTime datefromD = DateTime.Parse(datefrom);
-                command.Parameters.AddWithValue("@startDate", datefromD.ToString("yyyy-MM-dd"));
-                //DateTime datetoD = DateTime.Parse(dateto);
-                command.Parameters.AddWithValue("@endDate", dateto.ToString("yyyy-MM-dd"));
 
-                using (MySqlDataAdapter adapter = new MySqlDataAdapter(command))
+
+                foreach (DataRow row in dataTable.Rows)
                 {
-                    DataTable dataTable = new DataTable();
-                    adapter.Fill(dataTable);
+                    TimeSpan startTime = (TimeSpan)row["timein"];
+                    TimeSpan endTime = (TimeSpan)row["timeout"];
+                    TimeSpan timeDifference = endTime - startTime;
 
 
-
-                    foreach (DataRow row in dataTable.Rows)
-                    {
-                        TimeSpan startTime = (TimeSpan)row["timein"];
-                        TimeSpan endTime = (TimeSpan)row["timeout"];
-                        TimeSpan timeDifference = endTime - startTime;
-
-
-                        totalTimeDifference += timeDifference;
-                    }
-
+                    totalTimeDifference += timeDifference;
                 }
-                this.CloseConnection();
-            }
 
+            }
+            //    this.CloseConnection();
+            //}
+
+            connection.Close();
             return totalTimeDifference.ToString();
         }
         public DataTable GetPreviousRecord(string userid)
@@ -352,207 +377,255 @@ namespace NTTracking
             DataTable dt = new DataTable();
             DataTable fdt = new DataTable();
             fdt.Columns.Add("id");
-            fdt.Columns.Add("Records",typeof(DateTime));
+            fdt.Columns.Add("Records", typeof(DateTime));
             fdt.Columns.Add("Image", typeof(Bitmap));
-            if (this.OpenConnection())
-            {
-                string query = "SELECT DATE_FORMAT(datein, '%Y-%m-%d %H:%i:%s') AS datein, " +
+            //if (this.OpenConnection())
+            //{
+            connection.Open();
+            string query = "SELECT DATE_FORMAT(datein, '%Y-%m-%d %H:%i:%s') AS datein, " +
                   "DATE_FORMAT(dateout, '%Y-%m-%d %H:%i:%s') AS dateout, timeout,id " +
-                  "FROM tbltrackrecords WHERE userid = @userid ORDER BY id DESC LIMIT 10";
+                  "FROM tbltrackrecords WHERE userid = @userid ORDER BY id DESC LIMIT 9";
 
-                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+            using (MySqlCommand cmd = new MySqlCommand(query, connection))
+            {
+                cmd.Parameters.AddWithValue("@userid", userid);
+
+                using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
                 {
-                    cmd.Parameters.AddWithValue("@userid", userid);
-
-                    using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
-                    {
-                        adapter.Fill(dt);
-                    }
-
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        DataRow frow = fdt.NewRow();
-                        frow["id"] = row["id"].ToString();
-                        //MessageBox.Show(DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy"));
-                        //MessageBox.Show(DateTime.Now.ToString("MM/dd/yyyy"));
-                        if (row["timeout"] is DBNull || string.IsNullOrEmpty(row["timeout"].ToString()) && DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy") == DateTime.Now.ToString("MM/dd/yyyy"))
-                        {
-                            string dat = row["datein"].ToString();
-                            string formattedDate = dat.Remove(dat.Length - 9);
-                            //.Show(formattedDate);
-                            //frow["Records"] = DateTime.Parse(formattedDate).ToString("MM/dd/yyyy");
-                            frow["Records"] = DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy");              //frow["Records"] = DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy");
-                            frow["Image"] = new Bitmap(Properties.Resources.circlered2);
-                        }
-                        else if (row["timeout"] is DBNull || string.IsNullOrEmpty(row["timeout"].ToString()) && DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy") != DateTime.Now.ToString("MM/dd/yyyy"))
-                        {
-                            frow["Records"] = DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy");
-                            frow["Image"] = new Bitmap(Properties.Resources.circlered2);
-                        }
-                        else
-                        {
-                            frow["Records"] = DateTime.Parse(row["dateout"].ToString()).ToString("MM/dd/yyyy");
-                            frow["Image"] = new Bitmap(Properties.Resources.circlegreen2);
-                        }
-
-                        fdt.Rows.Add(frow);
-                    }
-
-                    this.CloseConnection();
+                    adapter.Fill(dt);
                 }
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    DataRow frow = fdt.NewRow();
+                    frow["id"] = row["id"].ToString();
+                    //MessageBox.Show(DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy"));
+                    //MessageBox.Show(DateTime.Now.ToString("MM/dd/yyyy"));
+                    if (row["timeout"] is DBNull || string.IsNullOrEmpty(row["timeout"].ToString()) && DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy") == DateTime.Now.ToString("MM/dd/yyyy"))
+                    {
+                        string dat = row["datein"].ToString();
+                        string formattedDate = dat.Remove(dat.Length - 9);
+                        //.Show(formattedDate);
+                        //frow["Records"] = DateTime.Parse(formattedDate).ToString("MM/dd/yyyy");
+                        frow["Records"] = DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy");              //frow["Records"] = DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy");
+                        frow["Image"] = new Bitmap(Properties.Resources.circlered2);
+                    }
+                    else if (row["timeout"] is DBNull || string.IsNullOrEmpty(row["timeout"].ToString()) && DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy") != DateTime.Now.ToString("MM/dd/yyyy"))
+                    {
+                        frow["Records"] = DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy");
+                        frow["Image"] = new Bitmap(Properties.Resources.circlered2);
+                    }
+                    else
+                    {
+                        frow["Records"] = DateTime.Parse(row["dateout"].ToString()).ToString("MM/dd/yyyy");
+                        frow["Image"] = new Bitmap(Properties.Resources.circlegreen2);
+                    }
+
+                    fdt.Rows.Add(frow);
+                }
+
             }
+            //    this.CloseConnection();
+            //}
+            connection.Close();
             return fdt;
         }
-        public DataTable GetAllPreviousRecord(string userid, int startIndex, int pageSize)
+        public DataTable GetAllPreviousRecord(string userid, int startIndex, int pageSize, string searchQuery)
         {
             DataTable dt = new DataTable();
             DataTable fdt = new DataTable();
             fdt.Columns.Add("id");
             fdt.Columns.Add("Records");
             fdt.Columns.Add("Image", typeof(Bitmap));
-            if (this.OpenConnection())
+            //if (this.OpenConnection())
+            //{
+            connection.Open();
+            string query;
+            if (searchQuery != "")
             {
-                string query = "SELECT DATE_FORMAT(datein, '%Y-%m-%d %H:%i:%s') AS datein, " +
-                  "DATE_FORMAT(dateout, '%Y-%m-%d %H:%i:%s') AS dateout, timeout,id " +
-                  "FROM tbltrackrecords WHERE userid = @userid ORDER BY id DESC LIMIT @startIndex,@pageSize";
-
-                using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                {
-                    cmd.Parameters.AddWithValue("@userid", userid);
-                    cmd.Parameters.AddWithValue("@startIndex", startIndex);
-                    cmd.Parameters.AddWithValue("@pageSize", pageSize);
-
-                    using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
-                    {
-                        adapter.Fill(dt);
-                    }
-
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        DataRow frow = fdt.NewRow();
-                        //MessageBox.Show(DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy"));
-                        //.Show(row["id"].ToString());
-                        frow["id"] = row["id"].ToString();
-                        if (row["timeout"] is DBNull || string.IsNullOrEmpty(row["timeout"].ToString()) && DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy") == DateTime.Now.ToString("MM/dd/yyyy"))
-                        {
-                            frow["Records"] = DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy");
-                            frow["Image"] = new Bitmap(Properties.Resources.circlered2);
-                        }
-                        else if (row["timeout"] is DBNull || string.IsNullOrEmpty(row["timeout"].ToString()) && DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy") != DateTime.Now.ToString("MM/dd/yyyy"))
-                        {
-                            frow["Records"] = DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy");
-                            frow["Image"] = new Bitmap(Properties.Resources.circlered2);
-                        }
-                        else
-                        {
-                            frow["Records"] = DateTime.Parse(row["dateout"].ToString()).ToString("MM/dd/yyyy");
-                            frow["Image"] = new Bitmap(Properties.Resources.circlegreen2);
-                        }
-
-                        fdt.Rows.Add(frow);
-                    }
-
-                    this.CloseConnection();
-                }
+                query = "SELECT DATE_FORMAT(datein, '%Y-%m-%d %H:%i:%s') AS datein, " +
+                 "DATE_FORMAT(dateout, '%Y-%m-%d %H:%i:%s') AS dateout, timeout,id " +
+                 "FROM tbltrackrecords WHERE userid = @userid AND datein=@datein ORDER BY id DESC LIMIT @startIndex,@pageSize";
             }
+            else
+            {
+                query = "SELECT DATE_FORMAT(datein, '%Y-%m-%d %H:%i:%s') AS datein, " +
+                 "DATE_FORMAT(dateout, '%Y-%m-%d %H:%i:%s') AS dateout, timeout,id " +
+                 "FROM tbltrackrecords WHERE userid = @userid ORDER BY id DESC LIMIT @startIndex,@pageSize";
+            }
+
+            using (MySqlCommand cmd = new MySqlCommand(query, connection))
+            {
+                if (searchQuery != "")
+                {
+                    cmd.Parameters.AddWithValue("@datein", DateTime.Parse(searchQuery).ToString("yyyy-MM-dd"));
+                }
+                cmd.Parameters.AddWithValue("@userid", userid);
+                cmd.Parameters.AddWithValue("@startIndex", startIndex);
+                cmd.Parameters.AddWithValue("@pageSize", pageSize);
+
+                using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
+                {
+                    adapter.Fill(dt);
+                }
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    Console.WriteLine(row["datein"].ToString());
+                    DataRow frow = fdt.NewRow();
+                    //MessageBox.Show(DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy"));
+                    //.Show(row["id"].ToString());
+                    frow["id"] = row["id"].ToString();
+                    if (row["timeout"] is DBNull || string.IsNullOrEmpty(row["timeout"].ToString()) && DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy") == DateTime.Now.ToString("MM/dd/yyyy"))
+                    {
+                        frow["Records"] = DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy");
+                        frow["Image"] = new Bitmap(Properties.Resources.circlered2);
+                    }
+                    else if (row["timeout"] is DBNull || string.IsNullOrEmpty(row["timeout"].ToString()) && DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy") != DateTime.Now.ToString("MM/dd/yyyy"))
+                    {
+                        frow["Records"] = DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy");
+                        frow["Image"] = new Bitmap(Properties.Resources.circlered2);
+                    }
+                    else
+                    {
+                        frow["Records"] = DateTime.Parse(row["datein"].ToString()).ToString("MM/dd/yyyy");
+                        frow["Image"] = new Bitmap(Properties.Resources.circlegreen2);
+                    }
+
+                    fdt.Rows.Add(frow);
+                }
+
+            }
+            //    this.CloseConnection();
+            //}
+            connection.Close();
             return fdt;
         }
-        public int GetTotalRecords(string userid)
+        public int GetTotalRecords(string userid, string searchQuery)
         {
             int total = 0;
-            if (this.OpenConnection())
+            //if (this.OpenConnection())
+            //{
+            connection.Open();
+            string query;
+            if (searchQuery != "")
             {
-                string query = "SELECT COUNT(*) FROM tbltrackrecords WHERE userid = @userid";
-
-                using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                {
-                    cmd.Parameters.AddWithValue("@userid", userid);
-                    total = Convert.ToInt32(cmd.ExecuteScalar());
-                }
-                this.CloseConnection();
+                query = "SELECT COUNT(*) FROM tbltrackrecords WHERE userid = @userid AND datein=@datein";
             }
+            else
+            {
+                query = "SELECT COUNT(*) FROM tbltrackrecords WHERE userid = @userid";
+            }
+            using (MySqlCommand cmd = new MySqlCommand(query, connection))
+            {
+                if (searchQuery != "")
+                {
+                    cmd.Parameters.AddWithValue("@datein", DateTime.Parse(searchQuery).ToString("yyyy-MM-dd"));
+                }
+                cmd.Parameters.AddWithValue("@userid", userid);
+                total = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+
+            connection.Close();
+            //this.CloseConnection();
+            //}
             return total;
         }
-            public bool AddTaskRunning(string userid, string taskid, string description,string catid)
+        public bool AddTaskRunning(string userid, string taskid, string description, string catid)
         {
-            if (this.OpenConnection())
+            //this.CloseConnection();
+            // this.OpenConnection();
+            //if (this.OpenConnection())
+            //{
+            //try
+            //{
+            //connection.Close();
+            //connection.Open();
+            MySqlConnection cons = new MySqlConnection(con);
+            cons.Open();
+            string query = "INSERT INTO tbltaskrunning (userid,taskid, description, date,time, status,category_id) VALUES (@userid,@taskid, @description, @date,@time, @status,@category_id)";
+            using (MySqlCommand cmd = new MySqlCommand(query, cons))
             {
-                try
-                {
-                    string query = "INSERT INTO tbltaskrunning (userid,taskid, description, date,time, status,category_id) VALUES (@userid,@taskid, @description, @date,@time, @status,@category_id)";
-                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                    {
-                        cmd.Parameters.AddWithValue("@userid", userid);
-                        cmd.Parameters.AddWithValue("@taskid", taskid);
-                        cmd.Parameters.AddWithValue("@description", description);
-                        cmd.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd"));
-                        cmd.Parameters.AddWithValue("@time", DateTime.Now.ToString("HH:mm:ss"));
-                        cmd.Parameters.AddWithValue("@status", "Opening");
-                        cmd.Parameters.AddWithValue("@category_id", catid);
+                cmd.Parameters.AddWithValue("@userid", userid);
+                cmd.Parameters.AddWithValue("@taskid", taskid);
+                cmd.Parameters.AddWithValue("@description", description);
+                cmd.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd"));
+                cmd.Parameters.AddWithValue("@time", DateTime.Now.ToString("HH:mm:ss"));
+                cmd.Parameters.AddWithValue("@status", "Opening");
+                cmd.Parameters.AddWithValue("@category_id", catid);
 
-                        cmd.ExecuteNonQuery();
-                    }
-                    this.CloseConnection();
-                    return true;
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("MySQL Exception: " + ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    // Handle other exceptions
-                    MessageBox.Show("Exception: " + ex.Message);
-                }
-                finally
-                {
-                    this.CloseConnection();
-                }
+                cmd.ExecuteNonQuery();
             }
-            return false;
+            cons.Close();
+            //this.CloseConnection();
+            //connection.Close();
+            return true;
+            //}
+            //catch (MySqlException ex)
+            //{
+            //    MessageBox.Show("MySQL Exception: " + ex.Message);
+            //    this.CloseConnection();
+            //}
+            //catch (Exception ex)
+            //{
+            //    // Handle other exceptions
+            //    MessageBox.Show("Exception: " + ex.Message);
+            //    this.CloseConnection();
+            //}
+            //finally
+            //{
+            //    this.CloseConnection();
+            //}
+            //}
+            //return false;
         }
 
         public bool CloseTaskRunning(string userid, string taskid, string description)
         {
-            if (this.OpenConnection())
+            //if (this.OpenConnection())
+            //{
+            //try
+            //{
+            connection.Close();
+            connection.Open();
+            string query = "INSERT INTO tbltaskrunning (userid, taskid,description, date,time, status) VALUES (@userid, @taskid,@description, @date,@time, @status)";
+            using (MySqlCommand cmd = new MySqlCommand(query, connection))
             {
-                try
-                {
-                    string query = "INSERT INTO tbltaskrunning (userid, taskid,description, date,time, status) VALUES (@userid, @taskid,@description, @date,@time, @status)";
-                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
-                    {
-                        cmd.Parameters.AddWithValue("@userid", userid);
-                        cmd.Parameters.AddWithValue("@taskid", taskid);
-                        cmd.Parameters.AddWithValue("@description", description);
-                        cmd.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd"));
-                        cmd.Parameters.AddWithValue("@time", DateTime.Now.ToString("HH:mm:ss"));
-                        cmd.Parameters.AddWithValue("@status", "Closing");
+                cmd.Parameters.AddWithValue("@userid", userid);
+                cmd.Parameters.AddWithValue("@taskid", taskid);
+                cmd.Parameters.AddWithValue("@description", description);
+                cmd.Parameters.AddWithValue("@date", DateTime.Now.ToString("yyyy-MM-dd"));
+                cmd.Parameters.AddWithValue("@time", DateTime.Now.ToString("HH:mm:ss"));
+                cmd.Parameters.AddWithValue("@status", "Closing");
 
-                        cmd.ExecuteNonQuery();
-                    }
-                    this.CloseConnection();
-                    return true;
-                }
-                catch (MySqlException ex)
-                {
-                    MessageBox.Show("MySQL Exception: " + ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    // Handle other exceptions
-                    MessageBox.Show("Exception: " + ex.Message);
-                }
-                finally
-                {
-                    this.CloseConnection();
-                }
+                cmd.ExecuteNonQuery();
             }
+            connection.Close();
+            //this.CloseConnection();
+            return true;
+            //}
+            //catch (MySqlException ex)
+            //{
+            //    MessageBox.Show("MySQL Exception: " + ex.Message);
+            //    this.CloseConnection();
+            //}
+            //catch (Exception ex)
+            //{
+            //    // Handle other exceptions
+            //    MessageBox.Show("Exception: " + ex.Message);
+            //    this.CloseConnection();
+            //}
+            //finally
+            //{
+            //    this.CloseConnection();
+            //}
+            //}
             return false;
         }
 
         public class TrackData
         {
-            public string timein { get; set; } 
+            public string timein { get; set; }
             public string datein { get; set; }
             public string timebreakin { get; set; }
             public string datebreakin { get; set; }
@@ -566,11 +639,12 @@ namespace NTTracking
         {
             List<TrackData> dataList = new List<TrackData>();
 
-            if (this.OpenConnection())
+            connection.Open();
+            //if (this.OpenConnection())
+            //{
+            try
             {
-                try
-                {
-                    string query = "SELECT " +
+                string query = "SELECT " +
                                     "DATE_FORMAT(timein, '%H:%i:%s') AS timein, " +
                                     "DATE_FORMAT(datein, '%Y-%m-%d') AS datein, " +
                                     "DATE_FORMAT(timebreakin, '%H:%i:%s') AS timebreakin, " +
@@ -580,76 +654,78 @@ namespace NTTracking
                                     "DATE_FORMAT(timeout, '%H:%i:%s') AS timeout, " +
                                     "DATE_FORMAT(dateout, '%Y-%m-%d') AS dateout " +
                                     "FROM tbltrackrecords WHERE id = @id";
-                    MySqlCommand cmd = new MySqlCommand(query, connection);
-                    cmd.Parameters.AddWithValue("@id", taskid);
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@id", taskid);
 
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
                     {
-                        if (reader.Read())
+                        TimeSpan startTime = TimeSpan.Parse(ParseTime(reader["timein"]));
+                        TimeSpan endTime = TimeSpan.Zero;
+                        if (reader["timeout"] == DBNull.Value || reader["timeout"].ToString().Trim() == "")
                         {
-                            TimeSpan startTime = TimeSpan.Parse(ParseTime(reader["timein"]));
-                            TimeSpan endTime = TimeSpan.Zero;
-                            if (reader["timeout"] == DBNull.Value || reader["timeout"].ToString().Trim() == "")
-                            {
-                                endTime = TimeSpan.Zero;
-                            }
-                            else
-                            {
-                                endTime = TimeSpan.Parse(ParseTime(reader["timeout"]));
-                            }
-                            TimeSpan timeDifference = TimeSpan.Zero;
-                            if (endTime != TimeSpan.Zero)
-                            {
-                                 timeDifference = endTime - startTime;
-                            }
-                            else
-                            {
-                                 timeDifference = TimeSpan.Zero;
-                            }
-                            TrackData data = new TrackData
-                            {
-                                timein = ParseTime(reader["timein"]),
-                                datein = ParseDate(reader["datein"]),
-                            timebreakin = ParseTime(reader["timebreakin"]),
-                                datebreakin = ParseDate(reader["datebreakin"]),
-                                timebreakout = ParseTime(reader["timebreakout"]),
-                                datebreakout = ParseDate(reader["datebreakout"]),
-                                timeout = ParseTime(reader["timeout"]),
-                                dateout = ParseDate(reader["dateout"]),
-                                // Map database columns to your data type properties
-                                //timein = (TimeSpan)reader["timein"],
-                                //datein = DateTime.Parse(reader["datein"].ToString()),
-                                //timebreakin = (TimeSpan)reader["timebreakin"],
-                                //datebreakin = DateTime.Parse(reader["datebreakin"].ToString()),
-                                //timebreakout = (TimeSpan)reader["timebreakout"],
-                                //datebreakout = DateTime.Parse(reader["datebreakout"].ToString()),
-                                //timeout = (TimeSpan)reader["timeout"],
-                                //dateout = DateTime.Parse(reader["dateout"].ToString()),
-                                totalhours = timeDifference.ToString(),
-
-                            };
-
-                            dataList.Add(data);
+                            endTime = TimeSpan.Zero;
                         }
+                        else
+                        {
+                            endTime = TimeSpan.Parse(ParseTime(reader["timeout"]));
+                        }
+                        TimeSpan timeDifference = TimeSpan.Zero;
+                        if (endTime != TimeSpan.Zero)
+                        {
+                            timeDifference = endTime - startTime;
+                        }
+                        else
+                        {
+                            timeDifference = TimeSpan.Zero;
+                        }
+                        TrackData data = new TrackData
+                        {
+                            timein = ParseTime(reader["timein"]),
+                            datein = ParseDate(reader["datein"]),
+                            timebreakin = ParseTime(reader["timebreakin"]),
+                            datebreakin = ParseDate(reader["datebreakin"]),
+                            timebreakout = ParseTime(reader["timebreakout"]),
+                            datebreakout = ParseDate(reader["datebreakout"]),
+                            timeout = ParseTime(reader["timeout"]),
+                            dateout = ParseDate(reader["dateout"]),
+                            // Map database columns to your data type properties
+                            //timein = (TimeSpan)reader["timein"],
+                            //datein = DateTime.Parse(reader["datein"].ToString()),
+                            //timebreakin = (TimeSpan)reader["timebreakin"],
+                            //datebreakin = DateTime.Parse(reader["datebreakin"].ToString()),
+                            //timebreakout = (TimeSpan)reader["timebreakout"],
+                            //datebreakout = DateTime.Parse(reader["datebreakout"].ToString()),
+                            //timeout = (TimeSpan)reader["timeout"],
+                            //dateout = DateTime.Parse(reader["dateout"].ToString()),
+                            totalhours = timeDifference.ToString(),
+
+                        };
+
+                        dataList.Add(data);
                     }
+
+                    reader.Close();
                 }
-                catch (MySqlException ex)
-                {
-                    // Handle retrieval error
-                    // Log or display an error message here
-                    MessageBox.Show(ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    // Handle retrieval error
-                    // Log or display an error message here
-                    MessageBox.Show(ex.Message);
-                }
-                finally
-                {
-                    this.CloseConnection();
-                }
+                connection.Close();
+                //this.CloseConnection();
             }
+            catch (MySqlException ex)
+            {
+                // Handle retrieval error
+                // Log or display an error message here
+                MessageBox.Show(ex.Message);
+                this.CloseConnection();
+            }
+            catch (Exception ex)
+            {
+                // Handle retrieval error
+                // Log or display an error message here
+                MessageBox.Show(ex.Message);
+                this.CloseConnection();
+            }
+            //}
 
             return dataList;
         }
@@ -682,65 +758,83 @@ namespace NTTracking
         public DataTable GetSessions(string userid, string sessionid)
         {
             DataTable dt = new DataTable();
-            if (this.OpenConnection())
-            {
-                string query = "SELECT DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at, " +
+            connection.Open();
+            //if (this.OpenConnection())
+            //{
+            string query = "SELECT DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at, " +
                   "action " +
                   "FROM tbltime_logs WHERE emp_id = @emp_id AND session_id=@session_id ORDER BY id DESC";
 
-                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+            using (MySqlCommand cmd = new MySqlCommand(query, connection))
+            {
+                cmd.Parameters.AddWithValue("@emp_id", userid);
+                cmd.Parameters.AddWithValue("@session_id", sessionid);
+
+                using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
                 {
-                    cmd.Parameters.AddWithValue("@emp_id", userid);
-                    cmd.Parameters.AddWithValue("@session_id", sessionid);
-
-                    using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
-                    {
-                        adapter.Fill(dt);
-                    }
-
-                    this.CloseConnection();
+                    adapter.Fill(dt);
                 }
+
             }
+            connection.Close();
+            //    this.CloseConnection();
+            //}
             return dt;
         }
-        public DataTable GetTasks(string userid, string taskid)
+        public DataTable GetTasks(string userid, string taskid, string catid)
         {
             DataTable dt = new DataTable();
             DataTable dtf = new DataTable();
             dtf.Columns.Add("description");
             dtf.Columns.Add("DateTime");
             dtf.Columns.Add("status");
-            dtf.Columns.Add("catid");
-            if (this.OpenConnection())
+            //if (this.OpenConnection())
+            //{
+            connection.Open();
+            string query = "";
+            if (catid == "")
             {
-                string query = "SELECT " +
-                    "DATE_FORMAT(date, '%Y-%m-%d') AS as_date, " +
-                    "DATE_FORMAT(time, '%H:%i:%s') AS as_time," +
-                    "status,description,category_id " +
-                    "FROM tbltaskrunning WHERE userid = @userid AND taskid=@taskid ORDER BY id DESC";
+                query = "SELECT " +
+                "DATE_FORMAT(date, '%Y-%m-%d') AS as_date, " +
+                "DATE_FORMAT(time, '%H:%i:%s') AS as_time," +
+                "status,description,category_id " +
+                "FROM tbltaskrunning WHERE userid = @userid AND taskid=@taskid ORDER BY id DESC";
+            }
+            else
+            {
+                query = "SELECT " +
+                "DATE_FORMAT(date, '%Y-%m-%d') AS as_date, " +
+                "DATE_FORMAT(time, '%H:%i:%s') AS as_time," +
+                "status,description,category_id " +
+                "FROM tbltaskrunning WHERE userid = @userid AND taskid=@taskid AND category_id=@category_id ORDER BY id DESC";
+            }
 
-                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+            using (MySqlCommand cmd = new MySqlCommand(query, connection))
+            {
+                if (catid != "")
                 {
-                    cmd.Parameters.AddWithValue("@userid", userid);
-                    cmd.Parameters.AddWithValue("@taskid", taskid);
+                    cmd.Parameters.AddWithValue("@category_id", catid);
+                }
+                cmd.Parameters.AddWithValue("@userid", userid);
+                cmd.Parameters.AddWithValue("@taskid", taskid);
 
-                    using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
-                    {
-                        adapter.Fill(dt);
-                    }
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        DataRow frow = dtf.NewRow();
-                        frow["description"] = row["description"].ToString();
-                       frow["DateTime"] = DateTime.Parse(row["as_date"].ToString()).ToString("yyyy-MM-dd") +" "+ DateTime.Parse(row["as_time"].ToString()).ToString("HH:mm:ss");
+                using (MySqlDataAdapter adapter = new MySqlDataAdapter(cmd))
+                {
+                    adapter.Fill(dt);
+                }
+                foreach (DataRow row in dt.Rows)
+                {
+                    DataRow frow = dtf.NewRow();
+                    frow["description"] = row["description"].ToString();
+                    frow["DateTime"] = DateTime.Parse(row["as_date"].ToString()).ToString("yyyy-MM-dd") + " " + DateTime.Parse(row["as_time"].ToString()).ToString("HH:mm:ss");
 
-                        frow["status"] = row["status"].ToString();
-                        frow["catid"] = row["category_id"].ToString();
-                        dtf.Rows.Add(frow);
-                    }
-                    this.CloseConnection();
+                    frow["status"] = row["status"].ToString();
+                    dtf.Rows.Add(frow);
                 }
             }
+            connection.Close();
+            //    this.CloseConnection();
+            //}
             return dtf;
         }
         public DataTable GetAppCategories()
@@ -757,8 +851,8 @@ namespace NTTracking
                     {
                         adapter.Fill(dt);
                     }
-                    this.CloseConnection();
                 }
+                this.CloseConnection();
             }
             return dt;
         }
@@ -768,7 +862,7 @@ namespace NTTracking
             DataTable dtf = new DataTable();
             dtf.Columns.Add("id");
             dtf.Columns.Add("Description");
-            dtf.Columns.Add("Total");
+            dtf.Columns.Add("Total", typeof(int));
             if (this.OpenConnection())
             {
                 string query = "SELECT *" +
@@ -780,8 +874,8 @@ namespace NTTracking
                     {
                         adapter.Fill(dt);
                     }
-                    this.CloseConnection();
                 }
+                this.CloseConnection();
             }
             foreach (DataRow row in dt.Rows)
             {
