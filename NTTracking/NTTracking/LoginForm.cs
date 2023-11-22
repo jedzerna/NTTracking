@@ -78,7 +78,7 @@ namespace NTTracking
                     guna2ProgressIndicator1.Start();
                     guna2Button1.Enabled = false;
                 });
-                using (MySqlConnection con = new MySqlConnection("Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;"))
+                using (MySqlConnection con = new MySqlConnection("Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=;"))
                 {
                     con.Open();
 
@@ -255,11 +255,11 @@ namespace NTTracking
 
         private void pictureBox2_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
-            {
-                ReleaseCapture();
-                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
-            }
+            //if (e.Button == MouseButtons.Left)
+            //{
+            //    ReleaseCapture();
+            //    SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            //}
         }
         private string[] animationTexts = {
     "Guarding● ",
