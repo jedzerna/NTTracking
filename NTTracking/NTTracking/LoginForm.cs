@@ -55,7 +55,7 @@ namespace NTTracking
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            timer2.Start();
         }
         Thread loginT;
         private void guna2Button1_Click(object sender, EventArgs e)
@@ -78,8 +78,7 @@ namespace NTTracking
                     guna2ProgressIndicator1.Start();
                     guna2Button1.Enabled = false;
                 });
-
-                using (MySqlConnection con = new MySqlConnection("Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=;"))
+                using (MySqlConnection con = new MySqlConnection("Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;"))
                 {
                     con.Open();
 
@@ -100,24 +99,26 @@ namespace NTTracking
                         String query1 = "SELECT * FROM accounts where username like @Username";
                         MySqlCommand cmd2 = new MySqlCommand(query1, con);
                         cmd2.Parameters.AddWithValue("@Username", guna2TextBox1.Text.Trim());
-                        MySqlDataReader dr1 = cmd2.ExecuteReader();
 
-                        if (dr1.Read())
+                        using (MySqlDataReader dr1 = cmd2.ExecuteReader())
                         {
-                            if (dr1["user_image"] != DBNull.Value)
+                            if (dr1.Read())
                             {
-                                byte[] imageBytes = (byte[])dr1["user_image"];
-                                img = ByteArrayToImage(imageBytes);
+                                if (dr1["user_image"] != DBNull.Value)
+                                {
+                                    byte[] imageBytes = (byte[])dr1["user_image"];
+                                    img = ByteArrayToImage(imageBytes);
+                                }
+                                else
+                                {
+                                    // Handle the case when user_image is null in the database
+                                    img = null;
+                                }
+                                id = dr1["id"].ToString();
+                                position = dr1["position"].ToString();
                             }
-                            else
-                            {
-                                // Handle the case when user_image is null in the database
-                                img = null;
-                            }
-                            id = dr1["id"].ToString();
-                            position = dr1["position"].ToString();
+                            dr1.Close();
                         }
-                        dr1.Close();
 
                         con.Close();
                     }
@@ -156,6 +157,8 @@ namespace NTTracking
         private Image img;
         private void openDash()
         {
+            timer2.Stop();
+            timer2.Enabled = false;
             timer1.Stop();
             timer1.Enabled = false;
             UserDashboard f = new UserDashboard();
@@ -188,6 +191,13 @@ namespace NTTracking
 
         private void label6_Click(object sender, EventArgs e)
         {
+
+            //guna2Transition1.ShowSync(pictureBox2);
+            //pictureBox2.Visible = true;
+
+
+            //guna2Transition2.HideSync(pictureBox4);
+            //pictureBox4.Visible = false;
             this.Hide();
             Register reg = new Register();
             reg.ShowDialog();
@@ -202,6 +212,102 @@ namespace NTTracking
         private void guna2TextBox2_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void guna2Button2_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void guna2TextBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                guna2Button1_Click(sender,e);
+                e.Handled = true;
+            }
+        }
+
+        private void guna2TextBox2_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                guna2Button1_Click(sender, e);
+                e.Handled = true;
+            }
+        }
+
+        private void LoginForm_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            }
+        }
+        public const int WM_NCLBUTTONDOWN = 0x00A1;
+        public const int HT_CAPTION = 0x2;
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern bool ReleaseCapture();
+
+        private void pictureBox2_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+            }
+        }
+
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            if (label7.Text== "")
+            {
+                label7.Text = "Guarding ";
+            }
+            else if (label7.Text == "Guarding ")
+            {
+                label7.Text = "Guarding your ";
+            }
+            else if (label7.Text == "Guarding your ")
+            {
+                label7.Text = "Guarding your path, ";
+            }
+            else if (label7.Text == "Guarding your path, ")
+            {
+                label7.Text = "Guarding your path, monitoring ";
+            }
+            else if (label7.Text == "Guarding your path, monitoring ")
+            {
+                label7.Text = "Guarding your path, monitoring with ";
+            }
+            else if (label7.Text == "Guarding your path, monitoring with ")
+            {
+                label7.Text = "Guarding your path, monitoring with precision";
+            }
+            else if (label7.Text == "Guarding your path, monitoring with precision")
+            {
+                label7.Text = "Guarding your path, monitoring with precision.";
+            }
+            else if (label7.Text == "Guarding your path, monitoring with precision.")
+            {
+                label7.Text = "Guarding your path, monitoring with precision..";
+            }
+            else if (label7.Text == "Guarding your path, monitoring with precision..")
+            {
+                label7.Text = "Guarding your path, monitoring with precision...";
+            }
+            else if (label7.Text == "Guarding your path, monitoring with precision...")
+            {
+                label7.Text = "Guarding your path, monitoring with precision....";
+            }
+            else if (label7.Text == "Guarding your path, monitoring with precision....")
+            {
+                label7.Text = "";
+            }
         }
     }
 }
