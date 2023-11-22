@@ -263,6 +263,7 @@
   <ItemGroup>
     <Content Include=".nuget\mouse-keyboard-hook-logo.png" />
     <Content Include="logo4.ico" />
+    <None Include="Resources\login1.png" />
     <None Include="Resources\login.png" />
     <None Include="Resources\logoicon.png" />
     <None Include="Resources\icons8_sync_30px.png" />
@@ -318,6 +319,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="NewFolder1\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

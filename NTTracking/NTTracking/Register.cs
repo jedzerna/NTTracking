@@ -299,11 +299,11 @@ namespace NTTracking
                         command.ExecuteNonQuery();
 
                         // Display success message
-                        StringBuilder successMessage = new StringBuilder();
-                        successMessage.AppendLine("Registration Successful!");
-                        successMessage.AppendLine();
-                        successMessage.AppendLine("Please contact your direct manager to activate your account.");
-                        MessageBox.Show(successMessage.ToString());
+                        //StringBuilder successMessage = new StringBuilder();
+                        //successMessage.AppendLine("Registration Successful!");
+                        //successMessage.AppendLine();
+                        //successMessage.AppendLine("Please contact your direct manager to activate your account.");
+                        //MessageBox.Show(successMessage.ToString());
 
                         success = "1";
                         registerT = null;
