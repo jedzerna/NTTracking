@@ -308,7 +308,7 @@
             // 
             // timer1
             // 
-            this.timer1.Interval = 1000;
+            this.timer1.Interval = 5000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // guna2ShadowPanel2
@@ -634,6 +634,7 @@
         private Guna.UI2.WinForms.Guna2Button guna2Button1;
         private Guna.UI2.WinForms.Guna2ProgressIndicator guna2ProgressIndicator1;
         public System.Windows.Forms.Timer timer2;
+        public System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label label5;
         public Guna.UI2.WinForms.Guna2TextBox guna2TextBox2;
         private Guna.UI2.WinForms.Guna2Button guna2Button4;
@@ -641,6 +642,5 @@
         private Guna.UI2.WinForms.Guna2Button guna2Button9;
         private Guna.UI2.WinForms.Guna2Button guna2Button11;
         private Guna.UI2.WinForms.Guna2Button guna2Button2;
-        public System.Windows.Forms.Timer timer1;
     }
 }

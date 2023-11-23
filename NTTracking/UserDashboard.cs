@@ -305,9 +305,6 @@ namespace NTTracking
         List<ProcessInfo> dataList = new List<ProcessInfo>();
         private void LoadProcessesOnUIThread()
         {
-            try
-            {
-
             List<ProcessInfoTemp> dataListT = new List<ProcessInfoTemp>();
             dataListT.Clear();
             HashSet<int> processIds = new HashSet<int>();
@@ -395,16 +392,6 @@ namespace NTTracking
 
             showappsThread = null;
 
-            }
-            catch
-            {
-                connection = false;
-                loading = new Thread(connectionlost);
-                loading.Start();
-                timer2.Start();
-                StopTimer();
-                showappsThread = null;
-            }
         }
         private void GlobalHookOnMouseMove(object sender, MouseEventArgs e)
         {
@@ -549,15 +536,15 @@ namespace NTTracking
             catch
             {
 
-
-                connection = false;
-                loading = new Thread(connectionlost);
-                loading.Start();
-                timer2.Start();
-                timer1.Enabled = false;
-                StopTimer();
-                return;
-
+            
+                    connection = false;
+                    loading = new Thread(connectionlost);
+                    loading.Start();
+                    timer1.Enabled = false;
+                    timer1.Stop();
+                    timer2.Start();
+                    return;
+                
             }
         }
         int idlechecking = 0;
@@ -587,7 +574,7 @@ namespace NTTracking
                         m_GlobalHook.MouseMove -= GlobalHookOnMouseMove;
                         m_GlobalHook.MouseClick -= GlobalHookOnMouseClick;
 
-                StopTimer();
+                        timer1.Stop();
                         timer1.Enabled = false;
                         eventThread = null;
                 showappsThread = null;
@@ -810,20 +797,6 @@ namespace NTTracking
         private void label4_Click_1(object sender, EventArgs e)
         {
 
-        }
-        public void StopTimer()
-        {
-            if (timer1 != null && timer1.Enabled)
-            {
-                if (InvokeRequired)
-                {
-                    Invoke(new MethodInvoker(() => timer1.Stop()));
-                }
-                else
-                {
-                    timer1.Stop();
-                }
-            }
         }
     }
 }

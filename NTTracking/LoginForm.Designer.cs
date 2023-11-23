@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            Guna.UI2.AnimatorNS.Animation animation3 = new Guna.UI2.AnimatorNS.Animation();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
             this.guna2Button1 = new Guna.UI2.WinForms.Guna2Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -42,12 +41,11 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.guna2Button2 = new Guna.UI2.WinForms.Guna2Button();
             this.label7 = new System.Windows.Forms.Label();
             this.timer2 = new System.Windows.Forms.Timer(this.components);
-            this.guna2Transition1 = new Guna.UI2.WinForms.Guna2Transition();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
@@ -58,7 +56,6 @@
             this.guna2Button1.BorderColor = System.Drawing.Color.DodgerBlue;
             this.guna2Button1.BorderRadius = 9;
             this.guna2Button1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.guna2Transition1.SetDecoration(this.guna2Button1, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Button1.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
             this.guna2Button1.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
             this.guna2Button1.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
@@ -79,7 +76,6 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.guna2Transition1.SetDecoration(this.label1, Guna.UI2.AnimatorNS.DecorationType.None);
             this.label1.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(95, 127);
             this.label1.Name = "label1";
@@ -90,7 +86,6 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.guna2Transition1.SetDecoration(this.label2, Guna.UI2.AnimatorNS.DecorationType.None);
             this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(105, 164);
             this.label2.Name = "label2";
@@ -103,7 +98,6 @@
             this.guna2TextBox1.BackColor = System.Drawing.Color.Transparent;
             this.guna2TextBox1.BorderRadius = 9;
             this.guna2TextBox1.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.guna2Transition1.SetDecoration(this.guna2TextBox1, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2TextBox1.DefaultText = "";
             this.guna2TextBox1.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
             this.guna2TextBox1.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
@@ -127,7 +121,6 @@
             this.guna2TextBox2.BackColor = System.Drawing.Color.Transparent;
             this.guna2TextBox2.BorderRadius = 9;
             this.guna2TextBox2.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.guna2Transition1.SetDecoration(this.guna2TextBox2, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2TextBox2.DefaultText = "";
             this.guna2TextBox2.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
             this.guna2TextBox2.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
@@ -149,7 +142,6 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.guna2Transition1.SetDecoration(this.label3, Guna.UI2.AnimatorNS.DecorationType.None);
             this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(59, 237);
             this.label3.Name = "label3";
@@ -160,7 +152,6 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.guna2Transition1.SetDecoration(this.label4, Guna.UI2.AnimatorNS.DecorationType.None);
             this.label4.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.Location = new System.Drawing.Point(59, 305);
             this.label4.Name = "label4";
@@ -172,7 +163,6 @@
             // 
             this.guna2ProgressIndicator1.BackColor = System.Drawing.Color.Transparent;
             this.guna2ProgressIndicator1.CircleSize = 1F;
-            this.guna2Transition1.SetDecoration(this.guna2ProgressIndicator1, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2ProgressIndicator1.Location = new System.Drawing.Point(24, 386);
             this.guna2ProgressIndicator1.Name = "guna2ProgressIndicator1";
             this.guna2ProgressIndicator1.ProgressColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(101)))));
@@ -189,7 +179,6 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.guna2Transition1.SetDecoration(this.label5, Guna.UI2.AnimatorNS.DecorationType.None);
             this.label5.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(59, 454);
             this.label5.Name = "label5";
@@ -201,7 +190,6 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.guna2Transition1.SetDecoration(this.label6, Guna.UI2.AnimatorNS.DecorationType.None);
             this.label6.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.Color.DodgerBlue;
             this.label6.Location = new System.Drawing.Point(59, 470);
@@ -211,37 +199,12 @@
             this.label6.Text = "Register Here";
             this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
-            // pictureBox1
-            // 
-            this.guna2Transition1.SetDecoration(this.pictureBox1, Guna.UI2.AnimatorNS.DecorationType.None);
-            this.pictureBox1.Image = global::NTTracking.Properties.Resources.Untitled_1;
-            this.pictureBox1.Location = new System.Drawing.Point(146, 44);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(87, 80);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
-            // 
-            // pictureBox2
-            // 
-            this.guna2Transition1.SetDecoration(this.pictureBox2, Guna.UI2.AnimatorNS.DecorationType.None);
-            this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pictureBox2.Image = global::NTTracking.Properties.Resources.login;
-            this.pictureBox2.Location = new System.Drawing.Point(332, 0);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(494, 603);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox2.TabIndex = 32;
-            this.pictureBox2.TabStop = false;
-            this.pictureBox2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseDown);
-            // 
             // guna2Button2
             // 
             this.guna2Button2.BackColor = System.Drawing.Color.Transparent;
             this.guna2Button2.BorderColor = System.Drawing.Color.DodgerBlue;
             this.guna2Button2.BorderRadius = 8;
             this.guna2Button2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.guna2Transition1.SetDecoration(this.guna2Button2, Guna.UI2.AnimatorNS.DecorationType.None);
             this.guna2Button2.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
             this.guna2Button2.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
             this.guna2Button2.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
@@ -261,14 +224,13 @@
             // label7
             // 
             this.label7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(121)))), ((int)(((byte)(1)))), ((int)(((byte)(1)))));
-            this.guna2Transition1.SetDecoration(this.label7, Guna.UI2.AnimatorNS.DecorationType.None);
             this.label7.Font = new System.Drawing.Font("Segoe UI", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label7.Location = new System.Drawing.Point(380, 220);
+            this.label7.Location = new System.Drawing.Point(408, 221);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(418, 166);
             this.label7.TabIndex = 36;
-            this.label7.Visible = false;
+            this.label7.Click += new System.EventHandler(this.label7_Click);
             // 
             // timer2
             // 
@@ -276,27 +238,28 @@
             this.timer2.Interval = 500;
             this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
-            // guna2Transition1
+            // pictureBox1
             // 
-            this.guna2Transition1.AnimationType = Guna.UI2.AnimatorNS.AnimationType.Transparent;
-            this.guna2Transition1.Cursor = null;
-            animation3.AnimateOnlyDifferences = true;
-            animation3.BlindCoeff = ((System.Drawing.PointF)(resources.GetObject("animation3.BlindCoeff")));
-            animation3.LeafCoeff = 0F;
-            animation3.MaxTime = 1F;
-            animation3.MinTime = 0F;
-            animation3.MosaicCoeff = ((System.Drawing.PointF)(resources.GetObject("animation3.MosaicCoeff")));
-            animation3.MosaicShift = ((System.Drawing.PointF)(resources.GetObject("animation3.MosaicShift")));
-            animation3.MosaicSize = 0;
-            animation3.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
-            animation3.RotateCoeff = 0F;
-            animation3.RotateLimit = 0F;
-            animation3.ScaleCoeff = ((System.Drawing.PointF)(resources.GetObject("animation3.ScaleCoeff")));
-            animation3.SlideCoeff = ((System.Drawing.PointF)(resources.GetObject("animation3.SlideCoeff")));
-            animation3.TimeCoeff = 0F;
-            animation3.TransparencyCoeff = 1F;
-            this.guna2Transition1.DefaultAnimation = animation3;
-            this.guna2Transition1.Interval = 5;
+            this.pictureBox1.Image = global::NTTracking.Properties.Resources.Untitled_1;
+            this.pictureBox1.Location = new System.Drawing.Point(146, 44);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(87, 80);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 1;
+            this.pictureBox1.TabStop = false;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pictureBox2.Image = global::NTTracking.Properties.Resources.logoiconr;
+            this.pictureBox2.Location = new System.Drawing.Point(332, 0);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(494, 603);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox2.TabIndex = 32;
+            this.pictureBox2.TabStop = false;
+            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
+            this.pictureBox2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseDown);
             // 
             // LoginForm
             // 
@@ -318,7 +281,6 @@
             this.Controls.Add(this.guna2Button1);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.pictureBox2);
-            this.guna2Transition1.SetDecoration(this, Guna.UI2.AnimatorNS.DecorationType.None);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -354,7 +316,6 @@
         private System.Windows.Forms.Label label6;
         private Guna.UI2.WinForms.Guna2Button guna2Button2;
         private System.Windows.Forms.Label label7;
-        private Guna.UI2.WinForms.Guna2Transition guna2Transition1;
         private System.Windows.Forms.Timer timer2;
     }
 }
