@@ -192,6 +192,10 @@ namespace NTTracking
         private void label6_Click(object sender, EventArgs e)
         {
 
+            timer2.Stop();
+            timer2.Enabled = false;
+            timer1.Stop();
+            timer1.Enabled = false;
             //guna2Transition1.ShowSync(pictureBox2);
             //pictureBox2.Visible = true;
 
@@ -261,52 +265,70 @@ namespace NTTracking
                 SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
             }
         }
+        private string[] animationTexts = {
+    "Guarding● ",
+    "Guarding your● ",
+    "Guarding your path,● ",
+    "Guarding your path, monitoring● ",
+    "Guarding your path, monitoring with● ",
+    "Guarding your path, monitoring with precision",
+    "Guarding your path, monitoring with precision.",
+    "Guarding your path, monitoring with precision..",
+    "Guarding your path, monitoring with precision...",
+    "Guarding your path, monitoring with precision....",
+    ""
+};
+        private string[] animationTexts1 = {
+    "Securely● ",
+    "Securely monitor● ",
+    "Securely monitor and● ",
+    "Securely monitor and track● ",
+    "Securely monitor and track with● ",
+    "Securely monitor and track with confidence.",
+    "Securely monitor and track with confidence..",
+    "Securely monitor and track with confidence...",
+    "Securely monitor and track with confidence....",
+    ""
+};
 
+        private int animationIndex = 0;
+        private Random random = new Random();
+        int randomNumber = 0;
         private void timer2_Tick(object sender, EventArgs e)
         {
-            if (label7.Text== "")
+            if (label7.Text == "")
             {
-                label7.Text = "Guarding ";
+                randomNumber = random.Next(1, 3);
             }
-            else if (label7.Text == "Guarding ")
+            if (randomNumber == 1)
             {
-                label7.Text = "Guarding your ";
+                label7.Text = animationTexts[animationIndex];
+                if (animationIndex == 0)
+                {
+                    guna2Transition1.ShowSync(label7);
+                    label7.Visible = true;
+                }
+                if (animationTexts.Length - 2 == animationIndex)
+                {
+                    guna2Transition1.HideSync(label7);
+                    label7.Visible = false;
+                }
+                animationIndex = (animationIndex + 1) % animationTexts.Length;
             }
-            else if (label7.Text == "Guarding your ")
+            else if (randomNumber == 2)
             {
-                label7.Text = "Guarding your path, ";
-            }
-            else if (label7.Text == "Guarding your path, ")
-            {
-                label7.Text = "Guarding your path, monitoring ";
-            }
-            else if (label7.Text == "Guarding your path, monitoring ")
-            {
-                label7.Text = "Guarding your path, monitoring with ";
-            }
-            else if (label7.Text == "Guarding your path, monitoring with ")
-            {
-                label7.Text = "Guarding your path, monitoring with precision";
-            }
-            else if (label7.Text == "Guarding your path, monitoring with precision")
-            {
-                label7.Text = "Guarding your path, monitoring with precision.";
-            }
-            else if (label7.Text == "Guarding your path, monitoring with precision.")
-            {
-                label7.Text = "Guarding your path, monitoring with precision..";
-            }
-            else if (label7.Text == "Guarding your path, monitoring with precision..")
-            {
-                label7.Text = "Guarding your path, monitoring with precision...";
-            }
-            else if (label7.Text == "Guarding your path, monitoring with precision...")
-            {
-                label7.Text = "Guarding your path, monitoring with precision....";
-            }
-            else if (label7.Text == "Guarding your path, monitoring with precision....")
-            {
-                label7.Text = "";
+                label7.Text = animationTexts1[animationIndex];
+                if (animationIndex == 0)
+                {
+                    guna2Transition1.ShowSync(label7);
+                    label7.Visible = true;
+                }
+                if (animationTexts1.Length - 2 == animationIndex)
+                {
+                    guna2Transition1.HideSync(label7);
+                    label7.Visible = false;
+                }
+                animationIndex = (animationIndex + 1) % animationTexts1.Length;
             }
         }
 
