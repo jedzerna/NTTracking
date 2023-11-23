@@ -22,15 +22,15 @@ namespace NTTracking
         public DBData()
         {
             // Initialize the connection string
-            connectionString = $"Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
-            //connectionString = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=";
+            //connectionString = $"Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
+            connectionString = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=";
 
             // using (MySqlConnection con = new MySqlConnection("Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password="))
             // Create a new MySqlConnection using the connection string
             connection = new MySqlConnection(connectionString);
         }
-        private string con = $"Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
-        //private string con = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=";
+        //private string con = $"Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
+        private string con = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=";
         public bool OpenConnection()
         {
             try
@@ -584,9 +584,9 @@ namespace NTTracking
         {
             //if (this.OpenConnection())
             //{
-            //try
-            //{
-            connection.Close();
+            try
+            {
+                connection.Close();
             connection.Open();
             string query = "INSERT INTO tbltaskrunning (userid, taskid,description, date,time, status) VALUES (@userid, @taskid,@description, @date,@time, @status)";
             using (MySqlCommand cmd = new MySqlCommand(query, connection))
@@ -603,23 +603,23 @@ namespace NTTracking
             connection.Close();
             //this.CloseConnection();
             return true;
-            //}
-            //catch (MySqlException ex)
-            //{
-            //    MessageBox.Show("MySQL Exception: " + ex.Message);
-            //    this.CloseConnection();
-            //}
-            //catch (Exception ex)
-            //{
-            //    // Handle other exceptions
-            //    MessageBox.Show("Exception: " + ex.Message);
-            //    this.CloseConnection();
-            //}
-            //finally
-            //{
-            //    this.CloseConnection();
-            //}
-            //}
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show("MySQL Exception: " + ex.Message);
+                this.CloseConnection();
+            }
+            catch (Exception ex)
+            {
+                // Handle other exceptions
+                MessageBox.Show("Exception: " + ex.Message);
+                this.CloseConnection();
+            }
+            finally
+            {
+                this.CloseConnection();
+            }
+        
             return false;
         }
 
