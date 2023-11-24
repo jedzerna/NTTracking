@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.guna2Button1 = new Guna.UI2.WinForms.Guna2Button();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -49,7 +48,7 @@
             this.username_txt = new Guna.UI2.WinForms.Guna2TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.email_txt = new Guna.UI2.WinForms.Guna2TextBox();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.timer1 = new System.Windows.Forms.Timer();
             this.label11 = new System.Windows.Forms.Label();
             this.department_txt = new Guna.UI2.WinForms.Guna2TextBox();
             this.position_dropdown = new Guna.UI2.WinForms.Guna2ComboBox();

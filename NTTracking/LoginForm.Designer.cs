@@ -245,7 +245,7 @@
             this.label7.Size = new System.Drawing.Size(418, 166);
             this.label7.TabIndex = 36;
             this.label7.Visible = false;
-            this.label7.Click += new System.EventHandler(this.label7_Click);
+            //this.label7.Click += new System.EventHandler(this.label7_Click);
             // 
             // timer2
             // 
@@ -275,7 +275,7 @@
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox2.TabIndex = 32;
             this.pictureBox2.TabStop = false;
-            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
+            //this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
             this.pictureBox2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseDown);
             // 
             // guna2Transition1
