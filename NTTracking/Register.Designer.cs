@@ -465,7 +465,7 @@
             // pictureBox2
             // 
             this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pictureBox2.Image = global::NTTracking.Properties.Resources.login;
+            this.pictureBox2.Image = global::NTTracking.Properties.Resources.login1;
             this.pictureBox2.Location = new System.Drawing.Point(340, 0);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(470, 564);

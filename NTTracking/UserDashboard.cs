@@ -73,6 +73,7 @@ namespace NTTracking
         private Thread showappsThread;
         private DateTime startTime;
         formDashboard dashboard;
+        UsersAccount useraccount;
         private bool canProcessClick = true; // Indicates whether a click event can be processed
         private System.Windows.Forms.Timer clickTimer; // Timer to reset the flag
         public UserDashboard()
@@ -612,6 +613,33 @@ namespace NTTracking
         private void guna2Button3_Click(object sender, EventArgs e)
         {
 
+            Cursor.Current = Cursors.WaitCursor;
+            //changefill();
+            if (formNum != "3")
+            {
+                if (useraccount != null)
+                {
+                    formNum = "3";
+                    useraccount.BringToFront();
+                    useraccount.Show();
+                }
+                else
+                {
+                    formNum = "3";
+                    useraccount = new UsersAccount();
+                    useraccount.id = id;
+                    //useraccount.username = username;
+                    useraccount.Height = panel1.Height;
+                    useraccount.Width = panel1.Width;
+                    //panel1.Controls.Clear();
+                    useraccount.TopLevel = false;
+                    panel1.Controls.Add(useraccount);
+                    panel1.AutoScroll = false;
+                    useraccount.BringToFront();
+                    useraccount.Show();
+                }
+            }
+            Cursor.Current = Cursors.Default;
         }
 
         private void guna2Button1_Click(object sender, EventArgs e)
