@@ -76,7 +76,7 @@
       <HintPath>..\packages\Google.Protobuf.3.21.9\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="Guna.UI2">
-      <HintPath>..\..\..\..\Downloads\Guna.UI2.dll</HintPath>
+      <HintPath>..\..\..\Winforms C# - bak\bin\Debug\Guna.UI2.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -272,7 +272,7 @@
   <ItemGroup>
     <Content Include=".nuget\mouse-keyboard-hook-logo.png" />
     <Content Include="logo4.ico" />
-    <None Include="Resources\logoiconr.png" />
+    <Content Include="Resources\login1.png" />
     <None Include="Resources\login.png" />
     <None Include="Resources\logoicon.png" />
     <None Include="Resources\icons8_sync_30px.png" />
@@ -328,6 +328,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="NewFolder1\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
