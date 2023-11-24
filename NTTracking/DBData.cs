@@ -23,6 +23,7 @@ namespace NTTracking
         {
             // Initialize the connection string
             //connectionString = $"Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
+            //connectionString = $"Server=172.20.1.123;Port=8091;Database=ntdbtracking;User=admin;Password=admin;";
             connectionString = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=";
 
             // using (MySqlConnection con = new MySqlConnection("Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password="))
@@ -30,6 +31,7 @@ namespace NTTracking
             connection = new MySqlConnection(connectionString);
         }
         //private string con = $"Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
+        //private string con = $"Server=172.20.1.123;Port=8091;Database=ntdbtracking;User=admin;Password=admin;";
         private string con = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=";
         public bool OpenConnection()
         {
@@ -910,6 +912,114 @@ namespace NTTracking
                 }
             }
             return dtf;
+        }
+        public class AccountData
+        {
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+            public string Position { get; set; }
+            public string Email { get; set; }
+            public string Department { get; set; }
+            public string PhoneNo { get; set; }
+            public string Username { get; set; }
+            public string Password { get; set; }
+
+
+        }
+        public List<AccountData> RetrieveAccountData(string userid)
+        {
+            List<AccountData> accountList = new List<AccountData>();
+            if (this.OpenConnection())
+            {
+                try
+                {
+                    string query = "SELECT first_name, last_name, position, department, email, phone_no, username, password FROM accounts where id = @id";
+                    MySqlCommand cmd = new MySqlCommand(query, connection);
+                    cmd.Parameters.AddWithValue("@id", userid);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            AccountData account = new AccountData
+                            {
+
+                            FirstName = reader["first_name"].ToString(),
+                                LastName = reader["last_name"].ToString(),
+                                Position = reader["position"].ToString(),
+                                Email = reader["email"].ToString(),
+                                Department = reader["department"].ToString(),
+                                PhoneNo = reader["phone_no"].ToString(),
+                                Username = reader["username"].ToString(),
+                                Password = reader["password"].ToString(),
+
+                            };
+
+                            accountList.Add(account);
+                        }
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    // Handle retrieval error
+                    // Log or display an error message here
+                }
+                finally
+                {
+                    this.CloseConnection();
+                }
+            }
+
+            return accountList;
+        }
+        public bool SaveEditedData(string userid, string editedFirstName, string editedLastName,
+            string editedPosition, string editedDepartment, string editedEmail, string editedPhoneNo, string editedUsername, string editedPassword)
+        {
+            if (this.OpenConnection())
+            {
+                try
+                {
+                    string query = "UPDATE accounts SET first_name=@editedFirstName, " +
+                        "last_name=@editedLastName, " +
+                        "position=@editedPosition, " +
+                        "department=@editedDepartment," +
+                         "username=@editedUsername, " +
+                          "password=@editedPassword, " +
+                         "email=@editedEmail, " +
+                        "phone_no=@editedPhoneNo WHERE id=@userid";
+
+                    using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@userid", userid);
+                        cmd.Parameters.AddWithValue("@editedFirstName", editedFirstName);
+                        cmd.Parameters.AddWithValue("@editedLastName", editedLastName);
+                        cmd.Parameters.AddWithValue("@editedPosition", editedPosition);
+                        cmd.Parameters.AddWithValue("@editedDepartment", editedDepartment);
+                        cmd.Parameters.AddWithValue("@editedUsername", editedUsername);
+                        cmd.Parameters.AddWithValue("@editedPassword", editedPassword);
+                        cmd.Parameters.AddWithValue("@editedEmail", editedEmail);
+                        cmd.Parameters.AddWithValue("@editedPhoneNo", editedPhoneNo);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    return true;
+                }
+                catch (MySqlException ex)
+                {
+                    Console.WriteLine("MySQL Exception: " + ex.Message);
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Exception: " + ex.Message);
+                    return false;
+                }
+                finally
+                {
+                    this.CloseConnection();
+                }
+            }
+
+            return false;
         }
     }
 }

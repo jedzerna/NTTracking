@@ -64,9 +64,10 @@ namespace NTTracking
             loginT.Start();
             //login();
         }
-        
+
 
         //using (MySqlConnection con = new MySqlConnection("Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;"))
+        //using (MySqlConnection con = new MySqlConnection("Server=172.20.1.123;Port=8091;Database=ntdbtracking;User=admin;Password=admin;"))
         //using (MySqlConnection con = new MySqlConnection("Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=;"))
         private void login()
         {
@@ -78,7 +79,10 @@ namespace NTTracking
                     guna2ProgressIndicator1.Start();
                     guna2Button1.Enabled = false;
                 });
+                //using (MySqlConnection con = new MySqlConnection("Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;"))
+                //using (MySqlConnection con = new MySqlConnection("Server=172.20.1.123;Port=8092;Database=ntdbtracking;User=admin;Password=admin;"))
                 using (MySqlConnection con = new MySqlConnection("Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=;"))
+                //using (MySqlConnection con = new MySqlConnection("Server=172.20.1.123;Port=8092;Database=ntdbtracking;username=jed;password=jed;"))
                 {
                     con.Open();
 
@@ -133,7 +137,8 @@ namespace NTTracking
                         MessageBox.Show("Invalid Login. Please check the username and password.");
                     }
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 guna2ProgressIndicator1.BeginInvoke((Action)delegate ()
@@ -191,6 +196,10 @@ namespace NTTracking
 
         private void label6_Click(object sender, EventArgs e)
         {
+            timer2.Stop();
+            timer2.Enabled = false;
+            timer1.Stop();
+            timer1.Enabled = false;
 
             //guna2Transition1.ShowSync(pictureBox2);
             //pictureBox2.Visible = true;
