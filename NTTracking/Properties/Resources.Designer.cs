@@ -233,6 +233,26 @@ namespace NTTracking.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icons8_home {
+            get {
+                object obj = ResourceManager.GetObject("icons8_home", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icons8_moleskine {
+            get {
+                object obj = ResourceManager.GetObject("icons8_moleskine", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icons8_search_1 {
             get {
                 object obj = ResourceManager.GetObject("icons8_search_1", resourceCulture);
@@ -276,6 +296,16 @@ namespace NTTracking.Properties {
         internal static System.Drawing.Bitmap icons8_search_144px3 {
             get {
                 object obj = ResourceManager.GetObject("icons8_search_144px3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap icons8_settings_1 {
+            get {
+                object obj = ResourceManager.GetObject("icons8_settings_1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

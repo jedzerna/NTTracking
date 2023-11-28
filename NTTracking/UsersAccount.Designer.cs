@@ -35,7 +35,6 @@ namespace NTTracking
             this.label6 = new System.Windows.Forms.Label();
             this.guna2TextBox4 = new Guna.UI2.WinForms.Guna2TextBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.guna2Button8 = new Guna.UI2.WinForms.Guna2Button();
             this.guna2Button4 = new Guna.UI2.WinForms.Guna2Button();
             this.label7 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -69,6 +68,7 @@ namespace NTTracking
             this.guna2CircleProgressBar1 = new Guna.UI2.WinForms.Guna2CircleProgressBar();
             this.guna2HtmlLabel2 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2HtmlLabel3 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.guna2Button8 = new Guna.UI2.WinForms.Guna2Button();
             this.guna2ShadowPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.image1)).BeginInit();
             this.guna2ShadowPanel3.SuspendLayout();
@@ -83,7 +83,6 @@ namespace NTTracking
             this.guna2ShadowPanel2.Controls.Add(this.label6);
             this.guna2ShadowPanel2.Controls.Add(this.guna2TextBox4);
             this.guna2ShadowPanel2.Controls.Add(this.label8);
-            this.guna2ShadowPanel2.Controls.Add(this.guna2Button8);
             this.guna2ShadowPanel2.Controls.Add(this.guna2Button4);
             this.guna2ShadowPanel2.Controls.Add(this.label7);
             this.guna2ShadowPanel2.Controls.Add(this.label5);
@@ -97,6 +96,7 @@ namespace NTTracking
             this.guna2ShadowPanel2.Controls.Add(this.guna2TextBox2);
             this.guna2ShadowPanel2.Controls.Add(this.guna2ComboBox1);
             this.guna2ShadowPanel2.Controls.Add(this.image1);
+            this.guna2ShadowPanel2.Controls.Add(this.guna2Button8);
             this.guna2ShadowPanel2.FillColor = System.Drawing.Color.White;
             this.guna2ShadowPanel2.Location = new System.Drawing.Point(27, 51);
             this.guna2ShadowPanel2.Name = "guna2ShadowPanel2";
@@ -129,10 +129,10 @@ namespace NTTracking
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Trebuchet MS", 12F);
+            this.label1.Font = new System.Drawing.Font("Trebuchet MS", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(394, 202);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(83, 22);
+            this.label1.Size = new System.Drawing.Size(81, 20);
             this.label1.TabIndex = 13;
             this.label1.Text = "Last Name";
             this.label1.Click += new System.EventHandler(this.label1_Click);
@@ -140,10 +140,10 @@ namespace NTTracking
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Trebuchet MS", 12F);
+            this.label6.Font = new System.Drawing.Font("Trebuchet MS", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.Location = new System.Drawing.Point(73, 339);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(94, 22);
+            this.label6.Size = new System.Drawing.Size(89, 20);
             this.label6.TabIndex = 38;
             this.label6.Text = "Department";
             this.label6.Click += new System.EventHandler(this.label6_Click_2);
@@ -183,26 +183,9 @@ namespace NTTracking
             this.label8.Text = "FirstName, LastName";
             this.label8.Click += new System.EventHandler(this.label8_Click);
             // 
-            // guna2Button8
-            // 
-            this.guna2Button8.BorderRadius = 4;
-            this.guna2Button8.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button8.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.guna2Button8.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.guna2Button8.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.guna2Button8.FillColor = System.Drawing.Color.Firebrick;
-            this.guna2Button8.Font = new System.Drawing.Font("Bookman Old Style", 8.25F, System.Drawing.FontStyle.Bold);
-            this.guna2Button8.ForeColor = System.Drawing.Color.White;
-            this.guna2Button8.Location = new System.Drawing.Point(528, 408);
-            this.guna2Button8.Name = "guna2Button8";
-            this.guna2Button8.Size = new System.Drawing.Size(61, 34);
-            this.guna2Button8.TabIndex = 28;
-            this.guna2Button8.Text = "Edit";
-            this.guna2Button8.Click += new System.EventHandler(this.guna2Button8_Click);
-            // 
             // guna2Button4
             // 
-            this.guna2Button4.BorderRadius = 4;
+            this.guna2Button4.BorderRadius = 8;
             this.guna2Button4.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
             this.guna2Button4.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
             this.guna2Button4.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
@@ -210,11 +193,12 @@ namespace NTTracking
             this.guna2Button4.FillColor = System.Drawing.Color.DodgerBlue;
             this.guna2Button4.Font = new System.Drawing.Font("Bookman Old Style", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.guna2Button4.ForeColor = System.Drawing.Color.White;
-            this.guna2Button4.Location = new System.Drawing.Point(605, 408);
+            this.guna2Button4.Location = new System.Drawing.Point(554, 408);
             this.guna2Button4.Name = "guna2Button4";
-            this.guna2Button4.Size = new System.Drawing.Size(61, 34);
+            this.guna2Button4.Size = new System.Drawing.Size(112, 34);
             this.guna2Button4.TabIndex = 27;
             this.guna2Button4.Text = "Save";
+            this.guna2Button4.Visible = false;
             this.guna2Button4.Click += new System.EventHandler(this.guna2Button4_Click);
             // 
             // label7
@@ -232,10 +216,10 @@ namespace NTTracking
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Trebuchet MS", 12F);
+            this.label5.Font = new System.Drawing.Font("Trebuchet MS", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(398, 335);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(83, 22);
+            this.label5.Size = new System.Drawing.Size(77, 20);
             this.label5.TabIndex = 19;
             this.label5.Text = "Phone No.";
             this.label5.Click += new System.EventHandler(this.label5_Click);
@@ -243,10 +227,10 @@ namespace NTTracking
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Trebuchet MS", 12F);
+            this.label4.Font = new System.Drawing.Font("Trebuchet MS", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.Location = new System.Drawing.Point(396, 266);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(55, 22);
+            this.label4.Size = new System.Drawing.Size(51, 20);
             this.label4.TabIndex = 17;
             this.label4.Text = "E-mail";
             this.label4.Click += new System.EventHandler(this.label4_Click);
@@ -254,10 +238,10 @@ namespace NTTracking
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Trebuchet MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Font = new System.Drawing.Font("Trebuchet MS", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(73, 272);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(66, 22);
+            this.label2.Size = new System.Drawing.Size(60, 20);
             this.label2.TabIndex = 16;
             this.label2.Text = "Position";
             this.label2.Click += new System.EventHandler(this.label2_Click);
@@ -288,10 +272,10 @@ namespace NTTracking
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Trebuchet MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Font = new System.Drawing.Font("Trebuchet MS", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(73, 205);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(86, 22);
+            this.label3.Size = new System.Drawing.Size(83, 20);
             this.label3.TabIndex = 11;
             this.label3.Text = "First Name";
             this.label3.Click += new System.EventHandler(this.label3_Click);
@@ -389,6 +373,7 @@ namespace NTTracking
             // 
             this.guna2ComboBox1.BackColor = System.Drawing.Color.Transparent;
             this.guna2ComboBox1.BorderRadius = 9;
+            this.guna2ComboBox1.DisabledState.FillColor = System.Drawing.Color.White;
             this.guna2ComboBox1.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.guna2ComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.guna2ComboBox1.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
@@ -503,6 +488,7 @@ namespace NTTracking
             this.guna2Button3.Size = new System.Drawing.Size(129, 30);
             this.guna2Button3.TabIndex = 36;
             this.guna2Button3.Text = "Save Changes";
+            this.guna2Button3.Visible = false;
             this.guna2Button3.Click += new System.EventHandler(this.guna2Button3_Click_3);
             // 
             // guna2Button2
@@ -576,7 +562,7 @@ namespace NTTracking
             this.guna2TextBox11.BorderColor = System.Drawing.Color.Black;
             this.guna2TextBox11.BorderRadius = 9;
             this.guna2TextBox11.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.guna2TextBox11.DefaultText = "";
+            this.guna2TextBox11.DefaultText = ".";
             this.guna2TextBox11.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
             this.guna2TextBox11.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
             this.guna2TextBox11.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
@@ -587,7 +573,7 @@ namespace NTTracking
             this.guna2TextBox11.Location = new System.Drawing.Point(216, 124);
             this.guna2TextBox11.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.guna2TextBox11.Name = "guna2TextBox11";
-            this.guna2TextBox11.PasswordChar = '.';
+            this.guna2TextBox11.PasswordChar = '\0';
             this.guna2TextBox11.PlaceholderText = "";
             this.guna2TextBox11.SelectedText = "";
             this.guna2TextBox11.Size = new System.Drawing.Size(266, 46);
@@ -766,17 +752,34 @@ namespace NTTracking
             this.guna2HtmlLabel3.Text = "Light/Dark";
             this.guna2HtmlLabel3.Click += new System.EventHandler(this.guna2HtmlLabel3_Click);
             // 
+            // guna2Button8
+            // 
+            this.guna2Button8.BorderRadius = 8;
+            this.guna2Button8.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.guna2Button8.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.guna2Button8.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.guna2Button8.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.guna2Button8.FillColor = System.Drawing.Color.Firebrick;
+            this.guna2Button8.Font = new System.Drawing.Font("Bookman Old Style", 8.25F, System.Drawing.FontStyle.Bold);
+            this.guna2Button8.ForeColor = System.Drawing.Color.White;
+            this.guna2Button8.Location = new System.Drawing.Point(555, 408);
+            this.guna2Button8.Name = "guna2Button8";
+            this.guna2Button8.Size = new System.Drawing.Size(112, 34);
+            this.guna2Button8.TabIndex = 28;
+            this.guna2Button8.Text = "Edit";
+            this.guna2Button8.Click += new System.EventHandler(this.guna2Button8_Click);
+            // 
             // UsersAccount
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(774, 543);
-            this.Controls.Add(this.guna2ShadowPanel2);
-            this.Controls.Add(this.guna2ShadowPanel3);
             this.Controls.Add(this.guna2Button10);
             this.Controls.Add(this.guna2Button7);
             this.Controls.Add(this.guna2Button9);
+            this.Controls.Add(this.guna2ShadowPanel2);
+            this.Controls.Add(this.guna2ShadowPanel3);
             this.Controls.Add(this.guna2ShadowPanel4);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Margin = new System.Windows.Forms.Padding(2);
@@ -810,7 +813,6 @@ namespace NTTracking
         private Guna.UI2.WinForms.Guna2Button guna2Button6;
         private Guna.UI2.WinForms.Guna2TextBox guna2TextBox12;
         private Guna.UI2.WinForms.Guna2TextBox guna2TextBox11;
-        private Guna.UI2.WinForms.Guna2Button guna2Button8;
         private Guna.UI2.WinForms.Guna2Button guna2Button4;
         private Guna.UI2.WinForms.Guna2Button guna2Button7;
         private Guna.UI2.WinForms.Guna2Button guna2Button9;
@@ -835,5 +837,6 @@ namespace NTTracking
         private Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel4;
         private Guna.UI2.WinForms.Guna2ToggleSwitch guna2ToggleSwitch2;
         private Guna.UI2.WinForms.Guna2TextBox guna2TextBox13;
+        private Guna.UI2.WinForms.Guna2Button guna2Button8;
     }
 }

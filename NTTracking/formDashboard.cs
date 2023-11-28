@@ -158,7 +158,6 @@ namespace NTTracking
                     {
                         if (showappsThread != null)
                         {
-                            Thread.Sleep(1000);
                             dataGridView1.BeginInvoke((Action)delegate ()
                             {
 
@@ -167,6 +166,7 @@ namespace NTTracking
                                     {
                                     if (userd.timer1.Enabled == true)
                                         {
+                                            Thread.Sleep(1000);
                                             string desc = dtrow["Software"].ToString().Trim();
                                             int a = dataGridView1.Rows.Add();
                                         dataGridView1.Rows[a].Cells["ProcessID"].Value = dtrow["ProcessID"].ToString().Trim();
@@ -198,15 +198,15 @@ namespace NTTracking
                     {
                         if (showappsThread != null)
                         {
-                            Thread.Sleep(1000);
                             dataGridView1.BeginInvoke((Action)delegate ()
                             {
                                
                                     dataGridView1.Invoke(new Action(() =>
                                     {
                                     if (userd.timer1.Enabled == true)
-                                    {
-                                        dataGridView1.Rows.Remove(row);
+                                        {
+                                            Thread.Sleep(1000);
+                                            dataGridView1.Rows.Remove(row);
                                         }
                                     }));
                             });
