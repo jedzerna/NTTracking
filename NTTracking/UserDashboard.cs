@@ -628,6 +628,7 @@ namespace NTTracking
                     formNum = "3";
                     useraccount = new UsersAccount();
                     useraccount.id = id;
+                    useraccount.username = username;
                     //useraccount.username = username;
                     useraccount.Height = panel1.Height;
                     useraccount.Width = panel1.Width;

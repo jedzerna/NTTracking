@@ -11,6 +11,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using Guna.UI2.WinForms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 
 namespace NTTracking
@@ -20,6 +22,7 @@ namespace NTTracking
         private const string ConnectionString = "Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=;";
 
         public string id;
+        public string username;
         private bool IsEditMode = false;
         private bool isDarkMode = false;
         private DBData db = new DBData();
@@ -63,6 +66,19 @@ namespace NTTracking
             List<DBData.AccountData> retrievedata = db.RetrieveAccountData(id);
             if (retrievedata.Count > 0)
             {
+                if (retrievedata[0].image == null)
+                {
+                    pictureisnull();
+                }
+                else
+                {
+                    Image retrievedImage = null;
+                    using (MemoryStream ms = new MemoryStream(retrievedata[0].image))
+                    {
+                        retrievedImage = Image.FromStream(ms);
+                    }
+                    image1.Image = retrievedImage;
+                }
                 guna2TextBox5.Text = retrievedata[0].FirstName.ToString();
                 guna2TextBox6.Text = retrievedata[0].LastName.ToString();
                 guna2ComboBox1.Text = retrievedata[0].Position.ToString();
@@ -75,13 +91,35 @@ namespace NTTracking
 
                 label7.Text = retrievedata[0].Position.ToString();
                 label8.Text = $"{retrievedata[0].FirstName} {retrievedata[0].LastName}";
-
                 DisableTextFields();
-
             }
         }
 
 
+        private void pictureisnull()
+        {
+            string inputString = username.Trim();
+
+            if (!string.IsNullOrEmpty(inputString)) // Check if the string is not empty
+            {
+                char firstLetter = inputString[0];
+                string resourceName = firstLetter.ToString().ToLower();
+                if (Properties.Resources.ResourceManager.GetObject(resourceName) != null)
+                {
+                    image1.Image = (Image)Properties.Resources.ResourceManager.GetObject(resourceName);
+
+                }
+                else
+                {
+                    image1.Image = Properties.Resources.profilep;
+
+                }
+            }
+            else
+            {
+                image1.Image = Properties.Resources.profilep;
+            }
+        }
 
         private void DisableTextFields()
         {
@@ -94,7 +132,7 @@ namespace NTTracking
             guna2TextBox10.ReadOnly = true;
             guna2TextBox12.ReadOnly = true;
             guna2TextBox13.ReadOnly = true;
-
+            guna2ComboBox1.Enabled = false;
 
         }
 
@@ -126,6 +164,7 @@ namespace NTTracking
             guna2TextBox10.ReadOnly = false;
             guna2TextBox12.ReadOnly = false;
             guna2TextBox13.ReadOnly = false;
+            guna2ComboBox1.Enabled = true;
         }
 
 
@@ -145,13 +184,10 @@ namespace NTTracking
             string editedEmail = guna2TextBox2.Text;
             string editedPhoneNo = guna2TextBox3.Text;
             string editedUsername = guna2TextBox10.Text;
-            /*string editedPassword = guna2TextBox11.Text;*/
-
-            //Check if the password change
             string editedPassword = guna2TextBox12.Text;
 
-            bool isSaved = db.SaveEditedData(id, editedFirstName, editedLastName, editedPosition, editedDepartment, editedEmail, editedPhoneNo,
-                editedUsername, editedPassword);
+
+            bool isSaved = db.SaveEditedData(image1.Image, id, editedFirstName, editedLastName, editedPosition, editedDepartment, editedEmail, editedPhoneNo);
 
             if (isSaved)
             {
@@ -373,12 +409,12 @@ namespace NTTracking
 
         private void guna2TextBox6_TextChanged(object sender, EventArgs e)
         {
-            {
-                if (ValidateInput())
-                {
-                    ToggleEditMode();
-                }
-            }
+            
+                //if (ValidateInput())
+                //{
+                //    ToggleEditMode();
+                //}
+            
 
         }
 
@@ -405,6 +441,13 @@ namespace NTTracking
         private void guna2Button4_Click(object sender, EventArgs e)
         {
             /*ToggleEditMode();*/
+            //ToggleEditMode();
+
+            EnableTextFields();
+            SaveData();
+            LoadData();
+            guna2Button8.Visible = true;
+            guna2Button4.Visible = false;
         }
 
         private void label6_Click_1(object sender, EventArgs e)
@@ -429,7 +472,9 @@ namespace NTTracking
 
         private void guna2Button8_Click(object sender, EventArgs e)
         {
-                ToggleEditMode();
+            guna2Button8.Visible = false;
+            guna2Button4.Visible = true;
+            EnableTextFields();
         }
 
         private bool ValidateInput()
@@ -570,6 +615,8 @@ namespace NTTracking
 
         private void guna2Button2_Click(object sender, EventArgs e)
         {
+            guna2Button2.Visible = false;
+            guna2Button3.Visible = true;
             ToggleEditMode();
         }
 
@@ -600,17 +647,18 @@ namespace NTTracking
 
         private void guna2Button5_Click(object sender, EventArgs e)
         {
-            String imageLocation = "";
+            //String imageLocation = "";
             try
             {
                 OpenFileDialog dialog = new OpenFileDialog();
-                dialog.Filter = "jpg files(*.jpg)|*.jpg| PNG files(*.png)|*.png| All Files(*.*)|*.*";
+                dialog.Filter = "Image Files (*.png;*.jpg;*.bmp)|*.png;*.jpg;*.bmp";
 
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    imageLocation = dialog.FileName;
+                    //imageLocation = dialog.FileName;
 
-                    image1.ImageLocation = imageLocation;
+                    image1.Image = Image.FromFile(dialog.FileName);
+                    //image1.ImageLocation = imageLocation;
                 }
             }
             catch (Exception) { 

@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
+using System.IO.Compression;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Web.UI.WebControls;
@@ -23,16 +25,19 @@ namespace NTTracking
         {
             // Initialize the connection string
             //connectionString = $"Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
-            //connectionString = $"Server=172.20.1.123;Port=8091;Database=ntdbtracking;User=admin;Password=admin;";
-            connectionString = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=";
+            //connectionString = $"Server=172.20.1.123;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
+            //connectionString = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=";
+            connectionString = $"Server=192.46.230.32;Port=3306;Database=ntdbtracking;username=audit;password=eu6rtzea;";
 
-            // using (MySqlConnection con = new MySqlConnection("Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password="))
-            // Create a new MySqlConnection using the connection string
-            connection = new MySqlConnection(connectionString);
+            //using (MySqlConnection con = new MySqlConnection("Server=192.46.230.32;Port=3306;Database=ntdbtracking;username=audit;password=eu6rtzea;"))
+                // using (MySqlConnection con = new MySqlConnection("Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password="))
+                // Create a new MySqlConnection using the connection string
+                connection = new MySqlConnection(connectionString);
         }
         //private string con = $"Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
-        //private string con = $"Server=172.20.1.123;Port=8091;Database=ntdbtracking;User=admin;Password=admin;";
-        private string con = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=";
+          //private string con = $"Server=172.20.1.123;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
+        //private string con = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=";
+        private string con = $"Server=192.46.230.32;Port=3306;Database=ntdbtracking;username=audit;password=eu6rtzea;";
         public bool OpenConnection()
         {
             try
@@ -915,6 +920,7 @@ namespace NTTracking
         }
         public class AccountData
         {
+            public byte[] image { get; set; }
             public string FirstName { get; set; }
             public string LastName { get; set; }
             public string Position { get; set; }
@@ -933,17 +939,27 @@ namespace NTTracking
             {
                 try
                 {
-                    string query = "SELECT first_name, last_name, position, department, email, phone_no, username, password FROM accounts where id = @id";
+                    string query = "SELECT user_image,first_name, last_name, position, department, email, phone_no, username, password FROM accounts where id = @id";
                     MySqlCommand cmd = new MySqlCommand(query, connection);
                     cmd.Parameters.AddWithValue("@id", userid);
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
+                            byte[] image = null;
+                            if (reader["user_image"] != DBNull.Value)
+                            {
+                                image = (byte[])reader["user_image"];
+                               
+                            }
+                            else
+                            {
+                                image = null;
+                            }
                             AccountData account = new AccountData
                             {
-
-                            FirstName = reader["first_name"].ToString(),
+                                image = image,
+                                FirstName = reader["first_name"].ToString(),
                                 LastName = reader["last_name"].ToString(),
                                 Position = reader["position"].ToString(),
                                 Email = reader["email"].ToString(),
@@ -971,33 +987,65 @@ namespace NTTracking
 
             return accountList;
         }
-        public bool SaveEditedData(string userid, string editedFirstName, string editedLastName,
-            string editedPosition, string editedDepartment, string editedEmail, string editedPhoneNo, string editedUsername, string editedPassword)
+        private byte[] ImageToByteArray(System.Drawing.Image image)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                image.Save(ms, image.RawFormat);
+                //MessageBox.Show(ms.ToArray().ToString());
+                return ms.ToArray();
+            }
+        }
+        public bool SaveEditedData(System.Drawing.Image img,string userid, string editedFirstName, string editedLastName,
+            string editedPosition, string editedDepartment, string editedEmail, string editedPhoneNo)
+        {
+            byte[] imageData = ImageToByteArray(img);
+            if (this.OpenConnection())
+            {
+                //try
+                //{
+             
+                string query = "UPDATE accounts SET user_image=@user_image,first_name=@editedFirstName, " +
+                        "last_name=@editedLastName, " +
+                        "position=@editedPosition, " +
+                        "department=@editedDepartment," +
+                         "email=@editedEmail, " +
+                        "phone_no=@editedPhoneNo WHERE id=@userid";
+                MessageBox.Show($"Image Size: {imageData.Length} bytes");
+                using (MySqlCommand cmd = new MySqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@userid", userid);
+                        cmd.Parameters.Add("@user_image", MySqlDbType.Blob).Value = imageData;
+                        cmd.Parameters.AddWithValue("@editedFirstName", editedFirstName);
+                        cmd.Parameters.AddWithValue("@editedLastName", editedLastName);
+                        cmd.Parameters.AddWithValue("@editedPosition", editedPosition);
+                        cmd.Parameters.AddWithValue("@editedDepartment", editedDepartment);
+                        cmd.Parameters.AddWithValue("@editedEmail", editedEmail);
+                        cmd.Parameters.AddWithValue("@editedPhoneNo", editedPhoneNo);
+                        cmd.ExecuteNonQuery();
+                    }
+
+                this.CloseConnection();
+                return true;
+            }
+
+            return false;
+        }
+        public bool SaveEditedPass(string userid, string editedUsername, string editedPassword)
         {
             if (this.OpenConnection())
             {
                 try
                 {
-                    string query = "UPDATE accounts SET first_name=@editedFirstName, " +
-                        "last_name=@editedLastName, " +
-                        "position=@editedPosition, " +
-                        "department=@editedDepartment," +
+                    string query = "UPDATE accounts SET " +
                          "username=@editedUsername, " +
-                          "password=@editedPassword, " +
-                         "email=@editedEmail, " +
-                        "phone_no=@editedPhoneNo WHERE id=@userid";
+                          "password=@editedPassword WHERE id=@userid";
 
                     using (MySqlCommand cmd = new MySqlCommand(query, connection))
                     {
                         cmd.Parameters.AddWithValue("@userid", userid);
-                        cmd.Parameters.AddWithValue("@editedFirstName", editedFirstName);
-                        cmd.Parameters.AddWithValue("@editedLastName", editedLastName);
-                        cmd.Parameters.AddWithValue("@editedPosition", editedPosition);
-                        cmd.Parameters.AddWithValue("@editedDepartment", editedDepartment);
                         cmd.Parameters.AddWithValue("@editedUsername", editedUsername);
                         cmd.Parameters.AddWithValue("@editedPassword", editedPassword);
-                        cmd.Parameters.AddWithValue("@editedEmail", editedEmail);
-                        cmd.Parameters.AddWithValue("@editedPhoneNo", editedPhoneNo);
                         cmd.ExecuteNonQuery();
                     }
 
@@ -1021,6 +1069,7 @@ namespace NTTracking
 
             return false;
         }
+
     }
 }
 

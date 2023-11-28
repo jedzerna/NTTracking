@@ -81,8 +81,9 @@ namespace NTTracking
                 });
                 //using (MySqlConnection con = new MySqlConnection("Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;"))
                 //using (MySqlConnection con = new MySqlConnection("Server=172.20.1.123;Port=8092;Database=ntdbtracking;User=admin;Password=admin;"))
-                using (MySqlConnection con = new MySqlConnection("Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=;"))
-                //using (MySqlConnection con = new MySqlConnection("Server=172.20.1.123;Port=8092;Database=ntdbtracking;username=jed;password=jed;"))
+                //using (MySqlConnection con = new MySqlConnection("Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=;"))
+                //using (MySqlConnection con = new MySqlConnection("Server=172.20.1.123;Port=3306;Database=ntdbtracking;username=admin;password=admin;"))
+                 using (MySqlConnection con = new MySqlConnection("Server=192.46.230.32;Port=3306;Database=ntdbtracking;username=audit;password=eu6rtzea;"))
                 {
                     con.Open();
 

@@ -272,6 +272,9 @@
   <ItemGroup>
     <Content Include=".nuget\mouse-keyboard-hook-logo.png" />
     <Content Include="logo4.ico" />
+    <None Include="Resources\icons8_home.ico" />
+    <None Include="Resources\icons8_moleskine.ico" />
+    <None Include="Resources\icons8_settings_1.ico" />
     <Content Include="Resources\login1.png" />
     <None Include="Resources\login11.png" />
     <None Include="Resources\login.png" />
