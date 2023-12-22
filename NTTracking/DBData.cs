@@ -12,6 +12,8 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Web.UI.WebControls;
 using System.Windows.Forms;
+using System.Configuration;
+
 using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace NTTracking
@@ -24,20 +26,14 @@ namespace NTTracking
         public DBData()
         {
             // Initialize the connection string
-            //connectionString = $"Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
-            //connectionString = $"Server=172.20.1.123;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
-            //connectionString = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=";
-            connectionString = $"Server=192.46.230.32;Port=3306;Database=ntdbtracking;username=audit;password=eu6rtzea;";
+            connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
 
-            //using (MySqlConnection con = new MySqlConnection("Server=192.46.230.32;Port=3306;Database=ntdbtracking;username=audit;password=eu6rtzea;"))
-                // using (MySqlConnection con = new MySqlConnection("Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password="))
-                // Create a new MySqlConnection using the connection string
-                connection = new MySqlConnection(connectionString);
+            // Create a new MySqlConnection using the connection string
+            connection = new MySqlConnection(connectionString);
         }
-        //private string con = $"Server=13.127.54.40;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
-          //private string con = $"Server=172.20.1.123;Port=3306;Database=ntdbtracking;User=admin;Password=admin;";
-        //private string con = $"Data Source=localhost;Initial Catalog=ntdbtracking;username=root;password=";
-        private string con = $"Server=192.46.230.32;Port=3306;Database=ntdbtracking;username=audit;password=eu6rtzea;";
+  
+        private string con = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+
         public bool OpenConnection()
         {
             try
